@@ -1,0 +1,153 @@
+/* ===== Miracle Basketball Academy Theme ===== */
+
+:root {
+    --primary: #0f172a;      /* navy */
+    --secondary: #f97316;    /* orange */
+    --accent: #22c55e;       /* green */
+    --light: #f8fafc;
+    --card: #ffffff;
+}
+
+/* Reset */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body{
+    background: var(--light);
+    color:#111;
+}
+
+/* Header */
+header{
+    background: var(--primary);
+    color:white;
+    padding:18px 30px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+header img{
+    height:55px;
+}
+
+header h1{
+    font-size:22px;
+    font-weight:600;
+}
+
+/* Container */
+.container{
+    max-width:1000px;
+    margin:40px auto;
+    padding:25px;
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Form */
+form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+form .full{
+    grid-column:1/-1;
+}
+
+label{
+    font-size:13px;
+    font-weight:600;
+    color:#555;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    margin-top:6px;
+    font-size:14px;
+}
+
+input:focus, select:focus, textarea:focus{
+    border-color:var(--secondary);
+    outline:none;
+    box-shadow:0 0 0 2px rgba(249,115,22,0.2);
+}
+
+/* Button */
+button{
+    grid-column:1/-1;
+    background:var(--secondary);
+    color:white;
+    border:none;
+    padding:14px;
+    font-size:16px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    background:#ea580c;
+}
+
+/* Tables (Admin dashboard) */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+}
+
+th{
+    background:var(--primary);
+    color:white;
+}
+
+tr:hover{
+    background:#f1f5f9;
+}
+
+/* Cards */
+.card{
+    padding:20px;
+    border-radius:12px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,0,0,0.06);
+    margin-bottom:20px;
+}
+
+/* Receipt */
+.receipt{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:14px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+.receipt h2{
+    color:var(--secondary);
+    margin-bottom:20px;
+    text-align:center;
+}
+
+/* Mobile */
+@media(max-width:768px){
+    form{
+        grid-template-columns:1fr;
+    }
+}
