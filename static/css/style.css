@@ -101,6 +101,37 @@ button:hover{
     background:#ea580c;
 }
 
+/* FORM LAYOUT */
+.form-grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap:22px;
+}
+
+/* On phones stack nicely */
+@media (max-width: 768px){
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+/* Prevent overflow overlap */
+input, select, textarea{
+    width:100%;
+    box-sizing:border-box; /* <-- THE MAGIC LINE */
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid #d1d5db;
+    background:#fff;
+    font-size:15px;
+}
+
+label{
+    font-weight:600;
+    display:block;
+    margin-bottom:6px;
+}
+
 /* FLASH */
 .flash{
     background:#dcfce7;
