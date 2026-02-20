@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Miracle Basketball Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="logo">
+            <span>Miracle Basketball Academy</span>
+        </div>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/register">Register Player</a>
+            <a href="/admin">Admin</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash">
+                {% for msg in messages %}
+                    <p>{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    © {{ 2026 }} Miracle Basketball Academy
+</footer>
+
+</body>
+</html>
