@@ -7,7 +7,10 @@
 body{
     margin:0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:var(--mba-orange);
+
+    /* soft warm sports background */
+    background:
+    radial-gradient(circle at 20% 20%, #fff3d6 0%, #fdfaf4 40%, #f8fafc 100%);
 }
 
 /* NAVBAR */
@@ -174,7 +177,7 @@ input {
 
 /* BUTTONS */
 .btn-primary{
-    background:var(--mba-orange);
+    background:linear-gradient(135deg,#f59e0b,#f97316);
     color:white;
     padding:14px 30px;
     border-radius:12px;
@@ -182,11 +185,12 @@ input {
     font-weight:700;
     display:inline-block;
     transition:.25s;
+    box-shadow:0 6px 18px rgba(245,158,11,0.4);
 }
 
 .btn-primary:hover{
-    background:var(--mba-orange-dark);
-    transform:translateY(-2px);
+    transform:translateY(-3px);
+    box-shadow:0 10px 26px rgba(245,158,11,0.5);
 }
 
 /* SECTIONS */
@@ -265,11 +269,20 @@ input {
     color:var(--mba-orange);
 }
 .section{
-    background:var(--mba-light);
+    background:white;
     margin:40px auto;
     border-radius:18px;
     max-width:1100px;
-    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.08),
+        0 0 0 3px rgba(245,158,11,0.08);
+}
+
+hr{
+    border:none;
+    height:2px;
+    background:linear-gradient(to right, transparent, #f59e0b, transparent);
+    margin:40px 0;
 }
 
 /* FOOTER */
