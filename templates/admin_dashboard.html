@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Registered Players</h1>
+
+<table border="1" cellpadding="8" style="width:100%; font-size:14px;">
+<tr style="background:#0f172a;color:white;">
+    <th>ID</th>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Gender</th>
+    <th>School</th>
+    <th>Parent</th>
+    <th>Phone</th>
+    <th>Position</th>
+    <th>Skill</th>
+    <th>Amount</th>
+    <th>Date</th>
+</tr>
+
+{% for p in players %}
+<tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.full_name }}</td>
+    <td>{{ p.age }}</td>
+    <td>{{ p.gender }}</td>
+    <td>{{ p.school }}</td>
+    <td>{{ p.parent_name }}</td>
+    <td>{{ p.phone1 }}</td>
+    <td>{{ p.position }}</td>
+    <td>{{ p.skill }}</td>
+    <td>{{ p.amount }}</td>
+    <td>{{ p.created_at }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
