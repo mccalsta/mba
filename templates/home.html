@@ -1,1 +1,67 @@
-<h1>Miracle Basketball Academy</h1><a href='/register'>Register</a> | <a href='/admin'>Admin</a>
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Miracle Basketball Academy</h1>
+        <p>Developing Skills • Building Character • Creating Champions</p>
+        <a href="/register" class="btn-primary">Register Player</a>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section">
+    <div class="container">
+        <h2>About The Academy</h2>
+        <p>
+            Miracle Basketball Academy is dedicated to developing young athletes
+            through professional training, discipline and teamwork.
+            We nurture talent, confidence and leadership both on and off the court.
+        </p>
+    </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="section gray">
+    <div class="container">
+        <h2>Training Programs</h2>
+
+        <div class="cards">
+            <div class="card">
+                <h3>U10 – Beginners</h3>
+                <p>Basic basketball fundamentals and coordination skills.</p>
+            </div>
+
+            <div class="card">
+                <h3>U14 – Development</h3>
+                <p>Skill development, teamwork and competitive play.</p>
+            </div>
+
+            <div class="card">
+                <h3>U18 – Elite</h3>
+                <p>Advanced training, game IQ and tournament preparation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHY US -->
+<section class="section">
+    <div class="container">
+        <h2>Why Choose Us</h2>
+
+        <div class="features">
+            <div class="feature">✔ Professional Coaching</div>
+            <div class="feature">✔ Safe Training Environment</div>
+            <div class="feature">✔ Character Development</div>
+            <div class="feature">✔ Competitive Exposure</div>
+        </div>
+
+        <div style="text-align:center;margin-top:40px;">
+            <a href="/register" class="btn-primary">Join The Academy</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
