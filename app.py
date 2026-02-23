@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import sqlite3
 import os
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "miracle_secret_key"
@@ -60,7 +61,14 @@ def init_db():
 
     conn.commit()
     conn.close()
-
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS admins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        created_at TEXT
+    )
+    """)
 
 init_db()
 # ------------------------------------
@@ -187,3 +195,29 @@ def mark_paid(player_id):
     conn.close()
 
     return redirect("/dashboard")
+
+#add-admin
+@app.route("/create_admin")
+def create_admin():
+
+    conn = get_db()
+
+    admins = [
+        ("henry", generate_password_hash("1234")),
+        ("coach_mike", generate_password_hash("basketball")),
+        ("manager_sarah", generate_password_hash("academy2026")),
+        ("finance_john", generate_password_hash("payments"))
+    ]
+
+    for a in admins:
+        try:
+            conn.execute(
+                "INSERT INTO admins (username,password,created_at) VALUES (?,?,datetime('now'))", a
+            )
+        except:
+            pass
+
+    conn.commit()
+    conn.close()
+
+    return "Admins created"
