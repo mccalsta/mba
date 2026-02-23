@@ -159,6 +159,8 @@ def admin_login():
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
 def dashboard():
+    if "admin" not in session:
+        return redirect("/admin")
     conn = get_db()
     players = conn.execute("SELECT * FROM players ORDER BY created_at DESC").fetchall()
 
@@ -227,3 +229,25 @@ def create_admin():
     conn.close()
 
     return "Admins created"
+
+#--------admin login---------
+@app.route("/admin", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        conn = get_db()
+        admin = conn.execute(
+            "SELECT * FROM admins WHERE username = ?",
+            (username,)
+        ).fetchone()
+        conn.close()
+
+        if admin and check_password_hash(admin["password"], password):
+            session["admin"] = username
+            return redirect("/dashboard")
+        else:
+            flash("Invalid credentials")
+
+    return render_template("admin_login.html")
