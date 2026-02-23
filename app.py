@@ -146,21 +146,33 @@ def admin():
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
 def dashboard():
-    if not session.get("admin"):
-        return redirect("/admin")
-
     conn = get_db()
-    players = conn.execute("SELECT * FROM players ORDER BY id DESC").fetchall()
+    players = conn.execute("SELECT * FROM players ORDER BY created_at DESC").fetchall()
+
+    # stats
+    total_players = conn.execute("SELECT COUNT(*) FROM players").fetchone()[0]
+    paid_players = conn.execute("SELECT COUNT(*) FROM players WHERE payment_status='Paid'").fetchone()[0]
+    unpaid_players = conn.execute("SELECT COUNT(*) FROM players WHERE payment_status='Pending'").fetchone()[0]
+
+    weekly_income = conn.execute(
+        "SELECT COALESCE(SUM(amount),0) FROM players WHERE payment_plan='Weekly' AND payment_status='Paid'"
+    ).fetchone()[0]
+
+    monthly_income = conn.execute(
+        "SELECT COALESCE(SUM(amount),0) FROM players WHERE payment_plan='Monthly' AND payment_status='Paid'"
+    ).fetchone()[0]
+
     conn.close()
 
-    return render_template("admin_dashboard.html", players=players)
-
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/admin")
-
+    return render_template(
+        "admin_dashboard.html",
+        players=players,
+        total_players=total_players,
+        paid_players=paid_players,
+        unpaid_players=unpaid_players,
+        weekly_income=weekly_income,
+        monthly_income=monthly_income
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
