@@ -144,6 +144,15 @@
 <h2>Payment Details</h2>
 
 <div class="form-group">
+    <label>Payment Plan</label>
+    <select name="payment_plan" required>
+        <option value="">Select Payment Plan</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+    </select>
+</div>
+  
+<div class="form-group">
 <label>Amount Paid</label>
 <input name="amount">
 </div>
@@ -155,6 +164,14 @@
 <option>Mobile Money</option>
 <option>Bank Transfer</option>
 </select>
+</div>
+
+<div class="form-group">
+    <label>Payment Status</label>
+    <select name="payment_status">
+        <option value="Pending">Pending</option>
+        <option value="Paid">Paid</option>
+    </select>
 </div>
 
 <div class="form-group">
