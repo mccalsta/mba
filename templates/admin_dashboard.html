@@ -61,8 +61,15 @@
     <td>{{ p.skill }}</td>
     <td>{{ p.amount }}</td>
     <td>{{ p.created_at }}</td>
-    <td>{{ p.payment_plan }}</td>
     <td>{{ p.payment_status }}</td>
+    <td>{{ p.payment_plan }}</td>
+    <td>
+    {% if p.payment_status == "Paid" %}
+        <span style="color:lime;font-weight:bold;">Paid</span>
+    {% else %}
+        <a href="/mark_paid/{{ p.id }}" class="pay-btn">Mark Paid</a>
+    {% endif %}
+</td>
 </tr>
 {% endfor %}
 
