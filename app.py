@@ -50,6 +50,8 @@ def init_db():
 
         amount TEXT,
         payment_method TEXT,
+        payment_plan TEXT,
+        payment_status TEXT,
         reference TEXT,
 
         created_at TEXT
