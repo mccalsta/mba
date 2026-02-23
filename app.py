@@ -133,27 +133,7 @@ def register():
     return render_template("register.html")
 
 # ---------------- ADMIN LOGIN ----------------
-@app.route("/admin", methods=["GET","POST"])
-def admin_login():
 
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        conn = get_db()
-        admin = conn.execute(
-            "SELECT * FROM admins WHERE username=?",
-            (username,)
-        ).fetchone()
-        conn.close()
-
-        if admin and check_password_hash(admin["password"], password):
-            session["admin"] = admin["username"]
-            return redirect("/dashboard")
-        else:
-            flash("Invalid credentials")
-
-    return render_template("admin_login.html")
 
 
 # ---------------- DASHBOARD ----------------
