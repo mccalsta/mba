@@ -475,6 +475,23 @@ hr{
     }
 }
 
+/* background overlay when menu opens */
+.nav-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    opacity:0;
+    pointer-events:none;
+    transition:0.3s;
+    z-index:5;
+}
+
+.nav-overlay.active{
+    opacity:1;
+    pointer-events:auto;
+}
+
 /* FOOTER */
 .footer{
     text-align:center;
