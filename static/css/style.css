@@ -436,6 +436,45 @@ hr{
     height:36px;
 }
 
+.menu-toggle{
+    display:none;
+    font-size:30px;
+    font-weight:bold;
+    cursor:pointer;
+    color:white;
+    padding:6px 10px;
+    border-radius:6px;
+    transition:0.2s;
+}
+
+.menu-toggle:hover{
+    background:rgba(255,255,255,0.1);
+}
+
+@media(max-width:768px){
+
+    .menu-toggle{
+        display:block;
+    }
+
+    .nav-links{
+        position:absolute;
+        top:70px;
+        left:0;
+        width:100%;
+        background:#0b1a33;
+        flex-direction:column;
+        text-align:center;
+        max-height:0;
+        overflow:hidden;
+        transition:max-height 0.35s ease;
+    }
+
+    .nav-links.active{
+        max-height:260px;
+    }
+}
+
 /* FOOTER */
 .footer{
     text-align:center;
