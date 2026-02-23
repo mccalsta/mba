@@ -1,7 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
 
+
 <h1>Registered Players</h1>
+
+<div class="stats-grid">
+    <div class="card stat">
+        <h3>Total Players</h3>
+        <p>{{ total_players }}</p>
+    </div>
+
+    <div class="card stat green">
+        <h3>Paid Players</h3>
+        <p>{{ paid_players }}</p>
+    </div>
+
+    <div class="card stat red">
+        <h3>Unpaid</h3>
+        <p>{{ unpaid_players }}</p>
+    </div>
+
+    <div class="card stat blue">
+        <h3>Weekly Income</h3>
+        <p>UGX {{ weekly_income }}</p>
+    </div>
+
+    <div class="card stat purple">
+        <h3>Monthly Income</h3>
+        <p>UGX {{ monthly_income }}</p>
+    </div>
+</div>
 
 <table border="1" cellpadding="8" style="width:100%; font-size:14px;">
 <tr style="background:#0f172a;color:white;">
