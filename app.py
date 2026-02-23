@@ -251,3 +251,10 @@ def admin_login():
             flash("Invalid credentials")
 
     return render_template("admin_login.html")
+
+#------Admin log out-------
+@app.route("/logout")
+def logout():
+    session.pop("admin", None)
+    return redirect("/admin")
+
