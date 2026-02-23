@@ -546,6 +546,40 @@ hr{
     background:#ea580c;
 }
 
+/* Payment button */
+.pay-btn{
+    display:inline-block;
+    background:#f97316;
+    color:white;
+    padding:6px 14px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:0.2s;
+}
+
+.pay-btn:hover{
+    background:#ea580c;
+}
+
+/* Paid badge */
+.paid-badge{
+    background:#22c55e;
+    color:white;
+    padding:6px 14px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* prevent table squeezing */
+.status-cell{
+    min-width:110px;
+    text-align:center;
+}
+
 /* FOOTER */
 .footer{
     text-align:center;
