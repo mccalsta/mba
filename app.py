@@ -19,15 +19,14 @@ def get_db():
 
 def init_db():
     conn = get_db()
-    c = conn.cursor()
 
-    c.execute("""
+    # PLAYERS TABLE
+    conn.execute("""
     CREATE TABLE IF NOT EXISTS players (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-
         full_name TEXT,
         dob TEXT,
-        age TEXT,
+        age INTEGER,
         gender TEXT,
         school TEXT,
         grade TEXT,
@@ -35,32 +34,26 @@ def init_db():
         village TEXT,
         position TEXT,
         shirt_size TEXT,
-
         parent_name TEXT,
         relationship TEXT,
         phone1 TEXT,
         phone2 TEXT,
         email TEXT,
-
         medical TEXT,
         injuries TEXT,
         allergies TEXT,
-
         skill TEXT,
         goals TEXT,
-
-        amount TEXT,
+        amount INTEGER,
         payment_method TEXT,
-        payment_plan TEXT,
-        payment_status TEXT,
         reference TEXT,
-
+        payment_plan TEXT,
+        payment_status TEXT DEFAULT 'Pending',
         created_at TEXT
     )
     """)
 
-    conn.commit()
-    conn.close()
+    # ADMINS TABLE  ← ADD HERE (NOT AFTER CLOSE)
     conn.execute("""
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,6 +63,8 @@ def init_db():
     )
     """)
 
+    conn.commit()
+    conn.close()
 init_db()
 # ------------------------------------
 
