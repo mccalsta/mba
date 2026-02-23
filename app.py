@@ -176,7 +176,7 @@ def dashboard():
 
 if __name__ == "__main__":
     app.run(debug=True)
-#mark paid
+#mark-paid
 @app.route("/mark_paid/<int:player_id>")
 def mark_paid(player_id):
     conn = get_db()
