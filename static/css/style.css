@@ -506,6 +506,32 @@ hr{
     pointer-events:auto;
 }
 
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.stat{
+    padding:18px;
+    border-radius:14px;
+    background:#111827;
+    color:white;
+    text-align:center;
+}
+
+.stat p{
+    font-size:28px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.green{background:#065f46;}
+.red{background:#7f1d1d;}
+.blue{background:#1e3a8a;}
+.purple{background:#4c1d95;}
+
 /* FOOTER */
 .footer{
     text-align:center;
