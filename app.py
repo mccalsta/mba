@@ -176,3 +176,15 @@ def dashboard():
 
 if __name__ == "__main__":
     app.run(debug=True)
+#mark paid
+@app.route("/mark_paid/<int:player_id>")
+def mark_paid(player_id):
+    conn = get_db()
+    conn.execute(
+        "UPDATE players SET payment_status='Paid' WHERE id=?",
+        (player_id,)
+    )
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
