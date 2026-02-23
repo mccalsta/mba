@@ -76,42 +76,41 @@ def home():
 def register():
     if request.method == "POST":
 
-data = (
-    request.form.get("full_name"),
-    request.form.get("dob"),
-    request.form.get("age"),
-    request.form.get("gender"),
-    request.form.get("school"),
-    request.form.get("grade"),
-    request.form.get("address"),
-    request.form.get("village"),
-    request.form.get("position"),
-    request.form.get("shirt_size"),
+        data = (
+            request.form.get("full_name"),
+            request.form.get("dob"),
+            request.form.get("age"),
+            request.form.get("gender"),
+            request.form.get("school"),
+            request.form.get("grade"),
+            request.form.get("address"),
+            request.form.get("village"),
+            request.form.get("position"),
+            request.form.get("shirt_size"),
 
-    request.form.get("parent_name"),
-    request.form.get("relationship"),
-    request.form.get("phone1"),
-    request.form.get("phone2"),
-    request.form.get("email"),
+            request.form.get("parent_name"),
+            request.form.get("relationship"),
+            request.form.get("phone1"),
+            request.form.get("phone2"),
+            request.form.get("email"),
 
-    request.form.get("medical"),
-    request.form.get("injuries"),
-    request.form.get("allergies"),
+            request.form.get("medical"),
+            request.form.get("injuries"),
+            request.form.get("allergies"),
 
-    request.form.get("skill"),
-    request.form.get("goals"),
+            request.form.get("skill"),
+            request.form.get("goals"),
 
-    request.form.get("amount"),
-    request.form.get("payment_plan"),   # weekly or monthly
-    request.form.get("reference"),
+            request.form.get("amount"),
+            request.form.get("payment_plan"),
+            request.form.get("reference"),
 
-    "Pending",  # ← FORCE STATUS HERE (CRITICAL FIX)
+            "Pending",  # force status controlled by admin
 
-    datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-)
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
 
         conn = get_db()
-
         conn.execute("""
         INSERT INTO players (
             full_name,dob,age,gender,school,grade,address,village,position,shirt_size,
