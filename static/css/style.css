@@ -532,6 +532,20 @@ hr{
 .blue{background:#1e3a8a;}
 .purple{background:#4c1d95;}
 
+.pay-btn{
+    background:#f97316;
+    color:white;
+    padding:6px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.2s;
+}
+
+.pay-btn:hover{
+    background:#ea580c;
+}
+
 /* FOOTER */
 .footer{
     text-align:center;
