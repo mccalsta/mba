@@ -101,25 +101,26 @@ def register():
             request.form.get("skill"),
             request.form.get("goals"),
 
-           request.form.get("amount"),
-           request.form.get("payment_method"),
-           request.form.get("reference"),
-           request.form.get("payment_plan"),
-           request.form.get("payment_status"),
+            request.form.get("amount"),
+            request.form.get("payment_method"),
+            request.form.get("reference"),
+            request.form.get("payment_plan"),
+            request.form.get("payment_status"),
 
-           datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
         conn = get_db()
-       conn.execute("""
-       INSERT INTO players (
-       full_name,dob,age,gender,school,grade,address,village,position,shirt_size,
-       parent_name,relationship,phone1,phone2,email,
-       medical,injuries,allergies,
-       skill,goals,
-       amount,payment_method,reference,payment_plan,payment_status,created_at
-       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-       """, data)
+
+        conn.execute("""
+            INSERT INTO players (
+                full_name,dob,age,gender,school,grade,address,village,position,shirt_size,
+                parent_name,relationship,phone1,phone2,email,
+                medical,injuries,allergies,
+                skill,goals,
+                amount,payment_method,reference,payment_plan,payment_status,created_at
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """, data)
 
         conn.commit()
         conn.close()
@@ -128,7 +129,6 @@ def register():
         return redirect("/register")
 
     return render_template("register.html")
-
 
 # ---------------- ADMIN LOGIN ----------------
 @app.route("/admin", methods=["GET", "POST"])
