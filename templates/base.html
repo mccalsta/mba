@@ -21,11 +21,26 @@
             <span>Miracle Basketball Academy</span>
         </div>
 
-        <nav>
-            <a href="/">Home</a>
-            <a href="/register">Register Player</a>
-            <a href="/admin">Admin</a>
-        </nav>
+      <nav class="navbar">
+    <div class="nav-container">
+
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}">
+            <span>Miracle Basketball Academy</span>
+        </div>
+
+        <div class="menu-toggle" id="menu-toggle">
+            ☰
+        </div>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/register">Register Player</a></li>
+            <li><a href="/admin">Admin</a></li>
+        </ul>
+
+    </div>
+</nav>
     </div>
 </header>
 
