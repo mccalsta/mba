@@ -62,11 +62,11 @@
     <td>{{ p.amount }}</td>
     <td>{{ p.created_at }}</td>
     <td>{{ p.payment_plan }}</td>
-    <td>
-    {% if p.payment_status == "Paid" %}
-        <span style="color:lime;font-weight:bold;">Paid</span>
-    {% else %}
+    <td class="status-cell">
+    {% if p.payment_status != 'Paid' %}
         <a href="/mark_paid/{{ p.id }}" class="pay-btn">Mark Paid</a>
+    {% else %}
+        <span class="paid-badge">Paid</span>
     {% endif %}
 </td>
     <td>{{ p.payment_status }}</td>
