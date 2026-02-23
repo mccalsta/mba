@@ -59,10 +59,25 @@
 <script>
 const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav-links");
+const overlay = document.getElementById("nav-overlay");
+const links = document.querySelectorAll(".nav-links a");
 
-toggle.onclick = function(){
+toggle.onclick = () => {
     nav.classList.toggle("active");
+    overlay.classList.toggle("active");
 };
+
+overlay.onclick = () => {
+    nav.classList.remove("active");
+    overlay.classList.remove("active");
+};
+
+links.forEach(link => {
+    link.onclick = () => {
+        nav.classList.remove("active");
+        overlay.classList.remove("active");
+    };
+});
 </script>
 </body>
 </html>
