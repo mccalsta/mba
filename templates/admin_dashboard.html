@@ -70,6 +70,11 @@
     {% endif %}
 </td>
     <td>{{ p.payment_status }}</td>
+    <td>
+    {% if p.payment_status == 'Paid' %}
+        <a href="/receipt/{{ p.id }}" class="btn">Print Receipt</a>
+    {% endif %}
+</td>
 </tr>
 {% endfor %}
 
