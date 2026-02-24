@@ -3,10 +3,9 @@ import sqlite3
 import os
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from receipt import generate_receipt
 from flask import send_file
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A3
+from reportlab.lib.pagesizes import A4
 import io
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib import colors
@@ -255,7 +254,12 @@ def logout():
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
 
-    player = Player.query.get_or_404(player_id)
+    conn = get_db()
+player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
+conn.close()
+
+if not player:
+    return "Player not found", 404
 
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
