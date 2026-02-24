@@ -63,18 +63,19 @@
     <td>{{ p.created_at }}</td>
     <td>{{ p.payment_plan }}</td>
     <td class="status-cell">
+
     {% if p.payment_status != 'Paid' %}
         <a href="/mark_paid/{{ p.id }}" class="pay-btn">Mark Paid</a>
+
     {% else %}
-        <span class="paid-badge">Paid</span>
+        <div class="paid-area">
+            <span class="paid-badge">Paid</span>
+            <a href="/receipt/{{ p.id }}" class="receipt-btn">Receipt</a>
+        </div>
     {% endif %}
+
 </td>
-    <td>{{ p.payment_status }}</td>
-    <td>
-    {% if p.payment_status == 'Paid' %}
-        <a href="/receipt/{{ p.id }}" class="btn">Print Receipt</a>
-    {% endif %}
-</td>
+   
 </tr>
 {% endfor %}
 
