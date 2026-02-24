@@ -255,6 +255,7 @@ def logout():
     return redirect("/admin")
 
 #-------Receipt----------
+#-------Receipt----------
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
 
@@ -269,71 +270,78 @@ def generate_receipt(player_id):
         return "Player not found", 404
 
     buffer = io.BytesIO()
+
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A5,
-        rightMargin=40,
-        leftMargin=40,
-        topMargin=40,
-        bottomMargin=40
+        rightMargin=35,
+        leftMargin=35,
+        topMargin=30,
+        bottomMargin=30
     )
 
     styles = getSampleStyleSheet()
     elements = []
 
-    # ---------------- HEADER ----------------
+    # ---------- COLORS ----------
+    PRIMARY = HexColor("#0f172a")   # dark blue
+    ACCENT = HexColor("#f97316")    # orange
+    LIGHT = HexColor("#f1f5f9")     # light grey
+
+    # ---------- HEADER ----------
     logo_path = os.path.join(app.root_path, "static", "logo.png")
-
     try:
-        logo = Image(logo_path, width=70, height=70)
+        logo = Image(logo_path, width=60, height=60)
     except:
-        logo = Spacer(1, 70)
+        logo = Spacer(1, 60)
 
-    title = Paragraph("<b>MIRACLE BASKETBALL ACADEMY</b>", styles["Title"])
-    subtitle = Paragraph("Official Payment Receipt", styles["Normal"])
-    motto = Paragraph(
-        "<i>Developing Skills • Building Character • Creating Champions</i>",
-        styles["Normal"]
-    )
+    title = Paragraph("<font size=16 color='#0f172a'><b>MIRACLE BASKETBALL ACADEMY</b></font>", styles["Title"])
+    subtitle = Paragraph("<font color='#f97316'><b>Official Payment Receipt</b></font>", styles["Normal"])
+    motto = Paragraph("<font size=9><i>Developing Skills • Building Character • Creating Champions</i></font>", styles["Normal"])
 
-    header_table = Table([
-        [logo, [title, subtitle, motto]]
-    ], colWidths=[80, 400])
+    header = Table([[logo, [title, subtitle, motto]]], colWidths=[70, 340])
+    header.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"MIDDLE")]))
+    elements.append(header)
+    elements.append(Spacer(1, 18))
 
-    elements.append(header_table)
-    elements.append(Spacer(1, 20))
-
-    # ---------------- RECEIPT INFO ----------------
+    # ---------- RECEIPT INFO ----------
     receipt_info = Table([
         ["Receipt No:", f"MBA-{player['id']:05d}"],
         ["Date:", datetime.now().strftime("%d/%m/%Y")]
-    ], colWidths=[120, 200])
+    ], colWidths=[120, 220])
 
     receipt_info.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 1, colors.black),
-        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
-        ("FONTNAME", (0,0), (-1,-1), "Helvetica-Bold")
+        ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
+        ("INNERGRID",(0,0),(-1,-1),0.4,colors.grey),
+        ("BACKGROUND",(0,0),(0,-1),LIGHT),
+        ("TEXTCOLOR",(0,0),(0,-1),PRIMARY),
+        ("FONTNAME",(0,0),(-1,-1),"Helvetica-Bold"),
+        ("LEFTPADDING",(0,0),(-1,-1),6),
+        ("RIGHTPADDING",(0,0),(-1,-1),6),
     ]))
 
     elements.append(receipt_info)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 18))
 
-    # ---------------- RECEIVED FROM ----------------
+    # ---------- RECEIVED FROM ----------
     received = Table([
         ["Received From:", player["parent_name"]],
         ["Player Name:", player["full_name"]],
         ["Payment Plan:", player["payment_plan"]]
-    ], colWidths=[150, 300])
+    ], colWidths=[140, 300])
 
     received.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 1, colors.black),
-        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
+        ("INNERGRID",(0,0),(-1,-1),0.4,colors.grey),
+        ("BACKGROUND",(0,0),(0,-1),LIGHT),
+        ("LEFTPADDING",(0,0),(-1,-1),6),
+        ("RIGHTPADDING",(0,0),(-1,-1),6),
     ]))
 
     elements.append(received)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 18))
 
-    # ---------------- PAYMENT TABLE ----------------
+    # ---------- PAYMENT TABLE ----------
     amount = int(player["amount"])
 
     payment_table = Table([
@@ -341,35 +349,46 @@ def generate_receipt(player_id):
         ["Basketball Training Fees", f"{amount:,}"],
         ["", ""],
         ["TOTAL", f"UGX {amount:,}"]
-    ], colWidths=[350, 150])
+    ], colWidths=[300, 140])
 
     payment_table.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 1, colors.black),
-        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
-        ("BACKGROUND", (0,0), (-1,0), colors.lightgrey),
-        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
-        ("FONTNAME", (0,3), (-1,3), "Helvetica-Bold"),
-        ("ALIGN", (1,0), (1,-1), "RIGHT"),
+        ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
+        ("INNERGRID",(0,0),(-1,-1),0.4,colors.grey),
+
+        ("BACKGROUND",(0,0),(-1,0),PRIMARY),
+        ("TEXTCOLOR",(0,0),(-1,0),colors.white),
+
+        ("BACKGROUND",(0,3),(-1,3),LIGHT),
+        ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
+        ("FONTNAME",(0,3),(-1,3),"Helvetica-Bold"),
+
+        ("ALIGN",(1,0),(1,-1),"RIGHT"),
+        ("LEFTPADDING",(0,0),(-1,-1),6),
+        ("RIGHTPADDING",(0,0),(-1,-1),6),
+        ("TOPPADDING",(0,0),(-1,-1),6),
+        ("BOTTOMPADDING",(0,0),(-1,-1),6),
     ]))
 
     elements.append(payment_table)
-    elements.append(Spacer(1, 40))
+    elements.append(Spacer(1, 35))
 
-    # ---------------- SIGNATURE ----------------
+    # ---------- SIGNATURE ----------
     signature = Table([
-        ["", "Authorized Signature"],
-    ], colWidths=[350,150])
+        ["", ""],
+        ["Authorized Signature", ""]
+    ], colWidths=[260, 140])
 
     signature.setStyle(TableStyle([
-        ("LINEABOVE", (1,0), (1,0), 1, colors.black),
-        ("ALIGN", (1,0), (1,0), "CENTER"),
+        ("LINEABOVE",(1,0),(1,0),1.2,PRIMARY),
+        ("ALIGN",(0,1),(-1,1),"RIGHT"),
+        ("TEXTCOLOR",(0,1),(-1,1),colors.grey),
     ]))
 
     elements.append(signature)
     elements.append(Spacer(1, 20))
 
     footer = Paragraph(
-        "Thank you for being part of Miracle Basketball Academy",
+        "<font size=9>Thank you for being part of Miracle Basketball Academy</font>",
         styles["Normal"]
     )
     elements.append(footer)
