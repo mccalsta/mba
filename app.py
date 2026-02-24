@@ -5,7 +5,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A5
+from reportlab.lib.pagesizes import A5, landscape
 import io
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib import colors
@@ -273,11 +273,11 @@ def generate_receipt(player_id):
 
     doc = SimpleDocTemplate(
         buffer,
-        pagesize=A5,
-        rightMargin=35,
-        leftMargin=35,
-        topMargin=30,
-        bottomMargin=30
+        pagesize=landscape(A5),
+        rightMargin=30,
+        leftMargin=30,
+        topMargin=25,
+        bottomMargin=25
     )
 
     styles = getSampleStyleSheet()
@@ -308,7 +308,7 @@ def generate_receipt(player_id):
     receipt_info = Table([
         ["Receipt No:", f"MBA-{player['id']:05d}"],
         ["Date:", datetime.now().strftime("%d/%m/%Y")]
-    ], colWidths=[120, 220])
+    ], colWidths=[160, 340])
 
     receipt_info.setStyle(TableStyle([
         ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
@@ -328,7 +328,7 @@ def generate_receipt(player_id):
         ["Received From:", player["parent_name"]],
         ["Player Name:", player["full_name"]],
         ["Payment Plan:", player["payment_plan"]]
-    ], colWidths=[140, 300])
+    ], colWidths=[180, 360])
 
     received.setStyle(TableStyle([
         ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
@@ -349,7 +349,7 @@ def generate_receipt(player_id):
         ["Basketball Training Fees", f"{amount:,}"],
         ["", ""],
         ["TOTAL", f"UGX {amount:,}"]
-    ], colWidths=[300, 140])
+    ], colWidths=[420, 160])
 
     payment_table.setStyle(TableStyle([
         ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
@@ -376,7 +376,7 @@ def generate_receipt(player_id):
     signature = Table([
         ["", ""],
         ["Authorized Signature", ""]
-    ], colWidths=[260, 140])
+    ], colWidths=[440, 140])
 
     signature.setStyle(TableStyle([
         ("LINEABOVE",(1,0),(1,0),1.2,PRIMARY),
