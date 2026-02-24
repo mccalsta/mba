@@ -293,7 +293,7 @@ def generate_receipt(player_id):
     pdf.drawString(width-185, height-90, "DATE:")
 
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(width-110, height-60, f"MBA-{player.id:05d}")
+    pdf.drawString(width-110, height-60, f"MBA-{player['id']:05d}")
     pdf.drawString(width-110, height-90, datetime.now().strftime("%d/%m/%Y"))
 
     # ================= RECEIVED FROM =================
@@ -304,7 +304,7 @@ def generate_receipt(player_id):
 
     pdf.rect(40, y-25, width-80, 25)
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(50, y-18, player.parent_name)
+    pdf.drawString(50, y-18, player["parent_name"])
 
     # ================= PLAYER DETAILS =================
     y -= 70
@@ -312,13 +312,13 @@ def generate_receipt(player_id):
     pdf.setFont("Helvetica-Bold", 12)
     pdf.drawString(40, y, "Player Name:")
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(150, y, player.full_name)
+    pdf.drawString(150, y, player["full_name"])
 
     y -= 25
     pdf.setFont("Helvetica-Bold", 12)
     pdf.drawString(40, y, "Payment Plan:")
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(150, y, player.payment_plan)
+    pdf.drawString(150, y, player["payment_plan"])
 
     # ================= PAYMENT TABLE =================
     y -= 60
@@ -337,7 +337,7 @@ def generate_receipt(player_id):
 
     pdf.setFont("Helvetica", 11)
     pdf.drawString(50, y-65, "Basketball Training Fees")
-    pdf.drawString(width-200, y-65, f"{player.amount:,}")
+    pdf.drawString(width-200, y-65, f"{int(player['amount']):,}")
 
     # ================= SIGNATURE =================
     y -= 120
