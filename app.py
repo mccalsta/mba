@@ -265,105 +265,112 @@ def generate_receipt(player_id):
         return "Player not found", 404
 
     buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
 
-    width, height = A4
+    styles = getSampleStyleSheet()
+    elements = []
 
-    # ================= HEADER BAR =================
-    pdf.setFillColorRGB(0.07, 0.13, 0.25)  # dark blue
-    pdf.rect(0, height-110, width, 110, fill=1)
+    # ---------------- HEADER ----------------
+    logo_path = os.path.join(app.root_path, "static", "logo.png")
 
-    # Logo
     try:
-        pdf.drawImage("static/logo.png", 40, height-100, width=80, preserveAspectRatio=True, mask='auto')
+        logo = Image(logo_path, width=70, height=70)
     except:
-        pass
+        logo = Spacer(1, 70)
 
-    pdf.setFillColorRGB(1,1,1)
-    pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(140, height-60, "MIRACLE BASKETBALL ACADEMY")
+    title = Paragraph("<b>MIRACLE BASKETBALL ACADEMY</b>", styles["Title"])
+    subtitle = Paragraph("Official Payment Receipt", styles["Normal"])
+    motto = Paragraph(
+        "<i>Developing Skills • Building Character • Creating Champions</i>",
+        styles["Normal"]
+    )
 
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(140, height-80, "Official Payment Receipt")
-    pdf.drawString(140, height-95, "Developing Skills • Building Character • Creating Champions")
+    header_table = Table([
+        [logo, [title, subtitle, motto]]
+    ], colWidths=[80, 400])
 
-    # ================= RECEIPT BOX =================
-    pdf.setFillColorRGB(1,1,1)
-    pdf.setStrokeColor(colors.black)
-    pdf.rect(width-200, height-170, 160, 80)
+    elements.append(header_table)
+    elements.append(Spacer(1, 20))
 
-    pdf.setFont("Helvetica-Bold", 11)
-    pdf.drawString(width-185, height-110, "RECEIPT NO:")
-    pdf.drawString(width-185, height-135, "DATE:")
+    # ---------------- RECEIPT INFO ----------------
+    receipt_info = Table([
+        ["Receipt No:", f"MBA-{player['id']:05d}"],
+        ["Date:", datetime.now().strftime("%d/%m/%Y")]
+    ], colWidths=[120, 200])
 
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(width-110, height-110, f"MBA-{player['id']:05d}")
-    pdf.drawString(width-110, height-135, datetime.now().strftime("%d/%m/%Y"))
+    receipt_info.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 1, colors.black),
+        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,-1), "Helvetica-Bold")
+    ]))
 
-    # ================= DETAILS SECTION =================
-    y = height - 220
+    elements.append(receipt_info)
+    elements.append(Spacer(1, 20))
 
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(40, y, "Received From:")
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(180, y, player["parent_name"])
+    # ---------------- RECEIVED FROM ----------------
+    received = Table([
+        ["Received From:", player["parent_name"]],
+        ["Player Name:", player["full_name"]],
+        ["Payment Plan:", player["payment_plan"]]
+    ], colWidths=[150, 300])
 
-    y -= 30
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(40, y, "Player Name:")
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(180, y, player["full_name"])
+    received.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 1, colors.black),
+        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+    ]))
 
-    y -= 30
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(40, y, "Payment Plan:")
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(180, y, player["payment_plan"])
+    elements.append(received)
+    elements.append(Spacer(1, 20))
 
-    # ================= PAYMENT TABLE =================
-    y -= 60
+    # ---------------- PAYMENT TABLE ----------------
+    amount = int(player["amount"])
 
-    pdf.setFillColorRGB(0.9,0.9,0.9)
-    pdf.rect(40, y, width-80, 25, fill=1)
+    payment_table = Table([
+        ["Description", "Amount (UGX)"],
+        ["Basketball Training Fees", f"{amount:,}"],
+        ["", ""],
+        ["TOTAL", f"UGX {amount:,}"]
+    ], colWidths=[350, 150])
 
-    pdf.setFillColorRGB(0,0,0)
-    pdf.setFont("Helvetica-Bold", 11)
-    pdf.drawString(60, y+8, "Description")
-    pdf.drawString(width-200, y+8, "Amount (UGX)")
+    payment_table.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 1, colors.black),
+        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("BACKGROUND", (0,0), (-1,0), colors.lightgrey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTNAME", (0,3), (-1,3), "Helvetica-Bold"),
+        ("ALIGN", (1,0), (1,-1), "RIGHT"),
+    ]))
 
-    # row
-    y -= 30
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(60, y, "Basketball Training Fees")
-    pdf.drawString(width-200, y, f"{int(player['amount']):,}")
+    elements.append(payment_table)
+    elements.append(Spacer(1, 40))
 
-    # ================= TOTAL =================
-    y -= 40
-    pdf.setLineWidth(1.5)
-    pdf.line(width-250, y, width-40, y)
+    # ---------------- SIGNATURE ----------------
+    signature = Table([
+        ["", "Authorized Signature"],
+    ], colWidths=[350,150])
 
-    y -= 25
-    pdf.setFont("Helvetica-Bold", 13)
-    pdf.drawString(width-250, y, "TOTAL:")
-    pdf.drawString(width-140, y, f"UGX {int(player['amount']):,}")
+    signature.setStyle(TableStyle([
+        ("LINEABOVE", (1,0), (1,0), 1, colors.black),
+        ("ALIGN", (1,0), (1,0), "CENTER"),
+    ]))
 
-    # ================= SIGNATURE =================
-    y -= 70
-    pdf.line(width-250, y, width-60, y)
-    pdf.setFont("Helvetica", 10)
-    pdf.drawString(width-230, y-15, "Authorized Signature")
+    elements.append(signature)
+    elements.append(Spacer(1, 20))
 
-    # ================= FOOTER =================
-    pdf.setFillColorRGB(0.07, 0.13, 0.25)
-    pdf.rect(0, 0, width, 60, fill=1)
+    footer = Paragraph(
+        "Thank you for being part of Miracle Basketball Academy",
+        styles["Normal"]
+    )
+    elements.append(footer)
 
-    pdf.setFillColorRGB(1,1,1)
-    pdf.setFont("Helvetica-Oblique", 10)
-    pdf.drawCentredString(width/2, 25, "Thank you for being part of Miracle Basketball Academy")
-
-    pdf.showPage()
-    pdf.save()
+    doc.build(elements)
 
     buffer.seek(0)
-
     return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
