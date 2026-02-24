@@ -8,6 +8,12 @@ from flask import send_file
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 import io
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.lib.pagesizes import A4
+
 
 app = Flask(__name__)
 app.secret_key = "miracle_secret_key"
@@ -255,35 +261,63 @@ def receipt(player_id):
     conn.close()
 
     buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
 
-    # ===== LOGO =====
-    logo_path = "static/images/logo.png"
-    pdf.drawImage(logo_path, 50, 760, width=80, height=80, mask='auto')
+    styles = getSampleStyleSheet()
+    elements = []
 
-    # ===== TITLE =====
-    pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(150, 800, "MIRACLE BASKETBALL ACADEMY")
+    # ===== HEADER =====
+    logo = Image("static/images/logo.png", width=50*mm, height=50*mm)
 
-    pdf.setFont("Helvetica", 12)
-    pdf.drawString(150, 780, "Official Payment Receipt")
+    header_table = Table([
+        [logo, Paragraph("<b>MIRACLE BASKETBALL ACADEMY</b><br/>Official Payment Receipt", styles["Title"])]
+    ], colWidths=[70*mm, 120*mm])
 
-    # ===== RECEIPT DETAILS =====
-    pdf.drawString(50, 720, f"Receipt No: MBA-{player['id']:05d}")
-    pdf.drawString(50, 700, f"Date: {player['created_at']}")
+    elements.append(header_table)
+    elements.append(Spacer(1, 20))
 
-    pdf.drawString(50, 660, "Player Information")
-    pdf.drawString(50, 640, f"Player Name: {player['full_name']}")
-    pdf.drawString(50, 620, f"Parent Name: {player['parent_name']}")
-    pdf.drawString(50, 600, f"Plan: {player['payment_plan']}")
-    pdf.drawString(50, 580, f"Amount Paid: UGX {player['amount']}")
+    # ===== RECEIPT META =====
+    meta = Table([
+        ["Receipt No", f"MBA-{player['id']:05d}"],
+        ["Date", player["created_at"]]
+    ], colWidths=[80*mm, 80*mm])
 
-    pdf.drawString(50, 520, "Authorized Signature: _____________________")
+    meta.setStyle(TableStyle([
+        ('BOX', (0,0), (-1,-1), 1, colors.black),
+        ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),
+    ]))
 
-    pdf.showPage()
-    pdf.save()
+    elements.append(meta)
+    elements.append(Spacer(1, 20))
 
+    # ===== RECEIVED FROM =====
+    received = Table([
+        ["Received With Thanks From", player["parent_name"]],
+        ["Player Name", player["full_name"]],
+        ["Payment Plan", player["payment_plan"]],
+        ["Amount Paid (UGX)", player["amount"]],
+    ], colWidths=[80*mm, 100*mm])
+
+    received.setStyle(TableStyle([
+        ('BOX', (0,0), (-1,-1), 1, colors.black),
+        ('BACKGROUND', (0,0), (0,-1), colors.whitesmoke),
+        ('ROWBACKGROUNDS', (0,0), (-1,-1), [colors.whitesmoke, colors.white]),
+    ]))
+
+    elements.append(received)
+    elements.append(Spacer(1, 40))
+
+    # ===== SIGNATURE =====
+    signature = Table([
+        ["Authorized Signature:", "________________________"]
+    ], colWidths=[80*mm, 100*mm])
+
+    elements.append(signature)
+
+    doc.build(elements)
     buffer.seek(0)
-    return send_file(buffer, as_attachment=True,
+
+    return send_file(buffer,
+                     as_attachment=True,
                      download_name=f"receipt_{player['id']}.pdf",
-                     mimetype='application/pdf')
+                     mimetype="application/pdf")
