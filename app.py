@@ -6,13 +6,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from receipt import generate_receipt
 from flask import send_file
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A3
 import io
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.lib.pagesizes import A4
+from datetime import datetime
+
+
 
 
 app = Flask(__name__)
@@ -251,73 +253,99 @@ def logout():
 
 #-------Receipt----------
 @app.route("/receipt/<int:player_id>")
-def receipt(player_id):
+def generate_receipt(player_id):
 
-    if "admin" not in session:
-        return redirect("/admin")
-
-    conn = get_db()
-    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
-    conn.close()
+    player = Player.query.get_or_404(player_id)
 
     buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    pdf = canvas.Canvas(buffer, pagesize=A4)
 
-    styles = getSampleStyleSheet()
-    elements = []
+    width, height = A4
 
-    # ===== HEADER =====
-    logo = Image("static/images/logo.png", width=50*mm, height=50*mm)
+    # ================= HEADER =================
+    # Logo
+    try:
+        pdf.drawImage("static/logo.png", 40, height-120, width=90, preserveAspectRatio=True, mask='auto')
+    except:
+        pass
 
-    header_table = Table([
-        [logo, Paragraph("<b>MIRACLE BASKETBALL ACADEMY</b><br/>Official Payment Receipt", styles["Title"])]
-    ], colWidths=[70*mm, 120*mm])
+    # Academy Name
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(150, height-70, "MIRACLE BASKETBALL ACADEMY")
 
-    elements.append(header_table)
-    elements.append(Spacer(1, 20))
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(150, height-90, "Official Payment Receipt")
+    pdf.drawString(150, height-105, "Developing Skills • Building Character • Creating Champions")
 
-    # ===== RECEIPT META =====
-    meta = Table([
-        ["Receipt No", f"MBA-{player['id']:05d}"],
-        ["Date", player["created_at"]]
-    ], colWidths=[80*mm, 80*mm])
+    # ================= RECEIPT BOX =================
+    pdf.setStrokeColor(colors.black)
+    pdf.rect(width-200, height-120, 160, 80)
 
-    meta.setStyle(TableStyle([
-        ('BOX', (0,0), (-1,-1), 1, colors.black),
-        ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),
-    ]))
+    pdf.setFont("Helvetica-Bold", 11)
+    pdf.drawString(width-185, height-60, "RECEIPT NO:")
+    pdf.drawString(width-185, height-90, "DATE:")
 
-    elements.append(meta)
-    elements.append(Spacer(1, 20))
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(width-110, height-60, f"MBA-{player.id:05d}")
+    pdf.drawString(width-110, height-90, datetime.now().strftime("%d/%m/%Y"))
 
-    # ===== RECEIVED FROM =====
-    received = Table([
-        ["Received With Thanks From", player["parent_name"]],
-        ["Player Name", player["full_name"]],
-        ["Payment Plan", player["payment_plan"]],
-        ["Amount Paid (UGX)", player["amount"]],
-    ], colWidths=[80*mm, 100*mm])
+    # ================= RECEIVED FROM =================
+    y = height - 180
 
-    received.setStyle(TableStyle([
-        ('BOX', (0,0), (-1,-1), 1, colors.black),
-        ('BACKGROUND', (0,0), (0,-1), colors.whitesmoke),
-        ('ROWBACKGROUNDS', (0,0), (-1,-1), [colors.whitesmoke, colors.white]),
-    ]))
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(40, y, "Received With Thanks From:")
 
-    elements.append(received)
-    elements.append(Spacer(1, 40))
+    pdf.rect(40, y-25, width-80, 25)
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(50, y-18, player.parent_name)
 
-    # ===== SIGNATURE =====
-    signature = Table([
-        ["Authorized Signature:", "________________________"]
-    ], colWidths=[80*mm, 100*mm])
+    # ================= PLAYER DETAILS =================
+    y -= 70
 
-    elements.append(signature)
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(40, y, "Player Name:")
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(150, y, player.full_name)
 
-    doc.build(elements)
+    y -= 25
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(40, y, "Payment Plan:")
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(150, y, player.payment_plan)
+
+    # ================= PAYMENT TABLE =================
+    y -= 60
+
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(40, y, "Payment Details")
+
+    y -= 20
+    pdf.rect(40, y-80, width-80, 80)
+
+    pdf.line(40, y-40, width-40, y-40)
+
+    pdf.setFont("Helvetica-Bold", 11)
+    pdf.drawString(50, y-25, "Description")
+    pdf.drawString(width-200, y-25, "Amount (UGX)")
+
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(50, y-65, "Basketball Training Fees")
+    pdf.drawString(width-200, y-65, f"{player.amount:,}")
+
+    # ================= SIGNATURE =================
+    y -= 120
+
+    pdf.line(width-250, y, width-60, y)
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(width-230, y-15, "Authorized Signature")
+
+    # ================= FOOTER =================
+    pdf.setFont("Helvetica-Oblique", 10)
+    pdf.drawCentredString(width/2, 60, "Thank you for being part of Miracle Basketball Academy")
+
+    pdf.showPage()
+    pdf.save()
+
     buffer.seek(0)
 
-    return send_file(buffer,
-                     as_attachment=True,
-                     download_name=f"receipt_{player['id']}.pdf",
-                     mimetype="application/pdf")
+    return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
