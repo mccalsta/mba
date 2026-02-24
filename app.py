@@ -269,86 +269,97 @@ def generate_receipt(player_id):
 
     width, height = A4
 
-    # ================= HEADER =================
+    # ================= HEADER BAR =================
+    pdf.setFillColorRGB(0.07, 0.13, 0.25)  # dark blue
+    pdf.rect(0, height-110, width, 110, fill=1)
+
     # Logo
     try:
-        pdf.drawImage("static/logo.png", 40, height-120, width=90, preserveAspectRatio=True, mask='auto')
+        pdf.drawImage("static/logo.png", 40, height-100, width=80, preserveAspectRatio=True, mask='auto')
     except:
         pass
 
-    # Academy Name
+    pdf.setFillColorRGB(1,1,1)
     pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(150, height-70, "MIRACLE BASKETBALL ACADEMY")
+    pdf.drawString(140, height-60, "MIRACLE BASKETBALL ACADEMY")
 
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(150, height-90, "Official Payment Receipt")
-    pdf.drawString(150, height-105, "Developing Skills • Building Character • Creating Champions")
+    pdf.drawString(140, height-80, "Official Payment Receipt")
+    pdf.drawString(140, height-95, "Developing Skills • Building Character • Creating Champions")
 
     # ================= RECEIPT BOX =================
+    pdf.setFillColorRGB(1,1,1)
     pdf.setStrokeColor(colors.black)
-    pdf.rect(width-200, height-120, 160, 80)
+    pdf.rect(width-200, height-170, 160, 80)
 
     pdf.setFont("Helvetica-Bold", 11)
-    pdf.drawString(width-185, height-60, "RECEIPT NO:")
-    pdf.drawString(width-185, height-90, "DATE:")
+    pdf.drawString(width-185, height-110, "RECEIPT NO:")
+    pdf.drawString(width-185, height-135, "DATE:")
 
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(width-110, height-60, f"MBA-{player['id']:05d}")
-    pdf.drawString(width-110, height-90, datetime.now().strftime("%d/%m/%Y"))
+    pdf.drawString(width-110, height-110, f"MBA-{player['id']:05d}")
+    pdf.drawString(width-110, height-135, datetime.now().strftime("%d/%m/%Y"))
 
-    # ================= RECEIVED FROM =================
-    y = height - 180
+    # ================= DETAILS SECTION =================
+    y = height - 220
 
     pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(40, y, "Received With Thanks From:")
-
-    pdf.rect(40, y-25, width-80, 25)
+    pdf.drawString(40, y, "Received From:")
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(50, y-18, player["parent_name"])
+    pdf.drawString(180, y, player["parent_name"])
 
-    # ================= PLAYER DETAILS =================
-    y -= 70
-
+    y -= 30
     pdf.setFont("Helvetica-Bold", 12)
     pdf.drawString(40, y, "Player Name:")
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(150, y, player["full_name"])
+    pdf.drawString(180, y, player["full_name"])
 
-    y -= 25
+    y -= 30
     pdf.setFont("Helvetica-Bold", 12)
     pdf.drawString(40, y, "Payment Plan:")
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(150, y, player["payment_plan"])
+    pdf.drawString(180, y, player["payment_plan"])
 
     # ================= PAYMENT TABLE =================
     y -= 60
 
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(40, y, "Payment Details")
+    pdf.setFillColorRGB(0.9,0.9,0.9)
+    pdf.rect(40, y, width-80, 25, fill=1)
 
-    y -= 20
-    pdf.rect(40, y-80, width-80, 80)
-
-    pdf.line(40, y-40, width-40, y-40)
-
+    pdf.setFillColorRGB(0,0,0)
     pdf.setFont("Helvetica-Bold", 11)
-    pdf.drawString(50, y-25, "Description")
-    pdf.drawString(width-200, y-25, "Amount (UGX)")
+    pdf.drawString(60, y+8, "Description")
+    pdf.drawString(width-200, y+8, "Amount (UGX)")
 
+    # row
+    y -= 30
     pdf.setFont("Helvetica", 11)
-    pdf.drawString(50, y-65, "Basketball Training Fees")
-    pdf.drawString(width-200, y-65, f"{int(player['amount']):,}")
+    pdf.drawString(60, y, "Basketball Training Fees")
+    pdf.drawString(width-200, y, f"{int(player['amount']):,}")
+
+    # ================= TOTAL =================
+    y -= 40
+    pdf.setLineWidth(1.5)
+    pdf.line(width-250, y, width-40, y)
+
+    y -= 25
+    pdf.setFont("Helvetica-Bold", 13)
+    pdf.drawString(width-250, y, "TOTAL:")
+    pdf.drawString(width-140, y, f"UGX {int(player['amount']):,}")
 
     # ================= SIGNATURE =================
-    y -= 120
-
+    y -= 70
     pdf.line(width-250, y, width-60, y)
-    pdf.setFont("Helvetica", 11)
+    pdf.setFont("Helvetica", 10)
     pdf.drawString(width-230, y-15, "Authorized Signature")
 
     # ================= FOOTER =================
+    pdf.setFillColorRGB(0.07, 0.13, 0.25)
+    pdf.rect(0, 0, width, 60, fill=1)
+
+    pdf.setFillColorRGB(1,1,1)
     pdf.setFont("Helvetica-Oblique", 10)
-    pdf.drawCentredString(width/2, 60, "Thank you for being part of Miracle Basketball Academy")
+    pdf.drawCentredString(width/2, 25, "Thank you for being part of Miracle Basketball Academy")
 
     pdf.showPage()
     pdf.save()
