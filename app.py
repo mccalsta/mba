@@ -5,13 +5,17 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A5
 import io
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from datetime import datetime
+from reportlab.lib.colors import HexColor
+PRIMARY = HexColor("#0f172a")
+ACCENT = HexColor("#f97316")
+LIGHT = HexColor("#f1f5f9")
 
 
 
@@ -267,7 +271,7 @@ def generate_receipt(player_id):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
-        pagesize=A4,
+        pagesize=A5,
         rightMargin=40,
         leftMargin=40,
         topMargin=40,
