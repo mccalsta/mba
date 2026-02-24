@@ -5,6 +5,9 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from receipt import generate_receipt
 from flask import send_file
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+import io
 
 app = Flask(__name__)
 app.secret_key = "miracle_secret_key"
@@ -242,14 +245,45 @@ def logout():
 
 #-------Receipt----------
 @app.route("/receipt/<int:player_id>")
-def download_receipt(player_id):
+def receipt(player_id):
+
+    if "admin" not in session:
+        return redirect("/admin")
+
     conn = get_db()
     player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
     conn.close()
 
-    if not player:
-        return "Receipt not found"
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
 
-    path = generate_receipt(player)
+    # ===== LOGO =====
+    logo_path = "static/images/logo.png"
+    pdf.drawImage(logo_path, 50, 760, width=80, height=80, mask='auto')
 
-    return send_file(path, as_attachment=True)
+    # ===== TITLE =====
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(150, 800, "MIRACLE BASKETBALL ACADEMY")
+
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(150, 780, "Official Payment Receipt")
+
+    # ===== RECEIPT DETAILS =====
+    pdf.drawString(50, 720, f"Receipt No: MBA-{player['id']:05d}")
+    pdf.drawString(50, 700, f"Date: {player['created_at']}")
+
+    pdf.drawString(50, 660, "Player Information")
+    pdf.drawString(50, 640, f"Player Name: {player['full_name']}")
+    pdf.drawString(50, 620, f"Parent Name: {player['parent_name']}")
+    pdf.drawString(50, 600, f"Plan: {player['payment_plan']}")
+    pdf.drawString(50, 580, f"Amount Paid: UGX {player['amount']}")
+
+    pdf.drawString(50, 520, "Authorized Signature: _____________________")
+
+    pdf.showPage()
+    pdf.save()
+
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True,
+                     download_name=f"receipt_{player['id']}.pdf",
+                     mimetype='application/pdf')
