@@ -583,6 +583,21 @@ hr{
     text-align:center;
 }
 
+.receipt-btn {
+    background: #16a34a;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.receipt-btn:hover {
+    background: #15803d;
+}
+
 /* FOOTER */
 .footer{
     text-align:center;
