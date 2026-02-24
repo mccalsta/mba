@@ -598,6 +598,47 @@ hr{
     background: #15803d;
 }
 
+.pay-btn {
+    background:#f59e0b;
+    color:white;
+    padding:6px 10px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.pay-btn:hover {
+    background:#d97706;
+}
+
+.paid-badge {
+    background:#16a34a;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+    font-weight:600;
+    margin-right:6px;
+}
+
+.receipt-btn {
+    background:#2563eb;
+    color:white;
+    padding:5px 10px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.receipt-btn:hover {
+    background:#1d4ed8;
+}
+
+.paid-area {
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
 /* FOOTER */
 .footer{
     text-align:center;
