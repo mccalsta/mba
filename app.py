@@ -255,11 +255,14 @@ def logout():
 def generate_receipt(player_id):
 
     conn = get_db()
-player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
-conn.close()
+    player = conn.execute(
+        "SELECT * FROM players WHERE id=?",
+        (player_id,)
+    ).fetchone()
+    conn.close()
 
-if not player:
-    return "Player not found", 404
+    if not player:
+        return "Player not found", 404
 
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
