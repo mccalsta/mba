@@ -274,10 +274,10 @@ def generate_receipt(player_id):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=landscape(A5),
-        rightMargin=30,
-        leftMargin=30,
-        topMargin=25,
-        bottomMargin=25
+        rightMargin=18,
+        leftMargin=18,
+        topMargin=15,
+        bottomMargin=15
     )
 
     styles = getSampleStyleSheet()
@@ -291,7 +291,7 @@ def generate_receipt(player_id):
     # ---------- HEADER ----------
     logo_path = os.path.join(app.root_path, "static", "logo.png")
     try:
-        logo = Image(logo_path, width=60, height=60)
+        logo = Image(logo_path, width=45, height=45)
     except:
         logo = Spacer(1, 60)
 
@@ -311,8 +311,8 @@ def generate_receipt(player_id):
     ], colWidths=[160, 340])
 
     receipt_info.setStyle(TableStyle([
-        ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
-        ("INNERGRID",(0,0),(-1,-1),0.4,colors.grey),
+        ("BOX",(0,0),(-1,-1),1,PRIMARY),
+        ("INNERGRID",(0,0),(-1,-1),0.5,colors.grey),
         ("BACKGROUND",(0,0),(0,-1),LIGHT),
         ("TEXTCOLOR",(0,0),(0,-1),PRIMARY),
         ("FONTNAME",(0,0),(-1,-1),"Helvetica-Bold"),
@@ -365,8 +365,8 @@ def generate_receipt(player_id):
         ("ALIGN",(1,0),(1,-1),"RIGHT"),
         ("LEFTPADDING",(0,0),(-1,-1),6),
         ("RIGHTPADDING",(0,0),(-1,-1),6),
-        ("TOPPADDING",(0,0),(-1,-1),6),
-        ("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("TOPPADDING",(0,0),(-1,-1),4),
+        ("BOTTOMPADDING",(0,0),(-1,-1),4),
     ]))
 
     elements.append(payment_table)
@@ -393,7 +393,7 @@ def generate_receipt(player_id):
     )
     elements.append(footer)
 
-    doc.build(elements)
+    doc.build(elements, onFirstPage=lambda canvas, doc: None)
 
     buffer.seek(0)
     return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
