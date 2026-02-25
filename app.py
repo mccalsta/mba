@@ -256,141 +256,118 @@ def logout():
     session.pop("admin", None)
     return redirect("/admin")
 
-#-------Receipt----------
-#-------Receipt----------
-# ------- Receipt (STABLE VERSION) ----------
-def build_receipt_pdf(file_path, player, parent, phone, amount, receipt_no):
+# ================= RECEIPT (FINAL STABLE UI VERSION) =================
+def build_receipt_pdf(buffer, player):
+
+    # --- Safe values ---
+    amount = int(player["amount"] or 0)
+    parent = player["parent_name"] or "N/A"
+    phone = player["phone1"] or "N/A"
+    receipt_no = f"MBA-{int(player['id']):05d}"
 
     width, height = landscape(A5)
-    c = canvas.Canvas(file_path, pagesize=(width, height))
+    c = canvas.Canvas(buffer, pagesize=(width, height))
 
-    # Colors (UI palette)
+    # --- COLORS (UI STYLE) ---
     primary = HexColor("#1E63C6")
-    accent = HexColor("#1DBE73")
-    light = HexColor("#F1F4F8")
-    dark = HexColor("#1F2937")
-
-    # ================= PAGE BACKGROUND =================
-    c.setFillColor(HexColor("#E9EEF5"))
-    c.rect(0, 0, width, height, fill=1, stroke=0)
-
-    # ================= MAIN CARD =================
-    card_x = 40
-    card_y = 35
-    card_w = width - 80
-    card_h = height - 70
-
-    c.setFillColor(white)
-    c.roundRect(card_x, card_y, card_w, card_h, 14, fill=1, stroke=0)
+    accent = HexColor("#20C997")
+    light = HexColor("#F1F3F5")
+    text = HexColor("#212529")
 
     # ================= HEADER =================
-    header_h = 65
     c.setFillColor(primary)
-    c.roundRect(card_x, card_y + card_h - header_h, card_w, header_h, 14, fill=1, stroke=0)
+    c.rect(0, height-70, width, 70, fill=1, stroke=0)
 
+    # Title
     c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(card_x + 20, card_y + card_h - 35, "MIRACLE BASKETBALL ACADEMY")
+    c.setFont("Helvetica-Bold", 20)
+    c.drawString(30, height-40, "MIRACLE BASKETBALL ACADEMY")
 
-    c.setFont("Helvetica", 10)
-    c.drawString(card_x + 20, card_y + card_h - 50, "Official Payment Receipt")
+    c.setFont("Helvetica", 11)
+    c.drawString(30, height-58, "Official Payment Receipt")
 
-    # Receipt Badge
-    badge_w = 150
-    badge_h = 28
+    # Receipt badge
     c.setFillColor(white)
-    c.roundRect(card_x + card_w - badge_w - 20, card_y + card_h - 45, badge_w, badge_h, 10, fill=1, stroke=0)
+    c.roundRect(width-200, height-55, 170, 32, 10, fill=1, stroke=0)
 
     c.setFillColor(primary)
-    c.setFont("Helvetica-Bold", 10)
-    c.drawCentredString(card_x + card_w - badge_w/2 - 20, card_y + card_h - 30, f"Receipt #{receipt_no}")
+    c.setFont("Helvetica-Bold", 12)
+    c.drawCentredString(width-115, height-37, f"Receipt #{receipt_no}")
 
     # Logo
-    logo_path = "static/logo.png"
+    logo_path = os.path.join("static", "logo.png")
     if os.path.exists(logo_path):
-        c.drawImage(logo_path, card_x + card_w - 55, card_y + card_h - 58, 38, 38, mask='auto')
+        c.drawImage(logo_path, width-70, height-65, 45, 45, mask='auto')
 
-    # ================= INFO CARDS =================
-    section_top = card_y + card_h - header_h - 25
-    card_height = 70
-    gap = 18
+    # ================= PLAYER CARD =================
+    card_y = height - 150
 
-    left_x = card_x + 20
-    left_y = section_top - card_height
-    left_w = (card_w - 60) / 2
-
-    right_x = left_x + left_w + gap
-    right_y = left_y
-    right_w = left_w
-
-    # Player Card
     c.setFillColor(light)
-    c.roundRect(left_x, left_y, left_w, card_height, 10, fill=1, stroke=0)
+    c.roundRect(30, card_y, width/2-45, 80, 12, fill=1, stroke=0)
 
-    c.setFillColor(dark)
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(left_x + 15, left_y + 50, "PLAYER DETAILS")
+    c.setFillColor(text)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(45, card_y+55, "PLAYER DETAILS")
 
-    c.setFont("Helvetica", 10)
-    c.drawString(left_x + 15, left_y + 35, f"Name: {player}")
-    c.drawString(left_x + 15, left_y + 22, f"Parent: {parent}")
-    c.drawString(left_x + 15, left_y + 9, f"Phone: {phone}")
+    c.setFont("Helvetica", 11)
+    c.drawString(45, card_y+38, f"Name: {player['full_name']}")
+    c.drawString(45, card_y+23, f"Parent: {parent}")
+    c.drawString(45, card_y+8, f"Phone: {phone}")
 
-    # Payment Card
+    # ================= PAYMENT CARD =================
     c.setFillColor(light)
-    c.roundRect(right_x, right_y, right_w, card_height, 10, fill=1, stroke=0)
+    c.roundRect(width/2+10, card_y, width/2-45, 80, 12, fill=1, stroke=0)
 
-    c.setFillColor(dark)
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(right_x + 15, right_y + 50, "PAYMENT INFO")
+    c.setFillColor(text)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(width/2+25, card_y+55, "PAYMENT INFO")
 
-    c.setFont("Helvetica", 10)
-    c.drawString(right_x + 15, right_y + 35, "Description: Training Fees")
-    c.drawString(right_x + 15, right_y + 22, f"Date: {datetime.now().strftime('%d %b %Y')}")
+    c.setFont("Helvetica", 11)
+    c.drawString(width/2+25, card_y+38, "Description: Training Fees")
+    c.drawString(width/2+25, card_y+23, f"Date: {datetime.now().strftime('%d %b %Y')}")
 
     c.setFillColor(accent)
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(right_x + 15, right_y + 7, f"UGX {amount:,}")
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(width/2+25, card_y+5, f"UGX {amount:,}")
 
-    # ================= TABLE =================
-    table_x = card_x + 20
-    table_w = card_w - 40
-    table_y = left_y - 95
+    # ================= TABLE HEADER =================
+    table_y = card_y - 45
 
-    # Header
     c.setFillColor(primary)
-    c.rect(table_x, table_y + 35, table_w, 25, fill=1, stroke=0)
+    c.rect(30, table_y, width-60, 28, fill=1, stroke=0)
 
     c.setFillColor(white)
     c.setFont("Helvetica-Bold", 11)
-    c.drawString(table_x + 10, table_y + 45, "Description")
-    c.drawRightString(table_x + table_w - 10, table_y + 45, "Amount")
+    c.drawString(40, table_y+9, "Description")
+    c.drawRightString(width-40, table_y+9, "Amount")
 
-    # Row
+    # ================= TABLE ROW =================
+    row_y = table_y - 30
     c.setFillColor(light)
-    c.rect(table_x, table_y + 5, table_w, 30, fill=1, stroke=0)
+    c.rect(30, row_y, width-60, 30, fill=1, stroke=0)
 
     c.setFillColor(black)
     c.setFont("Helvetica", 11)
-    c.drawString(table_x + 10, table_y + 15, "Monthly Training Fee")
-    c.drawRightString(table_x + table_w - 10, table_y + 15, f"UGX {amount:,}")
+    c.drawString(40, row_y+10, f"{player['payment_plan']} Training Fee")
+    c.drawRightString(width-40, row_y+10, f"UGX {amount:,}")
 
-    # Total
+    # ================= TOTAL =================
+    total_y = row_y - 35
     c.setFont("Helvetica-Bold", 14)
-    c.drawRightString(card_x + card_w - 20, table_y - 10, f"TOTAL: UGX {amount:,}")
+    c.drawRightString(width-40, total_y, f"TOTAL: UGX {amount:,}")
 
     # ================= FOOTER =================
-    footer_y = card_y + 25
-
     c.setStrokeColor(primary)
-    c.line(card_x + 20, footer_y + 15, card_x + 180, footer_y + 15)
+    c.line(40, 60, 200, 60)
 
     c.setFont("Helvetica", 9)
-    c.drawString(card_x + 20, footer_y, "Authorized Signature")
-    c.drawRightString(card_x + card_w - 20, footer_y, "Thank you for supporting youth development!")
+    c.drawString(40, 45, "Authorized Signature")
+    c.drawRightString(width-40, 45, "Thank you for supporting youth development!")
 
     c.save()
 
+
+# ================= ROUTE =================
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
 
@@ -405,21 +382,9 @@ def generate_receipt(player_id):
         return "Player not found", 404
 
     buffer = io.BytesIO()
-
-    build_receipt_pdf(
-        buffer,
-        player["full_name"],
-        player["parent_name"],
-        int(player["amount"]),
-        player["phone1"] or "-",
-        f"MBA-{player['id']:05d}"
-    )
+    build_receipt_pdf(buffer, player)
 
     buffer.seek(0)
-
-    return send_file(
-        buffer,
-        as_attachment=False,
-        download_name=f"receipt_{player_id}.pdf",
-        mimetype="application/pdf"
-    )
+    return send_file(buffer, as_attachment=False,
+                     download_name="receipt.pdf",
+                     mimetype="application/pdf")
