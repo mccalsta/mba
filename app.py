@@ -12,6 +12,8 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from datetime import datetime
+from reportlab.lib.enums import TA_RIGHT, TA_LEFT
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.colors import HexColor
 PRIMARY = HexColor("#0f172a")
 ACCENT = HexColor("#f97316")
@@ -260,10 +262,7 @@ def logout():
 def generate_receipt(player_id):
 
     conn = get_db()
-    player = conn.execute(
-        "SELECT * FROM players WHERE id=?",
-        (player_id,)
-    ).fetchone()
+    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
     conn.close()
 
     if not player:
@@ -271,129 +270,130 @@ def generate_receipt(player_id):
 
     buffer = io.BytesIO()
 
+    # LANDSCAPE SMALL PAGE
     doc = SimpleDocTemplate(
         buffer,
         pagesize=landscape(A5),
-        rightMargin=18,
-        leftMargin=18,
-        topMargin=15,
-        bottomMargin=15
+        leftMargin=25,
+        rightMargin=25,
+        topMargin=25,
+        bottomMargin=25
     )
 
-    styles = getSampleStyleSheet()
     elements = []
+    styles = getSampleStyleSheet()
 
-    # ---------- COLORS ----------
-    PRIMARY = HexColor("#0f172a")   # dark blue
-    ACCENT = HexColor("#f97316")    # orange
-    LIGHT = HexColor("#f1f5f9")     # light grey
+    # ---------------- CUSTOM STYLES ----------------
+    title_style = ParagraphStyle(
+        "title",
+        fontName="Helvetica-Bold",
+        fontSize=18,
+        textColor=PRIMARY,
+        spaceAfter=6
+    )
 
-    # ---------- HEADER ----------
+    subtitle_style = ParagraphStyle(
+        "subtitle",
+        fontName="Helvetica-Bold",
+        fontSize=11,
+        textColor=ACCENT,
+        spaceAfter=10
+    )
+
+    normal = ParagraphStyle("normal", fontSize=10)
+    right = ParagraphStyle("right", alignment=TA_RIGHT, fontSize=10)
+    bold = ParagraphStyle("bold", fontName="Helvetica-Bold", fontSize=10)
+
+    # ---------------- HEADER ----------------
     logo_path = os.path.join(app.root_path, "static", "logo.png")
     try:
-        logo = Image(logo_path, width=45, height=45)
+        logo = Image(logo_path, width=50, height=50)
     except:
-        logo = Spacer(1, 60)
+        logo = Spacer(1, 50)
 
-    title = Paragraph("<font size=16 color='#0f172a'><b>MIRACLE BASKETBALL ACADEMY</b></font>", styles["Title"])
-    subtitle = Paragraph("<font color='#f97316'><b>Official Payment Receipt</b></font>", styles["Normal"])
-    motto = Paragraph("<font size=9><i>Developing Skills • Building Character • Creating Champions</i></font>", styles["Normal"])
+    header_left = [
+        Paragraph("MIRACLE BASKETBALL ACADEMY", title_style),
+        Paragraph("Training Payment Receipt", subtitle_style),
+        Paragraph(f"<b>Receipt No:</b> MBA-{player['id']:05d}", normal),
+        Paragraph(f"<b>Date:</b> {datetime.now().strftime('%d %b %Y')}", normal),
+    ]
 
-    header = Table([[logo, [title, subtitle, motto]]], colWidths=[70, 340])
-    header.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"MIDDLE")]))
+    header = Table([[header_left, logo]], colWidths=[380, 100])
     elements.append(header)
     elements.append(Spacer(1, 18))
 
-    # ---------- RECEIPT INFO ----------
-    receipt_info = Table([
-        ["Receipt No:", f"MBA-{player['id']:05d}"],
-        ["Date:", datetime.now().strftime("%d/%m/%Y")]
-    ], colWidths=[160, 340])
+    # ---------------- INFO CARDS ----------------
+    academy_card = [
+        [Paragraph("<b>Academy</b>", bold)],
+        [Paragraph("Kampala, Uganda", normal)],
+        [Paragraph("+256 XXX XXX XXX", normal)],
+        [Paragraph("miraclebasketballacademy@gmail.com", normal)],
+    ]
 
-    receipt_info.setStyle(TableStyle([
-        ("BOX",(0,0),(-1,-1),1,PRIMARY),
-        ("INNERGRID",(0,0),(-1,-1),0.5,colors.grey),
-        ("BACKGROUND",(0,0),(0,-1),LIGHT),
-        ("TEXTCOLOR",(0,0),(0,-1),PRIMARY),
-        ("FONTNAME",(0,0),(-1,-1),"Helvetica-Bold"),
-        ("LEFTPADDING",(0,0),(-1,-1),6),
-        ("RIGHTPADDING",(0,0),(-1,-1),6),
+    player_card = [
+        [Paragraph("<b>Received From</b>", bold)],
+        [Paragraph(player["parent_name"], normal)],
+        [Paragraph(f"<b>Player:</b> {player['full_name']}", normal)],
+        [Paragraph(f"<b>Plan:</b> {player['payment_plan']}", normal)],
+    ]
+
+    card_table = Table(
+        [[academy_card, player_card]],
+        colWidths=[260, 260]
+    )
+
+    card_table.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 0.8, colors.grey),
+        ("BACKGROUND", (0,0), (0,0), LIGHT),
+        ("BACKGROUND", (1,0), (1,0), LIGHT),
+        ("LEFTPADDING", (0,0), (-1,-1), 12),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 10),
     ]))
 
-    elements.append(receipt_info)
-    elements.append(Spacer(1, 18))
+    elements.append(card_table)
+    elements.append(Spacer(1, 20))
 
-    # ---------- RECEIVED FROM ----------
-    received = Table([
-        ["Received From:", player["parent_name"]],
-        ["Player Name:", player["full_name"]],
-        ["Payment Plan:", player["payment_plan"]]
-    ], colWidths=[180, 360])
-
-    received.setStyle(TableStyle([
-        ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
-        ("INNERGRID",(0,0),(-1,-1),0.4,colors.grey),
-        ("BACKGROUND",(0,0),(0,-1),LIGHT),
-        ("LEFTPADDING",(0,0),(-1,-1),6),
-        ("RIGHTPADDING",(0,0),(-1,-1),6),
-    ]))
-
-    elements.append(received)
-    elements.append(Spacer(1, 18))
-
-    # ---------- PAYMENT TABLE ----------
+    # ---------------- PAYMENT TABLE ----------------
     amount = int(player["amount"])
 
-    payment_table = Table([
-        ["Description", "Amount (UGX)"],
-        ["Basketball Training Fees", f"{amount:,}"],
-        ["", ""],
-        ["TOTAL", f"UGX {amount:,}"]
-    ], colWidths=[420, 160])
+    payment_data = [
+        ["Training Plan", "Fees Paid (UGX)"],
+        [player["payment_plan"], f"{amount:,}"],
+        ["Total", f"{amount:,}"]
+    ]
+
+    payment_table = Table(payment_data, colWidths=[320, 200])
 
     payment_table.setStyle(TableStyle([
-        ("BOX",(0,0),(-1,-1),1.2,PRIMARY),
-        ("INNERGRID",(0,0),(-1,-1),0.4,colors.grey),
-
-        ("BACKGROUND",(0,0),(-1,0),PRIMARY),
-        ("TEXTCOLOR",(0,0),(-1,0),colors.white),
-
-        ("BACKGROUND",(0,3),(-1,3),LIGHT),
-        ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
-        ("FONTNAME",(0,3),(-1,3),"Helvetica-Bold"),
-
-        ("ALIGN",(1,0),(1,-1),"RIGHT"),
-        ("LEFTPADDING",(0,0),(-1,-1),6),
-        ("RIGHTPADDING",(0,0),(-1,-1),6),
-        ("TOPPADDING",(0,0),(-1,-1),4),
-        ("BOTTOMPADDING",(0,0),(-1,-1),4),
+        ("BACKGROUND", (0,0), (-1,0), PRIMARY),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("ALIGN", (1,1), (-1,-1), "RIGHT"),
+        ("FONTNAME", (0,2), (-1,2), "Helvetica-Bold"),
+        ("TEXTCOLOR", (1,2), (1,2), ACCENT),
+        ("LINEABOVE", (0,2), (-1,2), 1, colors.black),
+        ("BOX", (0,0), (-1,-1), 0.8, colors.black),
+        ("INNERGRID", (0,0), (-1,-1), 0.25, colors.grey),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
+        ("TOPPADDING", (0,0), (-1,-1), 8),
     ]))
 
     elements.append(payment_table)
-    elements.append(Spacer(1, 35))
+    elements.append(Spacer(1, 25))
 
-    # ---------- SIGNATURE ----------
-    signature = Table([
-        ["", ""],
-        ["Authorized Signature", ""]
-    ], colWidths=[440, 140])
-
-    signature.setStyle(TableStyle([
-        ("LINEABOVE",(1,0),(1,0),1.2,PRIMARY),
-        ("ALIGN",(0,1),(-1,1),"RIGHT"),
-        ("TEXTCOLOR",(0,1),(-1,1),colors.grey),
-    ]))
-
-    elements.append(signature)
-    elements.append(Spacer(1, 20))
-
+    # ---------------- FOOTER ----------------
     footer = Paragraph(
-        "<font size=9>Thank you for being part of Miracle Basketball Academy</font>",
-        styles["Normal"]
+        "Thank you for being part of Miracle Basketball Academy",
+        ParagraphStyle("footer", alignment=TA_LEFT, fontSize=9)
     )
+
     elements.append(footer)
 
-    doc.build(elements, onFirstPage=lambda canvas, doc: None)
+    # BUILD PDF
+    doc.build(elements)
+
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
 
     buffer.seek(0)
     return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
