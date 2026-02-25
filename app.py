@@ -259,8 +259,45 @@ def logout():
 #-------Receipt----------
 #-------Receipt----------
 # ------- Receipt (STABLE VERSION) ----------
-def generate_receipt(file_path, player, parent, amount, phone, receipt_no):
+def build_receipt_pdf(file_path, player, parent, amount, phone, receipt_no):
+@app.route("/receipt/<int:player_id>")
+def generate_receipt(player_id):
 
+    conn = get_db()
+    player = conn.execute(
+        "SELECT * FROM players WHERE id=?",
+        (player_id,)
+    ).fetchone()
+    conn.close()
+
+    if not player:
+        return "Player not found", 404
+
+    buffer = io.BytesIO()
+
+    player_name = player["full_name"]
+    parent_name = player["parent_name"]
+    amount = int(player["amount"])
+    phone = player["phone1"] or "-"
+    receipt_no = f"MBA-{player['id']:05d}"
+
+    build_receipt_pdf(
+        buffer,
+        player_name,
+        parent_name,
+        amount,
+        phone,
+        receipt_no
+    )
+
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=False,
+        download_name=f"receipt_{player_id}.pdf",
+        mimetype="application/pdf"
+    )
     width, height = landscape(A5)
     c = canvas.Canvas(file_path, pagesize=(width, height))
 
