@@ -395,3 +395,30 @@ def generate_receipt(player_id):
     return send_file(buffer, as_attachment=False,
                      download_name="receipt.pdf",
                      mimetype="application/pdf")
+
+from weasyprint import HTML
+from flask import render_template
+
+@app.route("/receipt_ui/<int:player_id>")
+def generate_receipt_ui(player_id):
+    conn = get_db()
+    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
+    conn.close()
+
+    if not player:
+        return "Player not found", 404
+
+    html = render_template(
+        "receipt_ui.html",
+        player=player,
+        amount=f"{int(player['amount']):,}",
+        date=datetime.now().strftime("%d %b %Y")
+    )
+
+    pdf = HTML(string=html).write_pdf()
+
+    return send_file(
+        io.BytesIO(pdf),
+        download_name="receipt.pdf",
+        mimetype="application/pdf"
+    )
