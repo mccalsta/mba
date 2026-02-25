@@ -270,126 +270,107 @@ def generate_receipt(player_id):
 
     buffer = io.BytesIO()
 
-    # LANDSCAPE SMALL PAGE
     doc = SimpleDocTemplate(
         buffer,
         pagesize=landscape(A5),
-        leftMargin=25,
-        rightMargin=25,
-        topMargin=25,
-        bottomMargin=25
+        leftMargin=20,
+        rightMargin=20,
+        topMargin=20,
+        bottomMargin=20
     )
 
-    elements = []
     styles = getSampleStyleSheet()
+    elements = []
 
-    # ---------------- CUSTOM STYLES ----------------
-    title_style = ParagraphStyle(
-        "title",
-        fontName="Helvetica-Bold",
-        fontSize=18,
-        textColor=PRIMARY,
-        spaceAfter=6
-    )
+    # -------- STYLES --------
+    title = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=20, textColor=PRIMARY)
+    accent = ParagraphStyle("a", fontName="Helvetica-Bold", fontSize=12, textColor=ACCENT)
+    normal = ParagraphStyle("n", fontSize=10)
+    bold = ParagraphStyle("b", fontName="Helvetica-Bold", fontSize=10)
+    right = ParagraphStyle("r", alignment=TA_RIGHT, fontSize=10)
+    total_style = ParagraphStyle("total", fontName="Helvetica-Bold", fontSize=14, alignment=TA_RIGHT)
 
-    subtitle_style = ParagraphStyle(
-        "subtitle",
-        fontName="Helvetica-Bold",
-        fontSize=11,
-        textColor=ACCENT,
-        spaceAfter=10
-    )
-
-    normal = ParagraphStyle("normal", fontSize=10)
-    right = ParagraphStyle("right", alignment=TA_RIGHT, fontSize=10)
-    bold = ParagraphStyle("bold", fontName="Helvetica-Bold", fontSize=10)
-
-    # ---------------- HEADER ----------------
+    # -------- HEADER --------
     logo_path = os.path.join(app.root_path, "static", "logo.png")
     try:
-        logo = Image(logo_path, width=50, height=50)
+        logo = Image(logo_path, width=70, height=70)
     except:
-        logo = Spacer(1, 50)
+        logo = Spacer(1, 70)
 
     header_left = [
-        Paragraph("MIRACLE BASKETBALL ACADEMY", title_style),
-        Paragraph("Training Payment Receipt", subtitle_style),
-        Paragraph(f"<b>Receipt No:</b> MBA-{player['id']:05d}", normal),
-        Paragraph(f"<b>Date:</b> {datetime.now().strftime('%d %b %Y')}", normal),
+        Paragraph("Payment Receipt", title),
+        Spacer(1, 6),
+        Paragraph(f"<b>Payment Receipt No</b> &nbsp;&nbsp; MBA-{player['id']:05d}", normal),
+        Paragraph(f"<b>Receipt Date</b> &nbsp;&nbsp; {datetime.now().strftime('%b %d, %Y')}", normal),
     ]
 
-    header = Table([[header_left, logo]], colWidths=[380, 100])
+    header = Table([[header_left, logo]], colWidths=[360, 180])
     elements.append(header)
     elements.append(Spacer(1, 18))
 
-    # ---------------- INFO CARDS ----------------
-    academy_card = [
-        [Paragraph("<b>Academy</b>", bold)],
+    # -------- CARDS --------
+    issued_by = [
+        [Paragraph("<font color='#6b7280'>Issued by</font>", normal)],
+        [Paragraph("<b>Miracle Basketball Academy</b>", bold)],
         [Paragraph("Kampala, Uganda", normal)],
-        [Paragraph("+256 XXX XXX XXX", normal)],
         [Paragraph("miraclebasketballacademy@gmail.com", normal)],
     ]
 
-    player_card = [
-        [Paragraph("<b>Received From</b>", bold)],
-        [Paragraph(player["parent_name"], normal)],
-        [Paragraph(f"<b>Player:</b> {player['full_name']}", normal)],
-        [Paragraph(f"<b>Plan:</b> {player['payment_plan']}", normal)],
+    issued_to = [
+        [Paragraph("<font color='#6b7280'>Issued to</font>", normal)],
+        [Paragraph(f"<b>{player['parent_name']}</b>", bold)],
+        [Paragraph("Kampala, Uganda", normal)],
+        [Paragraph(f"Player: {player['full_name']}", normal)],
     ]
 
-    card_table = Table(
-        [[academy_card, player_card]],
-        colWidths=[260, 260]
-    )
-
-    card_table.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 0.8, colors.grey),
-        ("BACKGROUND", (0,0), (0,0), LIGHT),
-        ("BACKGROUND", (1,0), (1,0), LIGHT),
-        ("LEFTPADDING", (0,0), (-1,-1), 12),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 10),
+    cards = Table([[issued_by, issued_to]], colWidths=[270,270])
+    cards.setStyle(TableStyle([
+        ("BOX",(0,0),(-1,-1),0.5,colors.grey),
+        ("INNERGRID",(0,0),(-1,-1),0.25,colors.lightgrey),
+        ("LEFTPADDING",(0,0),(-1,-1),12),
+        ("BOTTOMPADDING",(0,0),(-1,-1),8),
     ]))
 
-    elements.append(card_table)
-    elements.append(Spacer(1, 20))
+    elements.append(cards)
+    elements.append(Spacer(1,20))
 
-    # ---------------- PAYMENT TABLE ----------------
+    # -------- PAYMENT SUMMARY --------
     amount = int(player["amount"])
 
-    payment_data = [
-        ["Training Plan", "Fees Paid (UGX)"],
-        [player["payment_plan"], f"{amount:,}"],
-        ["Total", f"{amount:,}"]
-    ]
+    payment = Table([
+        ["Payment Method", "Amount Received"],
+        [player["payment_plan"], f"USh {amount:,}"],
+        ["Total", f"USh {amount:,}"]
+    ], colWidths=[350,190])
 
-    payment_table = Table(payment_data, colWidths=[320, 200])
-
-    payment_table.setStyle(TableStyle([
-        ("BACKGROUND", (0,0), (-1,0), PRIMARY),
-        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
-        ("ALIGN", (1,1), (-1,-1), "RIGHT"),
-        ("FONTNAME", (0,2), (-1,2), "Helvetica-Bold"),
-        ("TEXTCOLOR", (1,2), (1,2), ACCENT),
-        ("LINEABOVE", (0,2), (-1,2), 1, colors.black),
-        ("BOX", (0,0), (-1,-1), 0.8, colors.black),
-        ("INNERGRID", (0,0), (-1,-1), 0.25, colors.grey),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
-        ("TOPPADDING", (0,0), (-1,-1), 8),
+    payment.setStyle(TableStyle([
+        ("GRID",(0,0),(-1,-1),0.25,colors.grey),
+        ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
+        ("BACKGROUND",(0,0),(-1,0),colors.whitesmoke),
+        ("ALIGN",(1,1),(-1,-1),"RIGHT"),
+        ("FONTNAME",(0,2),(-1,2),"Helvetica-Bold"),
     ]))
 
-    elements.append(payment_table)
-    elements.append(Spacer(1, 25))
+    elements.append(payment)
+    elements.append(Spacer(1,18))
 
-    # ---------------- FOOTER ----------------
-    footer = Paragraph(
-        "Thank you for being part of Miracle Basketball Academy",
-        ParagraphStyle("footer", alignment=TA_LEFT, fontSize=9)
-    )
+    # -------- TOTAL BAR --------
+    total_bar = Table([
+        ["Total Amount", f"USh {amount:,}"]
+    ], colWidths=[350,190])
 
-    elements.append(footer)
+    total_bar.setStyle(TableStyle([
+        ("LINEABOVE",(0,0),(-1,0),1,colors.black),
+        ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
+        ("FONTSIZE",(0,0),(-1,0),13),
+        ("ALIGN",(1,0),(1,0),"RIGHT"),
+    ]))
 
-    # BUILD PDF
+    elements.append(total_bar)
+    elements.append(Spacer(1,18))
+
+    elements.append(Paragraph("Thank you for being part of Miracle Basketball Academy", normal))
+
     doc.build(elements)
 
     buffer.seek(0)
