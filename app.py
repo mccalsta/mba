@@ -259,6 +259,7 @@ def logout():
 
 #-------Receipt----------
 #-------Receipt----------
+# ------- Receipt (STABLE VERSION) ----------
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
 
@@ -272,17 +273,94 @@ def generate_receipt(player_id):
     if not player:
         return "Player not found", 404
 
-    rendered = render_template(
-        "receipt_template.html",
-        player=player,
-        date=datetime.now().strftime("%d/%m/%Y"),
-        logo=url_for('static', filename='logo.png', _external=True)
+    buffer = io.BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A5,
+        rightMargin=25,
+        leftMargin=25,
+        topMargin=25,
+        bottomMargin=25
     )
 
-    pdf = HTML(string=rendered).write_pdf()
+    styles = getSampleStyleSheet()
+    elements = []
 
-    return send_file(
-        io.BytesIO(pdf),
-        mimetype="application/pdf",
-        download_name=f"Receipt_{player['id']}.pdf"
+    # ---------------- HEADER ----------------
+    logo_path = os.path.join(app.root_path, "static", "logo.png")
+    try:
+        logo = Image(logo_path, width=55, height=55)
+    except:
+        logo = Spacer(1, 55)
+
+    title = Paragraph("<b>MIRACLE BASKETBALL ACADEMY</b>", styles["Title"])
+    subtitle = Paragraph("Training Payment Receipt", styles["Normal"])
+
+    header = Table([[logo, title]])
+    elements.append(header)
+    elements.append(subtitle)
+    elements.append(Spacer(1, 15))
+
+    # ---------------- RECEIPT INFO ----------------
+    info = Table([
+        ["Receipt No:", f"MBA-{player['id']:05d}"],
+        ["Date:", datetime.now().strftime("%d %b %Y")]
+    ], colWidths=[100, 200])
+
+    info.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 1, colors.black),
+        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+    ]))
+
+    elements.append(info)
+    elements.append(Spacer(1, 15))
+
+    # ---------------- PLAYER DETAILS ----------------
+    details = Table([
+        ["Received From:", player["parent_name"]],
+        ["Player:", player["full_name"]],
+        ["Plan:", player["payment_plan"]],
+    ], colWidths=[120, 250])
+
+    details.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 1, colors.black),
+        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+    ]))
+
+    elements.append(details)
+    elements.append(Spacer(1, 20))
+
+    # ---------------- PAYMENT ----------------
+    amount = int(player["amount"])
+
+    payment = Table([
+        ["Description", "Amount (UGX)"],
+        ["Basketball Training Fees", f"{amount:,}"],
+        ["TOTAL", f"UGX {amount:,}"]
+    ], colWidths=[250,120])
+
+    payment.setStyle(TableStyle([
+        ("BOX", (0,0), (-1,-1), 1, colors.black),
+        ("BACKGROUND", (0,0), (-1,0), colors.lightgrey),
+        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTNAME", (0,2), (-1,2), "Helvetica-Bold"),
+        ("ALIGN", (1,0), (1,-1), "RIGHT"),
+    ]))
+
+    elements.append(payment)
+    elements.append(Spacer(1, 30))
+
+    # ---------------- FOOTER ----------------
+    footer = Paragraph(
+        "Thank you for being part of Miracle Basketball Academy",
+        styles["Normal"]
     )
+
+    elements.append(footer)
+
+    doc.build(elements)
+
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
