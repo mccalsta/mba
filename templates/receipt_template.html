@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f1f5f9;
+    padding:40px;
+}
+
+.receipt{
+background:white;
+max-width:900px;
+margin:auto;
+padding:40px;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.title{
+font-size:28px;
+font-weight:700;
+color:#0f172a;
+}
+
+.subtitle{
+color:#f97316;
+font-weight:600;
+margin-top:6px;
+}
+
+.info-bar{
+margin-top:25px;
+background:#eef2f7;
+padding:15px 20px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+}
+
+.cards{
+display:flex;
+gap:20px;
+margin-top:25px;
+}
+
+.card{
+flex:1;
+background:#f8fafc;
+border-radius:12px;
+padding:20px;
+}
+
+.card h3{
+color:#f97316;
+margin:0 0 10px 0;
+}
+
+.table{
+margin-top:30px;
+width:100%;
+border-collapse:collapse;
+}
+
+.table th{
+background:#0f172a;
+color:white;
+padding:12px;
+text-align:left;
+}
+
+.table td{
+padding:12px;
+border-bottom:1px solid #e5e7eb;
+}
+
+.total{
+text-align:right;
+font-size:22px;
+font-weight:bold;
+margin-top:25px;
+}
+
+.footer{
+margin-top:30px;
+color:#555;
+} </style>
+
+</head>
+
+<body>
+
+<div class="receipt">
+
+<div class="header">
+    <div>
+        <div class="title">MIRACLE BASKETBALL ACADEMY</div>
+        <div class="subtitle">Training Payment Receipt</div>
+    </div>
+    <img src="{{ logo }}" width="90">
+</div>
+
+<div class="info-bar">
+    <div><b>Receipt No:</b> MBA-{{ "%05d"|format(player.id) }}</div>
+    <div><b>Date:</b> {{ date }}</div>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <h3>Academy</h3>
+        Kampala, Uganda<br>
+        +256 XXX XXX XXX<br>
+        miraclebasketballacademy@gmail.com
+    </div>
+
+```
+<div class="card">
+    <h3>Received From</h3>
+    {{ player.parent_name }}<br>
+    <b>{{ player.full_name }}</b><br>
+    Plan: {{ player.payment_plan }}
+</div>
+```
+
+</div>
+
+<table class="table">
+<tr>
+    <th>Training Plan</th>
+    <th style="text-align:right;">Fees Paid (UGX)</th>
+</tr>
+<tr>
+    <td>{{ player.payment_plan }}</td>
+    <td style="text-align:right;">{{ "{:,}".format(player.amount|int) }}</td>
+</tr>
+</table>
+
+<div class="total">
+Total: UGX {{ "{:,}".format(player.amount|int) }}
+</div>
+
+<div class="footer">
+Thank you for being part of Miracle Basketball Academy
+</div>
+
+</div>
+</body>
+</html>
