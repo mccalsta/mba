@@ -269,112 +269,91 @@ def generate_receipt(player_id):
         return "Player not found", 404
 
     buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=landscape(A5))
 
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=landscape(A5),
-        leftMargin=20,
-        rightMargin=20,
-        topMargin=20,
-        bottomMargin=20
-    )
+    width, height = landscape(A5)
 
-    styles = getSampleStyleSheet()
-    elements = []
-
-    # -------- STYLES --------
-    title = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=20, textColor=PRIMARY)
-    accent = ParagraphStyle("a", fontName="Helvetica-Bold", fontSize=12, textColor=ACCENT)
-    normal = ParagraphStyle("n", fontSize=10)
-    bold = ParagraphStyle("b", fontName="Helvetica-Bold", fontSize=10)
-    right = ParagraphStyle("r", alignment=TA_RIGHT, fontSize=10)
-    total_style = ParagraphStyle("total", fontName="Helvetica-Bold", fontSize=14, alignment=TA_RIGHT)
-
-    # -------- HEADER --------
-    logo_path = os.path.join(app.root_path, "static", "logo.png")
-    try:
-        logo = Image(logo_path, width=70, height=70)
-    except:
-        logo = Spacer(1, 70)
-
-    header_left = [
-        Paragraph("Payment Receipt", title),
-        Spacer(1, 6),
-        Paragraph(f"<b>Payment Receipt No</b> &nbsp;&nbsp; MBA-{player['id']:05d}", normal),
-        Paragraph(f"<b>Receipt Date</b> &nbsp;&nbsp; {datetime.now().strftime('%b %d, %Y')}", normal),
-    ]
-
-    header = Table([[header_left, logo]], colWidths=[360, 180])
-    elements.append(header)
-    elements.append(Spacer(1, 18))
-
-    # -------- CARDS --------
-    issued_by = [
-        [Paragraph("<font color='#6b7280'>Issued by</font>", normal)],
-        [Paragraph("<b>Miracle Basketball Academy</b>", bold)],
-        [Paragraph("Kampala, Uganda", normal)],
-        [Paragraph("miraclebasketballacademy@gmail.com", normal)],
-    ]
-
-    issued_to = [
-        [Paragraph("<font color='#6b7280'>Issued to</font>", normal)],
-        [Paragraph(f"<b>{player['parent_name']}</b>", bold)],
-        [Paragraph("Kampala, Uganda", normal)],
-        [Paragraph(f"Player: {player['full_name']}", normal)],
-    ]
-
-    cards = Table([[issued_by, issued_to]], colWidths=[270,270])
-    cards.setStyle(TableStyle([
-        ("BOX",(0,0),(-1,-1),0.5,colors.grey),
-        ("INNERGRID",(0,0),(-1,-1),0.25,colors.lightgrey),
-        ("LEFTPADDING",(0,0),(-1,-1),12),
-        ("BOTTOMPADDING",(0,0),(-1,-1),8),
-    ]))
-
-    elements.append(cards)
-    elements.append(Spacer(1,20))
-
-    # -------- PAYMENT SUMMARY --------
     amount = int(player["amount"])
 
-    payment = Table([
-        ["Payment Method", "Amount Received"],
-        [player["payment_plan"], f"USh {amount:,}"],
-        ["Total", f"USh {amount:,}"]
-    ], colWidths=[350,190])
+    # ================= BACKGROUND UI =================
+    c.setFillColorRGB(0.97,0.97,0.97)
+    c.rect(0,0,width,height,stroke=0,fill=1)
 
-    payment.setStyle(TableStyle([
-        ("GRID",(0,0),(-1,-1),0.25,colors.grey),
-        ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
-        ("BACKGROUND",(0,0),(-1,0),colors.whitesmoke),
-        ("ALIGN",(1,1),(-1,-1),"RIGHT"),
-        ("FONTNAME",(0,2),(-1,2),"Helvetica-Bold"),
-    ]))
+    # Header divider
+    c.setStrokeColorRGB(0.8,0.8,0.8)
+    c.line(40,height-110,width-40,height-110)
 
-    elements.append(payment)
-    elements.append(Spacer(1,18))
+    # Issued cards
+    c.setFillColorRGB(1,1,1)
+    c.roundRect(40,height-220, (width/2)-50,90,8,stroke=1,fill=1)
+    c.roundRect(width/2+10,height-220,(width/2)-50,90,8,stroke=1,fill=1)
 
-    # -------- TOTAL BAR --------
-    total_bar = Table([
-        ["Total Amount", f"USh {amount:,}"]
-    ], colWidths=[350,190])
+    # Payment table panel
+    c.roundRect(40,height-330,width-80,100,8,stroke=1,fill=1)
 
-    total_bar.setStyle(TableStyle([
-        ("LINEABOVE",(0,0),(-1,0),1,colors.black),
-        ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
-        ("FONTSIZE",(0,0),(-1,0),13),
-        ("ALIGN",(1,0),(1,0),"RIGHT"),
-    ]))
+    # Total bar
+    c.line(40,height-360,width-40,height-360)
 
-    elements.append(total_bar)
-    elements.append(Spacer(1,18))
+    # ================= HEADER =================
+    logo_path = os.path.join(app.root_path,"static","logo.png")
+    try:
+        c.drawImage(logo_path,width-140,height-90,80,80,mask='auto')
+    except:
+        pass
 
-    elements.append(Paragraph("Thank you for being part of Miracle Basketball Academy", normal))
+    c.setFont("Helvetica-Bold",18)
+    c.drawString(40,height-70,"Payment Receipt")
 
-    doc.build(elements)
+    c.setFont("Helvetica",10)
+    c.drawString(40,height-95,f"Payment Receipt No    MBA-{player['id']:05d}")
+    c.drawString(40,height-110,f"Receipt Date    {datetime.now().strftime('%b %d, %Y')}")
 
+    # ================= ISSUED BY =================
+    c.setFont("Helvetica-Bold",9)
+    c.drawString(55,height-150,"Issued by")
+
+    c.setFont("Helvetica-Bold",10)
+    c.drawString(55,height-165,"Miracle Basketball Academy")
+
+    c.setFont("Helvetica",9)
+    c.drawString(55,height-180,"Kampala, Uganda")
+    c.drawString(55,height-195,"miraclebasketballacademy@gmail.com")
+
+    # ================= ISSUED TO =================
+    x = width/2+25
+    c.setFont("Helvetica-Bold",9)
+    c.drawString(x,height-150,"Issued to")
+
+    c.setFont("Helvetica-Bold",10)
+    c.drawString(x,height-165,player["parent_name"])
+
+    c.setFont("Helvetica",9)
+    c.drawString(x,height-180,"Kampala, Uganda")
+    c.drawString(x,height-195,f"Player: {player['full_name']}")
+
+    # ================= PAYMENT TABLE =================
+    c.setFont("Helvetica-Bold",10)
+    c.drawString(60,height-255,"Payment Method")
+    c.drawString(width-200,height-255,"Amount Received")
+
+    c.setFont("Helvetica",10)
+    c.drawString(60,height-280,player["payment_plan"])
+    c.drawRightString(width-60,height-280,f"USh {amount:,}")
+
+    c.setFont("Helvetica-Bold",10)
+    c.drawString(60,height-305,"Total")
+    c.drawRightString(width-60,height-305,f"USh {amount:,}")
+
+    # ================= TOTAL =================
+    c.setFont("Helvetica-Bold",14)
+    c.drawString(40,height-390,"Total Amount")
+    c.drawRightString(width-40,height-390,f"USh {amount:,}")
+
+    # ================= FOOTER =================
+    c.setFont("Helvetica",9)
+    c.drawString(40,40,"Thank you for being part of Miracle Basketball Academy")
+
+    c.save()
     buffer.seek(0)
-    return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
 
-    buffer.seek(0)
     return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
