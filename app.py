@@ -258,6 +258,9 @@ def logout():
 
 #-------Receipt----------
 #-------Receipt----------
+from reportlab.lib.pagesizes import landscape, A5
+from reportlab.pdfgen import canvas
+
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
 
@@ -270,34 +273,30 @@ def generate_receipt(player_id):
 
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=landscape(A5))
-
     width, height = landscape(A5)
-
     amount = int(player["amount"])
 
-    # ================= BACKGROUND UI =================
-    c.setFillColorRGB(0.97,0.97,0.97)
+    # ================= BACKGROUND =================
+    c.setFillColorRGB(0.96,0.96,0.96)
     c.rect(0,0,width,height,stroke=0,fill=1)
 
-    # Header divider
-    c.setStrokeColorRGB(0.8,0.8,0.8)
-    c.line(40,height-110,width-40,height-110)
-
-    # Issued cards
+    # white cards
     c.setFillColorRGB(1,1,1)
-    c.roundRect(40,height-220, (width/2)-50,90,8,stroke=1,fill=1)
-    c.roundRect(width/2+10,height-220,(width/2)-50,90,8,stroke=1,fill=1)
+    c.roundRect(40,height-220, (width/2)-50,90,10,stroke=1,fill=1)
+    c.roundRect(width/2+10,height-220,(width/2)-50,90,10,stroke=1,fill=1)
+    c.roundRect(40,height-340,width-80,110,10,stroke=1,fill=1)
 
-    # Payment table panel
-    c.roundRect(40,height-330,width-80,100,8,stroke=1,fill=1)
+    # divider
+    c.setStrokeColorRGB(0.75,0.75,0.75)
+    c.line(40,height-115,width-40,height-115)
 
-    # Total bar
-    c.line(40,height-360,width-40,height-360)
+    # 🔴 RESET TEXT COLOR (critical fix)
+    c.setFillColorRGB(0,0,0)
 
     # ================= HEADER =================
     logo_path = os.path.join(app.root_path,"static","logo.png")
     try:
-        c.drawImage(logo_path,width-140,height-90,80,80,mask='auto')
+        c.drawImage(logo_path,width-140,height-95,80,80,mask='auto')
     except:
         pass
 
@@ -305,8 +304,8 @@ def generate_receipt(player_id):
     c.drawString(40,height-70,"Payment Receipt")
 
     c.setFont("Helvetica",10)
-    c.drawString(40,height-95,f"Payment Receipt No    MBA-{player['id']:05d}")
-    c.drawString(40,height-110,f"Receipt Date    {datetime.now().strftime('%b %d, %Y')}")
+    c.drawString(40,height-92,f"Payment Receipt No   MBA-{player['id']:05d}")
+    c.drawString(40,height-108,f"Receipt Date   {datetime.now().strftime('%b %d, %Y')}")
 
     # ================= ISSUED BY =================
     c.setFont("Helvetica-Bold",9)
@@ -337,12 +336,12 @@ def generate_receipt(player_id):
     c.drawString(width-200,height-255,"Amount Received")
 
     c.setFont("Helvetica",10)
-    c.drawString(60,height-280,player["payment_plan"])
-    c.drawRightString(width-60,height-280,f"USh {amount:,}")
+    c.drawString(60,height-285,player["payment_plan"])
+    c.drawRightString(width-60,height-285,f"USh {amount:,}")
 
     c.setFont("Helvetica-Bold",10)
-    c.drawString(60,height-305,"Total")
-    c.drawRightString(width-60,height-305,f"USh {amount:,}")
+    c.drawString(60,height-315,"Total")
+    c.drawRightString(width-60,height-315,f"USh {amount:,}")
 
     # ================= TOTAL =================
     c.setFont("Helvetica-Bold",14)
