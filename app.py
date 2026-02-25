@@ -7,6 +7,7 @@ from flask import send_file
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A5, landscape
 import io
+from weasyprint import HTML
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
@@ -258,101 +259,30 @@ def logout():
 
 #-------Receipt----------
 #-------Receipt----------
-from reportlab.lib.pagesizes import landscape, A5
-from reportlab.pdfgen import canvas
-
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
 
     conn = get_db()
-    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
+    player = conn.execute(
+        "SELECT * FROM players WHERE id=?",
+        (player_id,)
+    ).fetchone()
     conn.close()
 
     if not player:
         return "Player not found", 404
 
-    buffer = io.BytesIO()
-    c = canvas.Canvas(buffer, pagesize=landscape(A5))
-    width, height = landscape(A5)
-    amount = int(player["amount"])
+    rendered = render_template(
+        "receipt_template.html",
+        player=player,
+        date=datetime.now().strftime("%d/%m/%Y"),
+        logo=url_for('static', filename='logo.png', _external=True)
+    )
 
-    # ================= BACKGROUND =================
-    c.setFillColorRGB(0.96,0.96,0.96)
-    c.rect(0,0,width,height,stroke=0,fill=1)
+    pdf = HTML(string=rendered).write_pdf()
 
-    # white cards
-    c.setFillColorRGB(1,1,1)
-    c.roundRect(40,height-220, (width/2)-50,90,10,stroke=1,fill=1)
-    c.roundRect(width/2+10,height-220,(width/2)-50,90,10,stroke=1,fill=1)
-    c.roundRect(40,height-340,width-80,110,10,stroke=1,fill=1)
-
-    # divider
-    c.setStrokeColorRGB(0.75,0.75,0.75)
-    c.line(40,height-115,width-40,height-115)
-
-    # 🔴 RESET TEXT COLOR (critical fix)
-    c.setFillColorRGB(0,0,0)
-
-    # ================= HEADER =================
-    logo_path = os.path.join(app.root_path,"static","logo.png")
-    try:
-        c.drawImage(logo_path,width-140,height-95,80,80,mask='auto')
-    except:
-        pass
-
-    c.setFont("Helvetica-Bold",18)
-    c.drawString(40,height-70,"Payment Receipt")
-
-    c.setFont("Helvetica",10)
-    c.drawString(40,height-92,f"Payment Receipt No   MBA-{player['id']:05d}")
-    c.drawString(40,height-108,f"Receipt Date   {datetime.now().strftime('%b %d, %Y')}")
-
-    # ================= ISSUED BY =================
-    c.setFont("Helvetica-Bold",9)
-    c.drawString(55,height-150,"Issued by")
-
-    c.setFont("Helvetica-Bold",10)
-    c.drawString(55,height-165,"Miracle Basketball Academy")
-
-    c.setFont("Helvetica",9)
-    c.drawString(55,height-180,"Kampala, Uganda")
-    c.drawString(55,height-195,"miraclebasketballacademy@gmail.com")
-
-    # ================= ISSUED TO =================
-    x = width/2+25
-    c.setFont("Helvetica-Bold",9)
-    c.drawString(x,height-150,"Issued to")
-
-    c.setFont("Helvetica-Bold",10)
-    c.drawString(x,height-165,player["parent_name"])
-
-    c.setFont("Helvetica",9)
-    c.drawString(x,height-180,"Kampala, Uganda")
-    c.drawString(x,height-195,f"Player: {player['full_name']}")
-
-    # ================= PAYMENT TABLE =================
-    c.setFont("Helvetica-Bold",10)
-    c.drawString(60,height-255,"Payment Method")
-    c.drawString(width-200,height-255,"Amount Received")
-
-    c.setFont("Helvetica",10)
-    c.drawString(60,height-285,player["payment_plan"])
-    c.drawRightString(width-60,height-285,f"USh {amount:,}")
-
-    c.setFont("Helvetica-Bold",10)
-    c.drawString(60,height-315,"Total")
-    c.drawRightString(width-60,height-315,f"USh {amount:,}")
-
-    # ================= TOTAL =================
-    c.setFont("Helvetica-Bold",14)
-    c.drawString(40,height-390,"Total Amount")
-    c.drawRightString(width-40,height-390,f"USh {amount:,}")
-
-    # ================= FOOTER =================
-    c.setFont("Helvetica",9)
-    c.drawString(40,40,"Thank you for being part of Miracle Basketball Academy")
-
-    c.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
+    return send_file(
+        io.BytesIO(pdf),
+        mimetype="application/pdf",
+        download_name=f"Receipt_{player['id']}.pdf"
+    )
