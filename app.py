@@ -259,7 +259,6 @@ def logout():
 #-------Receipt----------
 #-------Receipt----------
 # ------- Receipt (STABLE VERSION) ----------
-@app.route("/receipt/<int:player_id>")
 def generate_receipt(file_path, player, parent, amount, phone, receipt_no):
 
     width, height = landscape(A5)
