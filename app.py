@@ -260,106 +260,103 @@ def logout():
 #-------Receipt----------
 # ------- Receipt (STABLE VERSION) ----------
 @app.route("/receipt/<int:player_id>")
-def generate_receipt(player_id):
+def generate_receipt(file_path, player, parent, amount, phone, receipt_no):
 
-    conn = get_db()
-    player = conn.execute(
-        "SELECT * FROM players WHERE id=?",
-        (player_id,)
-    ).fetchone()
-    conn.close()
+    width, height = landscape(A5)
+    c = canvas.Canvas(file_path, pagesize=(width, height))
 
-    if not player:
-        return "Player not found", 404
+    # COLORS (from UI)
+    primary = HexColor("#0B5ED7")      # Blue header
+    accent = HexColor("#20C997")       # Green amount
+    light = HexColor("#F8F9FA")        # Card background
+    dark = HexColor("#212529")         # Text
 
-    buffer = io.BytesIO()
+    # ================= HEADER =================
+    c.setFillColor(primary)
+    c.rect(0, height-55, width, 55, fill=1, stroke=0)
 
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=A5,
-        rightMargin=25,
-        leftMargin=25,
-        topMargin=25,
-        bottomMargin=25
-    )
+    # Academy Name
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 20)
+    c.drawString(30, height-35, "MIRACLE BASKETBALL ACADEMY")
 
-    styles = getSampleStyleSheet()
-    elements = []
+    c.setFont("Helvetica", 10)
+    c.drawString(30, height-50, "Official Payment Receipt")
 
-    # ---------------- HEADER ----------------
-    logo_path = os.path.join(app.root_path, "static", "logo.png")
-    try:
-        logo = Image(logo_path, width=55, height=55)
-    except:
-        logo = Spacer(1, 55)
+    # Receipt badge
+    c.setFillColor(white)
+    c.roundRect(width-170, height-48, 150, 28, 8, fill=1, stroke=0)
 
-    title = Paragraph("<b>MIRACLE BASKETBALL ACADEMY</b>", styles["Title"])
-    subtitle = Paragraph("Training Payment Receipt", styles["Normal"])
+    c.setFillColor(primary)
+    c.setFont("Helvetica-Bold", 11)
+    c.drawCentredString(width-95, height-32, f"Receipt #{receipt_no}")
 
-    header = Table([[logo, title]])
-    elements.append(header)
-    elements.append(subtitle)
-    elements.append(Spacer(1, 15))
+    # ================= LOGO =================
+    logo_path = "static/logo.png"
+    if os.path.exists(logo_path):
+        c.drawImage(logo_path, width-80, height-55, 45, 45, mask='auto')
 
-    # ---------------- RECEIPT INFO ----------------
-    info = Table([
-        ["Receipt No:", f"MBA-{player['id']:05d}"],
-        ["Date:", datetime.now().strftime("%d %b %Y")]
-    ], colWidths=[100, 200])
+    # ================= PLAYER CARD =================
+    c.setFillColor(light)
+    c.roundRect(25, height-135, width/2-35, 70, 10, fill=1, stroke=0)
 
-    info.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 1, colors.black),
-        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
-    ]))
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(40, height-80, "PLAYER DETAILS")
 
-    elements.append(info)
-    elements.append(Spacer(1, 15))
+    c.setFont("Helvetica", 11)
+    c.drawString(40, height-100, f"Name: {player}")
+    c.drawString(40, height-115, f"Parent: {parent}")
+    c.drawString(40, height-130, f"Phone: {phone}")
 
-    # ---------------- PLAYER DETAILS ----------------
-    details = Table([
-        ["Received From:", player["parent_name"]],
-        ["Player:", player["full_name"]],
-        ["Plan:", player["payment_plan"]],
-    ], colWidths=[120, 250])
+    # ================= PAYMENT CARD =================
+    c.setFillColor(light)
+    c.roundRect(width/2+10, height-135, width/2-35, 70, 10, fill=1, stroke=0)
 
-    details.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 1, colors.black),
-        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
-    ]))
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(width/2+25, height-80, "PAYMENT INFO")
 
-    elements.append(details)
-    elements.append(Spacer(1, 20))
+    c.setFont("Helvetica", 11)
+    c.drawString(width/2+25, height-100, "Description: Training Fees")
 
-    # ---------------- PAYMENT ----------------
-    amount = int(player["amount"])
+    c.drawString(width/2+25, height-115,
+        f"Date: {datetime.now().strftime('%d %b %Y')}")
 
-    payment = Table([
-        ["Description", "Amount (UGX)"],
-        ["Basketball Training Fees", f"{amount:,}"],
-        ["TOTAL", f"UGX {amount:,}"]
-    ], colWidths=[250,120])
+    # AMOUNT BIG GREEN
+    c.setFillColor(accent)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(width/2+25, height-135, f"UGX {amount:,}")
 
-    payment.setStyle(TableStyle([
-        ("BOX", (0,0), (-1,-1), 1, colors.black),
-        ("BACKGROUND", (0,0), (-1,0), colors.lightgrey),
-        ("INNERGRID", (0,0), (-1,-1), 0.5, colors.grey),
-        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
-        ("FONTNAME", (0,2), (-1,2), "Helvetica-Bold"),
-        ("ALIGN", (1,0), (1,-1), "RIGHT"),
-    ]))
+    # ================= TABLE =================
+    c.setFillColor(primary)
+    c.rect(25, height-180, width-50, 25, fill=1, stroke=0)
 
-    elements.append(payment)
-    elements.append(Spacer(1, 30))
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 11)
+    c.drawString(35, height-165, "Description")
+    c.drawString(width-160, height-165, "Amount")
 
-    # ---------------- FOOTER ----------------
-    footer = Paragraph(
-        "Thank you for being part of Miracle Basketball Academy",
-        styles["Normal"]
-    )
+    # Row
+    c.setFillColor(light)
+    c.rect(25, height-210, width-50, 30, fill=1, stroke=0)
 
-    elements.append(footer)
+    c.setFillColor(black)
+    c.setFont("Helvetica", 11)
+    c.drawString(35, height-195, "Monthly Training Fee")
+    c.drawRightString(width-40, height-195, f"UGX {amount:,}")
 
-    doc.build(elements)
+    # ================= TOTAL =================
+    c.setFont("Helvetica-Bold", 14)
+    c.drawRightString(width-40, height-225, f"TOTAL: UGX {amount:,}")
 
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=False, download_name="receipt.pdf", mimetype="application/pdf")
+    # ================= FOOTER =================
+    c.setStrokeColor(primary)
+    c.line(40, 55, 200, 55)
+
+    c.setFont("Helvetica", 9)
+    c.drawString(40, 40, "Authorized Signature")
+
+    c.drawRightString(width-40, 40, "Thank you for supporting youth development!")
+
+    c.save()
