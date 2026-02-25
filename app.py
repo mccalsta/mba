@@ -259,7 +259,6 @@ def logout():
 # ================= RECEIPT (FINAL STABLE UI VERSION) =================
 def build_receipt_pdf(buffer, player):
 
-    # --- Safe values ---
     amount = int(player["amount"] or 0)
     parent = player["parent_name"] or "N/A"
     phone = player["phone1"] or "N/A"
@@ -268,99 +267,107 @@ def build_receipt_pdf(buffer, player):
     width, height = landscape(A5)
     c = canvas.Canvas(buffer, pagesize=(width, height))
 
-    # --- COLORS (UI STYLE) ---
-    primary = HexColor("#1E63C6")
-    accent = HexColor("#20C997")
-    light = HexColor("#F1F3F5")
-    text = HexColor("#212529")
+    # UI COLORS
+    primary = HexColor("#2F69BF")
+    accent = HexColor("#22C55E")
+    light = HexColor("#F3F4F6")
+    border = HexColor("#E5E7EB")
+    text = HexColor("#111827")
+    subtext = HexColor("#6B7280")
 
     # ================= HEADER =================
     c.setFillColor(primary)
-    c.rect(0, height-70, width, 70, fill=1, stroke=0)
+    c.rect(0, height-60, width, 60, fill=1, stroke=0)
 
-    # Title
     c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 20)
-    c.drawString(30, height-40, "MIRACLE BASKETBALL ACADEMY")
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(30, height-32, "MIRACLE BASKETBALL ACADEMY")
 
-    c.setFont("Helvetica", 11)
-    c.drawString(30, height-58, "Official Payment Receipt")
+    c.setFont("Helvetica", 10)
+    c.drawString(30, height-48, "Official Payment Receipt")
 
-    # Receipt badge
+    # receipt badge
     c.setFillColor(white)
-    c.roundRect(width-200, height-55, 170, 32, 10, fill=1, stroke=0)
+    c.roundRect(width-210, height-45, 160, 26, 8, fill=1, stroke=0)
 
     c.setFillColor(primary)
-    c.setFont("Helvetica-Bold", 12)
-    c.drawCentredString(width-115, height-37, f"Receipt #{receipt_no}")
+    c.setFont("Helvetica-Bold", 10)
+    c.drawCentredString(width-130, height-30, f"Receipt #{receipt_no}")
 
-    # Logo
+    # logo
     logo_path = os.path.join("static", "logo.png")
     if os.path.exists(logo_path):
-        c.drawImage(logo_path, width-70, height-65, 45, 45, mask='auto')
+        c.drawImage(logo_path, width-60, height-58, 40, 40, mask='auto')
 
-    # ================= PLAYER CARD =================
-    card_y = height - 150
+    # ================= CARDS =================
+    card_y = height - 145
+    card_h = 78
+    card_w = width/2 - 50
 
+    # left card
     c.setFillColor(light)
-    c.roundRect(30, card_y, width/2-45, 80, 12, fill=1, stroke=0)
+    c.roundRect(30, card_y, card_w, card_h, 10, fill=1, stroke=0)
+
+    c.setFillColor(subtext)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(45, card_y+58, "PLAYER DETAILS")
 
     c.setFillColor(text)
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(45, card_y+55, "PLAYER DETAILS")
-
     c.setFont("Helvetica", 11)
     c.drawString(45, card_y+38, f"Name: {player['full_name']}")
     c.drawString(45, card_y+23, f"Parent: {parent}")
     c.drawString(45, card_y+8, f"Phone: {phone}")
 
-    # ================= PAYMENT CARD =================
+    # right card
+    right_x = width/2 + 10
     c.setFillColor(light)
-    c.roundRect(width/2+10, card_y, width/2-45, 80, 12, fill=1, stroke=0)
+    c.roundRect(right_x, card_y, card_w, card_h, 10, fill=1, stroke=0)
+
+    c.setFillColor(subtext)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(right_x+15, card_y+58, "PAYMENT INFO")
+
+    c.setFillColor(text)
+    c.setFont("Helvetica", 11)
+    c.drawString(right_x+15, card_y+38, "Description: Training Fees")
+    c.drawString(right_x+15, card_y+23, f"Date: {datetime.now().strftime('%d %b %Y')}")
+
+    c.setFillColor(accent)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(right_x+15, card_y+6, f"UGX {amount:,}")
+
+    # ================= PAYMENT SUMMARY =================
+    table_y = card_y - 40
 
     c.setFillColor(text)
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(width/2+25, card_y+55, "PAYMENT INFO")
+    c.drawString(30, table_y+25, "Training Payment Summary")
 
+    # header line
+    c.setStrokeColor(border)
+    c.line(30, table_y+20, width-30, table_y+20)
+
+    # row
     c.setFont("Helvetica", 11)
-    c.drawString(width/2+25, card_y+38, "Description: Training Fees")
-    c.drawString(width/2+25, card_y+23, f"Date: {datetime.now().strftime('%d %b %Y')}")
+    c.setFillColor(text)
+    c.drawString(35, table_y-5, f"{player['payment_plan']} Training Fee")
+    c.drawRightString(width-40, table_y-5, f"UGX {amount:,}")
 
-    c.setFillColor(accent)
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(width/2+25, card_y+5, f"UGX {amount:,}")
+    # divider
+    c.setStrokeColor(border)
+    c.line(30, table_y-15, width-30, table_y-15)
 
-    # ================= TABLE HEADER =================
-    table_y = card_y - 45
-
-    c.setFillColor(primary)
-    c.rect(30, table_y, width-60, 28, fill=1, stroke=0)
-
-    c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(40, table_y+9, "Description")
-    c.drawRightString(width-40, table_y+9, "Amount")
-
-    # ================= TABLE ROW =================
-    row_y = table_y - 30
-    c.setFillColor(light)
-    c.rect(30, row_y, width-60, 30, fill=1, stroke=0)
-
-    c.setFillColor(black)
-    c.setFont("Helvetica", 11)
-    c.drawString(40, row_y+10, f"{player['payment_plan']} Training Fee")
-    c.drawRightString(width-40, row_y+10, f"UGX {amount:,}")
-
-    # ================= TOTAL =================
-    total_y = row_y - 35
-    c.setFont("Helvetica-Bold", 14)
-    c.drawRightString(width-40, total_y, f"TOTAL: UGX {amount:,}")
+    # total
+    c.setFont("Helvetica-Bold", 13)
+    c.drawString(width-220, table_y-35, "Total Amount")
+    c.drawRightString(width-40, table_y-35, f"UGX {amount:,}")
 
     # ================= FOOTER =================
-    c.setStrokeColor(primary)
-    c.line(40, 60, 200, 60)
+    c.setStrokeColor(border)
+    c.line(40, 60, 220, 60)
 
     c.setFont("Helvetica", 9)
+    c.setFillColor(subtext)
     c.drawString(40, 45, "Authorized Signature")
     c.drawRightString(width-40, 45, "Thank you for supporting youth development!")
 
