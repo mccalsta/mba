@@ -14,7 +14,7 @@ from reportlab.lib.units import mm
 from datetime import datetime
 from reportlab.lib.enums import TA_RIGHT, TA_LEFT
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.colors import HexColor
+from reportlab.lib.colors import HexColor, white, black
 PRIMARY = HexColor("#0f172a")
 ACCENT = HexColor("#f97316")
 LIGHT = HexColor("#f1f5f9")
