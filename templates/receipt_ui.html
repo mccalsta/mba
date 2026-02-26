@@ -173,7 +173,7 @@ tbody tr{
             <div class="subtitle">Training Payment Receipt</div>
         </div>
         <div class="header-right">
-            <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+            <img src="file://{{ logo_path }}" class="logo">
         </div>
     </div>
 
@@ -201,12 +201,17 @@ tbody tr{
 
         <div class="card-space"></div>
 
-        <div class="card">
-            <div class="card-title">Received From:</div>
-            {{ player.parent }}<br>
-            <strong>{{ player.name }}</strong>
-            <hr>
-        </div>
+       <div class="card">
+    <div class="card-title">Received From:</div>
+    <div style="font-size:18px; font-weight:600;">{{ player.parent }}</div>
+    <div style="margin-top:6px; font-size:20px; font-weight:700;">
+        {{ player.name }}
+    </div>
+    <div style="margin-top:8px; color:#4a5568;">
+        Phone: {{ player.phone }}
+    </div>
+    <hr>
+</div>
 
     </div>
 
