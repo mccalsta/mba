@@ -389,13 +389,16 @@ def generate_receipt(player_id):
     if not player:
         return "Player not found", 404
 
+    # Absolute path to static folder (CRITICAL FOR WEASYPRINT)
+    logo_path = os.path.join(app.root_path, "static", "logo.png")
+
     html = render_template(
         "receipt_ui.html",
         player=player,
-        parent=player["parent"],
         receipt_no=f"MBA-{player['id']:05d}",
         amount=int(player["amount"]),
-        date=datetime.now().strftime("%d %b %Y")
+        date=datetime.now().strftime("%d %b %Y"),
+        logo_path=logo_path
     )
 
     pdf = HTML(string=html, base_url=request.base_url).write_pdf()
