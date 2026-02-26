@@ -1,6 +1,3 @@
-import os
-print("RUNNING FILE:", __file__)
-print("WORKING DIR:", os.getcwd())
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 import os
