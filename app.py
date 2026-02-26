@@ -98,6 +98,8 @@ def home():
 def register():
     if request.method == "POST":
 
+        amount = request.form.get("amount") or 0
+
         data = (
             request.form.get("full_name"),
             request.form.get("dob"),
@@ -123,12 +125,12 @@ def register():
             request.form.get("skill"),
             request.form.get("goals"),
 
-            request.form.get("amount"),
-            request.form.get("payment_plan"),
+            amount,
+            request.form.get("payment_method"),  # <-- ADDED (CRITICAL FIX)
             request.form.get("reference"),
+            request.form.get("payment_plan"),
 
-            "Pending",  # force status controlled by admin
-
+            "Pending",  # admin controls payment status
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
@@ -139,8 +141,8 @@ def register():
             parent_name,relationship,phone1,phone2,email,
             medical,injuries,allergies,
             skill,goals,
-            amount,payment_plan,reference,payment_status,created_at
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            amount,payment_method,reference,payment_plan,payment_status,created_at
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, data)
 
         conn.commit()
