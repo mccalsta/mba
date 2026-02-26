@@ -378,54 +378,30 @@ def build_receipt_pdf(buffer, player):
 # ================= ROUTE =================
 @app.route("/receipt_ui/<int:player_id>")
 def generate_receipt_ui(player_id):
-
-    # -------- GET PLAYER ----------
     conn = get_db()
-    player = conn.execute(
-        "SELECT * FROM players WHERE id=?",
-        (player_id,)
-    ).fetchone()
+    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
     conn.close()
 
     if not player:
         return "Player not found", 404
 
-    # -------- SAFE NUMERIC FORMATTING ----------
-    amount_int = int(player["amount"])
-    formatted_amount = "{:,}".format(amount_int)
+    # format values
+    amount = "{:,}".format(int(player["amount"]))
+    receipt_no = f"MBA-{player['id']:05d}"
 
-    # -------- RECEIPT NUMBER ----------
-    receipt_no = f"MBA-{player_id:05d}"
-
-    # -------- DATE ----------
-    receipt_date = datetime.now().strftime("%d %b %Y")
-
-    # -------- RENDER HTML ----------
     html = render_template(
         "receipt_ui.html",
         player=player,
-        amount=formatted_amount,
-        amount_int=amount_int,     # keep numeric if needed later
         receipt_no=receipt_no,
-        date=receipt_date,
-
-        # academy info (used by UI design)
-        academy_phone="+256 762 150992",
-        academy_email="info@miraclebasketballacademy.com",
-        academy_location="Kampala, Uganda",
-        academy_website="www.miraclebasketballacademy.com"
+        amount=amount,
+        date=datetime.now().strftime("%d %b %Y"),
+        logo_path=os.path.abspath("static/logo.png")
     )
 
-    # -------- GENERATE PDF ----------
-    pdf = HTML(
-        string=html,
-        base_url=os.getcwd()   # IMPORTANT for CSS & logo in Docker
-    ).write_pdf()
+    pdf = HTML(string=html, base_url=os.getcwd()).write_pdf()
 
-    # -------- RETURN FILE ----------
     return send_file(
         io.BytesIO(pdf),
-        download_name=f"{receipt_no}.pdf",
-        mimetype="application/pdf",
-        as_attachment=False
+        download_name=f"receipt_{player_id}.pdf",
+        mimetype="application/pdf"
     )
