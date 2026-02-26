@@ -22,7 +22,7 @@
 
 <div class="form-group">
 <label>Age</label>
-<input name="age">
+<input type="number" name="age" id="age" readonly>
 </div>
 
 <div class="form-group">
@@ -177,5 +177,21 @@
 <button type="submit">Submit Registration</button>
 
 </form>
+
+<script>
+document.querySelector("input[name='dob']").addEventListener("change", function() {
+    const dob = new Date(this.value);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    document.getElementById("age").value = age;
+});
+</script>
 
 {% endblock %}
