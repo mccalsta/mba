@@ -375,9 +375,10 @@ def build_receipt_pdf(buffer, player):
 
 
 # ================= ROUTE =================
-@app.route("/receipt/<int:player_id>")
-def generate_receipt(player_id):
+@app.route("/receipt_ui/<int:player_id>")
+def generate_receipt_ui(player_id):
 
+    # -------- GET PLAYER ----------
     conn = get_db()
     player = conn.execute(
         "SELECT * FROM players WHERE id=?",
@@ -388,37 +389,42 @@ def generate_receipt(player_id):
     if not player:
         return "Player not found", 404
 
-    buffer = io.BytesIO()
-    build_receipt_pdf(buffer, player)
+    # -------- SAFE NUMERIC FORMATTING ----------
+    amount_int = int(player["amount"])
+    formatted_amount = "{:,}".format(amount_int)
 
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=False,
-                     download_name="receipt.pdf",
-                     mimetype="application/pdf")
+    # -------- RECEIPT NUMBER ----------
+    receipt_no = f"MBA-{player_id:05d}"
 
-from weasyprint import HTML
-from flask import render_template
+    # -------- DATE ----------
+    receipt_date = datetime.now().strftime("%d %b %Y")
 
-@app.route("/receipt_ui/<int:player_id>")
-def generate_receipt_ui(player_id):
-    conn = get_db()
-    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
-    conn.close()
-
-    if not player:
-        return "Player not found", 404
-
+    # -------- RENDER HTML ----------
     html = render_template(
         "receipt_ui.html",
         player=player,
-        amount=f"{int(player['amount']):,}",
-        date=datetime.now().strftime("%d %b %Y")
+        amount=formatted_amount,
+        amount_int=amount_int,     # keep numeric if needed later
+        receipt_no=receipt_no,
+        date=receipt_date,
+
+        # academy info (used by UI design)
+        academy_phone="+256 762 150992",
+        academy_email="info@miraclebasketballacademy.com",
+        academy_location="Kampala, Uganda",
+        academy_website="www.miraclebasketballacademy.com"
     )
 
-    pdf = HTML(string=html).write_pdf()
+    # -------- GENERATE PDF ----------
+    pdf = HTML(
+        string=html,
+        base_url=os.getcwd()   # IMPORTANT for CSS & logo in Docker
+    ).write_pdf()
 
+    # -------- RETURN FILE ----------
     return send_file(
         io.BytesIO(pdf),
-        download_name="receipt.pdf",
-        mimetype="application/pdf"
+        download_name=f"{receipt_no}.pdf",
+        mimetype="application/pdf",
+        as_attachment=False
     )
