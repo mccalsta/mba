@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import sqlite3
 import os
 from datetime import datetime
+from weasyprint import HTML
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
 from reportlab.pdfgen import canvas
