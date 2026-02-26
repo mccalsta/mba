@@ -205,17 +205,22 @@ tbody tr{
        <div class="card">
     <div class="card-title">Received From:</div>
 
-    <div style="font-size:18px; font-weight:600;">
-        {{ player.parent_name }}
-    </div>
+    <table style="width:100%; font-size:16px; line-height:1.9;">
+        <tr>
+            <td style="color:#6b7280; width:90px;">Parent:</td>
+            <td style="font-weight:600;">{{ player.parent_name }}</td>
+        </tr>
 
-    <div style="margin-top:6px; font-size:20px; font-weight:700;">
-        {{ player.full_name }}
-    </div>
+        <tr>
+            <td style="color:#6b7280;">Player:</td>
+            <td style="font-weight:700; font-size:18px;">{{ player.full_name }}</td>
+        </tr>
 
-    <div style="margin-top:8px; color:#4a5568;">
-        Phone: {{ player.phone1 }}
-    </div>
+        <tr>
+            <td style="color:#6b7280;">Phone:</td>
+            <td>{{ player.phone1 }}</td>
+        </tr>
+    </table>
 
     <hr>
 </div>
