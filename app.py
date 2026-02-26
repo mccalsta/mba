@@ -380,25 +380,31 @@ def build_receipt_pdf(buffer, player):
 def generate_receipt(player_id):
 
     conn = get_db()
-    player = conn.execute(
-        "SELECT * FROM players WHERE id=?",
-        (player_id,)
-    ).fetchone()
+
+    player = conn.execute("""
+        SELECT
+            id,
+            full_name,
+            parent_name,
+            phone1,
+            amount
+        FROM players
+        WHERE id = ?
+    """, (player_id,)).fetchone()
+
     conn.close()
 
     if not player:
         return "Player not found", 404
 
-    # Absolute path to static folder (CRITICAL FOR WEASYPRINT)
-    logo_path = os.path.join(app.root_path, "static", "logo.png")
+    formatted_amount = f"{int(player['amount']):,}"
 
     html = render_template(
         "receipt_ui.html",
         player=player,
         receipt_no=f"MBA-{player['id']:05d}",
-        amount=int(player["amount"]),
-        date=datetime.now().strftime("%d %b %Y"),
-        logo_path=logo_path
+        amount=formatted_amount,
+        date=datetime.now().strftime("%d %b %Y")
     )
 
     pdf = HTML(string=html, base_url=request.base_url).write_pdf()
