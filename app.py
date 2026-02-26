@@ -92,18 +92,42 @@ init_db()
 def home():
     return render_template("home.html")
 
+# -------- AGE CALCULATOR (TRUTH SOURCE) --------
+def calculate_age(dob_string):
+    if not dob_string:
+        return None
 
+    try:
+        dob = datetime.strptime(dob_string, "%Y-%m-%d")
+        today = datetime.today()
+
+        age = today.year - dob.year - (
+            (today.month, today.day) < (dob.month, dob.day)
+        )
+
+        return age
+    except:
+        return None
+
+# ---------------- REGISTER ----------------
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
 
-        amount = request.form.get("amount") or 0
+        dob = request.form.get("dob")
+        age = calculate_age(dob)   # ← REAL AGE FROM DOB
+
+        amount = request.form.get("amount")
+        if not amount or amount.strip() == "":
+            amount = 0
+        else:
+            amount = int(amount)
 
         data = (
             request.form.get("full_name"),
-            request.form.get("dob"),
-            request.form.get("age"),
+            dob,
+            age,  # ← STORED AGE (NOT USER INPUT)
             request.form.get("gender"),
             request.form.get("school"),
             request.form.get("grade"),
@@ -126,11 +150,11 @@ def register():
             request.form.get("goals"),
 
             amount,
-            request.form.get("payment_method"),  # <-- ADDED (CRITICAL FIX)
+            request.form.get("payment_method"),
             request.form.get("reference"),
             request.form.get("payment_plan"),
 
-            "Pending",  # admin controls payment status
+            "Pending",
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
@@ -152,7 +176,6 @@ def register():
         return redirect("/register")
 
     return render_template("register.html")
-
 # ---------------- ADMIN LOGIN ----------------
 
 
