@@ -378,27 +378,27 @@ def build_receipt_pdf(buffer, player):
 # ================= ROUTE =================
 @app.route("/receipt/<int:player_id>")
 def generate_receipt(player_id):
+
     conn = get_db()
-    player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
+    player = conn.execute(
+        "SELECT * FROM players WHERE id=?",
+        (player_id,)
+    ).fetchone()
     conn.close()
 
     if not player:
         return "Player not found", 404
 
-    # format values
-    amount = "{:,}".format(int(player["amount"]))
-    receipt_no = f"MBA-{player['id']:05d}"
-
     html = render_template(
         "receipt_ui.html",
         player=player,
-        receipt_no=receipt_no,
-        amount=amount,
-        date=datetime.now().strftime("%d %b %Y"),
-        logo_path=os.path.abspath("static/logo.png")
+        parent=player["parent"],
+        receipt_no=f"MBA-{player['id']:05d}",
+        amount=int(player["amount"]),
+        date=datetime.now().strftime("%d %b %Y")
     )
 
-    pdf = HTML(string=html, base_url=os.getcwd()).write_pdf()
+    pdf = HTML(string=html, base_url=request.base_url).write_pdf()
 
     return send_file(
         io.BytesIO(pdf),
