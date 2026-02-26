@@ -1,3 +1,4 @@
+print("LOADED APP VERSION 3 - RECEIPT ROUTE ACTIVE")
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 import os
