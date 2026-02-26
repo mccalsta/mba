@@ -376,8 +376,8 @@ def build_receipt_pdf(buffer, player):
 
 
 # ================= ROUTE =================
-@app.route("/receipt_ui/<int:player_id>")
-def generate_receipt_ui(player_id):
+@app.route("/receipt/<int:player_id>")
+def generate_receipt(player_id):
     conn = get_db()
     player = conn.execute("SELECT * FROM players WHERE id=?", (player_id,)).fetchone()
     conn.close()
