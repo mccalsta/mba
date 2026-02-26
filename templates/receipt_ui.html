@@ -3,159 +3,218 @@
 <html>
 <head>
 <meta charset="utf-8">
-
 <style>
+
 @page {
-    size: A5 landscape;
-    margin: 0;
+size: A4;
+margin: 30px;
 }
 
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:#eef2f7;
-    margin:0;
+background:#eef1f5;
+font-family: "Segoe UI", Arial, sans-serif;
+color:#2d3748;
 }
 
-.page{
-    padding:25px;
-}
-
-.card{
-    background:white;
-    border-radius:14px;
-    padding-bottom:25px;
+/* MAIN CARD */
+.wrapper{
+background:white;
+border-radius:14px;
+padding:40px;
+box-shadow:0 10px 35px rgba(0,0,0,.15);
 }
 
 /* HEADER */
 .header{
-    background:#2f66b3;
-    color:white;
-    padding:22px 28px;
-    border-radius:14px 14px 0 0;
-}
-.header h2{margin:0;font-size:22px;}
-.header small{opacity:.9}
-
-/* INFO TABLE */
-.info{
-    width:100%;
-    padding:18px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
-.box{
-    background:#f1f3f7;
-    padding:14px;
-    border-radius:12px;
-    font-size:14px;
+.title{
+font-size:34px;
+font-weight:700;
+letter-spacing:1px;
+}
+
+.subtitle{
+color:#e26a2c;
+font-size:22px;
+margin-top:8px;
+}
+
+.logo{
+width:130px;
+}
+
+.divider{
+border-top:1px solid #d5dbe3;
+margin:18px 0 22px 0;
+}
+
+/* META BAR */
+.meta{
+background:#f1f3f6;
+padding:16px 20px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+font-size:16px;
+margin-bottom:22px;
+}
+
+.meta strong{
+margin-left:10px;
+}
+
+/* INFO CARDS */
+.cards{
+display:flex;
+gap:25px;
+margin-bottom:30px;
+}
+
+.card{
+background:#f3f5f7;
+border-radius:12px;
+padding:20px;
+flex:1;
+}
+
+.card-title{
+color:#e26a2c;
+font-weight:700;
+margin-bottom:10px;
+font-size:20px;
+}
+
+.card hr{
+border:none;
+border-top:1px solid #d8dde5;
+margin-top:14px;
+}
+
+/* TABLE */
+.section-title{
+font-size:22px;
+font-weight:600;
+margin-bottom:12px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+thead{
+background:linear-gradient(180deg,#24364d,#182433);
+color:white;
+}
+
+th, td{
+padding:14px 16px;
+font-size:16px;
+}
+
+tbody tr{
+border-bottom:1px solid #d9dee5;
+}
+
+.total-row{
+font-weight:700;
+background:#f3f5f7;
 }
 
 .amount{
-    color:#20c997;
-    font-weight:bold;
-    font-size:24px;
-    margin-top:6px;
-}
-
-/* SUMMARY */
-.summary{
-    padding:0 25px;
-}
-
-.summary h3{
-    margin-bottom:8px;
-}
-
-.table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-}
-
-.table td{
-    padding:12px 6px;
-    border-top:1px solid #ccc;
-}
-
-.total{
-    font-weight:bold;
-    font-size:18px;
-    text-align:right;
-    padding-top:12px;
+color:#e26a2c;
+font-weight:700;
+text-align:right;
 }
 
 /* FOOTER */
 .footer{
-    margin-top:35px;
-    padding:0 25px;
-    font-size:12px;
+margin-top:25px;
+color:#444;
+font-size:16px;
 }
-.footer td{
-    padding-top:25px;
-}
-</style>
 
+</style>
 </head>
+
 <body>
 
-<div class="page">
-<div class="card">
+<div class="wrapper">
 
+```
 <div class="header">
-    <h2>MIRACLE BASKETBALL ACADEMY</h2>
-    <small>Official Payment Receipt</small>
+    <div>
+        <div class="title">MIRACLE BASKETBALL ACADEMY</div>
+        <div class="subtitle">Training Payment Receipt</div>
+    </div>
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
 </div>
 
-<!-- PLAYER + PAYMENT -->
+<div class="divider"></div>
 
-<table class="info">
-<tr>
-<td width="50%">
-<div class="box">
-<b>PLAYER DETAILS</b><br>
-Name: {{player.full_name}}<br>
-Parent: {{player.parent_name}}<br>
-Phone: {{player.phone1}}
+<div class="meta">
+    <div>
+        Receipt No: <strong>{{ receipt_no }}</strong><br>
+        Receipt Date: <strong>{{ date }}</strong>
+    </div>
+    <div>
+        Receipt Date: <strong>{{ date }}</strong>
+    </div>
 </div>
-</td>
 
-<td width="50%">
-<div class="box">
-<b>PAYMENT INFO</b><br>
-Description: Training Fees<br>
-Date: {{date}}
-<div class="amount">UGX {{amount}}</div>
+<div class="cards">
+
+    <div class="card">
+        <div class="card-title">Academy</div>
+        Kampala, Uganda<br>
+        +256 762 150992<br>
+        info@miraclebasketballacademy.com<br>
+        www.miraclebasketballacademy.com
+    </div>
+
+    <div class="card">
+        <div class="card-title">Received From:</div>
+        {{ parent }}<br>
+        <strong>{{ player.name }}</strong>
+        <hr>
+    </div>
+
 </div>
-</td>
-</tr>
+
+<div class="section-title">Training Payment Summary</div>
+
+<table>
+    <thead>
+        <tr>
+            <th align="left">Training Plan</th>
+            <th align="left">Fees Paid (UGX)</th>
+            <th class="amount">UGX {{ "{:,}".format(amount) }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Monthly</td>
+            <td>UGX {{ "{:,}".format(amount) }}</td>
+            <td></td>
+        </tr>
+        <tr class="total-row">
+            <td>Total</td>
+            <td></td>
+            <td class="amount">UGX {{ "{:,}".format(amount) }}</td>
+        </tr>
+    </tbody>
 </table>
 
-<!-- SUMMARY -->
-
-<div class="summary">
-<h3>Training Payment Summary</h3>
-
-<table class="table">
-<tr>
-<td>Monthly Training Fee</td>
-<td align="right">UGX {{amount}}</td>
-</tr>
-</table>
-
-<div class="total">
-Total Amount: UGX {{amount}}
+<div class="footer">
+    Thank you for being part of Miracle Basketball Academy
 </div>
-</div>
+```
 
-<!-- FOOTER -->
-
-<table class="footer" width="100%">
-<tr>
-<td>Authorized Signature</td>
-<td align="right">Thank you for supporting youth development!</td>
-</tr>
-</table>
-
-</div>
 </div>
 
 </body>
