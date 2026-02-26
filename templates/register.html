@@ -17,12 +17,12 @@
 
 <div class="form-group">
 <label>Date of Birth</label>
-<input type="date" name="dob">
+<input type="date" name="dob" id="dob" oninput="calculateAge()">
 </div>
 
 <div class="form-group">
 <label>Age</label>
-<input name="age" readonly>
+<input name="age" id="age" readonly>
 </div>
 
 <div class="form-group">
@@ -192,6 +192,32 @@ document.querySelector("input[name='dob']").addEventListener("change", function(
 
     document.getElementById("age").value = age;
 });
+</script>
+
+<script>
+function calculateAge() {
+
+    const dobInput = document.getElementById("dob").value;
+    const ageField = document.getElementById("age");
+
+    if (!dobInput) {
+        ageField.value = "";
+        return;
+    }
+
+    const dob = new Date(dobInput);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+
+    const monthDiff = today.getMonth() - dob.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    ageField.value = age >= 0 ? age : "";
+}
 </script>
 
 {% endblock %}
