@@ -70,7 +70,7 @@
     {% else %}
         <div class="paid-area">
             <span class="paid-badge">Paid</span>
-            <a href="/receipt/{{ p.id }}" class="receipt-btn">Receipt</a>
+            <a href="{{ url_for('generate_receipt', player_id=player.id) }}" class="btn btn-sm btn-primary">Receipt</a>
         </div>
     {% endif %}
 
