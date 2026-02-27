@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Add Shop Product</h1>
+
+<form method="POST" class="card">
+
+<div class="form-group">
+<label>Product Name</label>
+<input name="name" required>
+</div>
+
+<div class="form-group">
+<label>Category</label>
+<select name="category" required>
+<option>Jerseys</option>
+<option>Shorts</option>
+<option>Balls</option>
+<option>Shoes</option>
+<option>Bottles</option>
+<option>Bags</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Default Price (UGX)</label>
+<input name="base_price" type="number" required>
+</div>
+
+<hr>
+
+<h3>Variants / Sizes / Types</h3>
+
+<table id="variantTable" style="width:100%">
+<tr>
+<th>Variant</th>
+<th>Stock</th>
+<th>Price (optional)</th>
+<th></th>
+</tr>
+</table>
+
+<button type="button" onclick="addRow()">Add Variant</button>
+
+<br><br> <button type="submit" class="btn">Save Product</button>
+
+</form>
+
+<script>
+function addRow(){
+    let table=document.getElementById("variantTable");
+    let row=table.insertRow();
+
+    row.innerHTML=`
+        <td><input name="variant[]" placeholder="M, L, Size 7, Red"></td>
+        <td><input name="stock[]" type="number"></td>
+        <td><input name="price[]" type="number"></td>
+        <td><button type="button" onclick="this.parentElement.parentElement.remove()">X</button></td>
+    `;
+}
+</script>
+
+{% endblock %}
