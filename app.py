@@ -27,13 +27,17 @@ app = Flask(__name__)
 app.secret_key = "miracle_secret_key"
 
 DB = "database.db"
-
+# ---------- DATABASE CONNECTION ----------
+def get_db():
+    conn = sqlite3.connect(DB)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 # ---------------- DB ----------------
 def init_db():
     conn = get_db()
 
-    # ---------------- PLAYERS ----------------
+    # PLAYERS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS players (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,7 +70,7 @@ def init_db():
     )
     """)
 
-    # ---------------- ADMINS ----------------
+    # ADMINS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,22 +80,52 @@ def init_db():
     )
     """)
 
-    # ---------------- PRODUCTS ----------------
+    # PRODUCTS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         category TEXT,
-        size TEXT,
-        price INTEGER
+        base_price INTEGER,
+        created_at TEXT
     )
     """)
 
-    # add stock column safely (runs once only)
-    try:
-        conn.execute("ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0")
-    except:
-        pass
+    # PRODUCT VARIANTS (sizes)
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS product_variants (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER,
+        variant TEXT,
+        stock INTEGER DEFAULT 0,
+        price INTEGER,
+        FOREIGN KEY(product_id) REFERENCES products(id)
+    )
+    """)
+
+    # SALES
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS sales (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        total INTEGER,
+        payment_method TEXT,
+        created_at TEXT
+    )
+    """)
+
+    # SALE ITEMS
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS sale_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sale_id INTEGER,
+        product_name TEXT,
+        variant TEXT,
+        quantity INTEGER,
+        price INTEGER,
+        subtotal INTEGER,
+        FOREIGN KEY(sale_id) REFERENCES sales(id)
+    )
+    """)
 
     conn.commit()
     conn.close()
@@ -574,4 +608,5 @@ def shop_receipt(sale_id):
                      download_name=f"shop_receipt_{sale_id}.pdf",
                      mimetype="application/pdf")
 
-
+if __name__ == "__main__":
+    app.run(debug=True)
