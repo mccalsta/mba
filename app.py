@@ -83,16 +83,27 @@ def init_db():
     """)
 
 
-    # PRODUCTS (shop items)
+# PRODUCTS (what item is sold)
 conn.execute("""
 CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     category TEXT,
-    price INTEGER NOT NULL,
-    stock INTEGER DEFAULT 0,
+    base_price INTEGER NOT NULL,
     image TEXT,
     created_at TEXT
+)
+""")
+
+# PRODUCT VARIANTS (sizes / types / versions)
+conn.execute("""
+CREATE TABLE IF NOT EXISTS product_variants (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER,
+    variant TEXT,             -- S, M, L, XL, Size 5 Ball, etc
+    price INTEGER,            -- can override price per size
+    stock INTEGER DEFAULT 0,
+    FOREIGN KEY(product_id) REFERENCES products(id)
 )
 """)
 
@@ -104,21 +115,22 @@ CREATE TABLE IF NOT EXISTS orders (
     phone TEXT,
     total INTEGER,
     payment_method TEXT,
-    status TEXT DEFAULT 'Paid',
     created_at TEXT
 )
 """)
 
-# ORDER ITEMS (items inside receipt)
+# ORDER ITEMS (each line in receipt)
 conn.execute("""
 CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id INTEGER,
     product_id INTEGER,
+    variant_id INTEGER,
     quantity INTEGER,
     price INTEGER,
     FOREIGN KEY(order_id) REFERENCES orders(id),
-    FOREIGN KEY(product_id) REFERENCES products(id)
+    FOREIGN KEY(product_id) REFERENCES products(id),
+    FOREIGN KEY(variant_id) REFERENCES product_variants(id)
 )
 """)
 
