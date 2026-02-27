@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+
+<style>
+
+@page {
+    size: A4;
+    margin: 28px;
+}
+
+body{
+    font-family: "Segoe UI", Arial, sans-serif;
+    color:#1f2937;
+}
+
+/* MAIN CARD */
+.wrapper{
+    background:white;
+    border-radius:12px;
+    padding:40px;
+}
+
+/* HEADER */
+.header{
+    display:table;
+    width:100%;
+    margin-bottom:20px;
+}
+
+.left{
+    display:table-cell;
+    vertical-align:middle;
+}
+
+.right{
+    display:table-cell;
+    text-align:right;
+    vertical-align:middle;
+}
+
+.title{
+    font-size:28px;
+    font-weight:700;
+}
+
+.subtitle{
+    color:#f97316;
+    font-size:18px;
+    margin-top:5px;
+}
+
+.logo{
+    width:110px;
+}
+
+/* INFO BAR */
+.meta{
+    background:#f3f4f6;
+    padding:14px 18px;
+    border-radius:10px;
+    margin:20px 0;
+    font-size:15px;
+}
+
+.meta-row{
+    display:table;
+    width:100%;
+}
+
+.meta-left{ display:table-cell; }
+.meta-right{ display:table-cell; text-align:right; }
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+thead{
+    background:#0f172a;
+    color:white;
+}
+
+th, td{
+    padding:12px 14px;
+    font-size:15px;
+}
+
+tbody tr{
+    border-bottom:1px solid #e5e7eb;
+}
+
+.amount{
+    text-align:right;
+    font-weight:600;
+}
+
+.total-box{
+    margin-top:25px;
+    width:320px;
+    float:right;
+}
+
+.total-row{
+    display:table;
+    width:100%;
+    padding:6px 0;
+}
+
+.total-label{
+    display:table-cell;
+}
+
+.total-value{
+    display:table-cell;
+    text-align:right;
+    font-weight:700;
+}
+
+.grand{
+    font-size:20px;
+    color:#16a34a;
+}
+
+/* FOOTER */
+.footer{
+    clear:both;
+    margin-top:60px;
+    font-size:15px;
+    text-align:center;
+    color:#374151;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+```
+<div class="header">
+    <div class="left">
+        <div class="title">MIRACLE BASKETBALL ACADEMY</div>
+        <div class="subtitle">Merchandise Receipt</div>
+    </div>
+    <div class="right">
+        <img src="file://{{ logo_path }}" class="logo">
+    </div>
+</div>
+
+<div class="meta">
+    <div class="meta-row">
+        <div class="meta-left">
+            Receipt No: <strong>SHOP-{{ "%05d"|format(sale.id) }}</strong><br>
+            Date: <strong>{{ sale.created_at }}</strong>
+        </div>
+        <div class="meta-right">
+            Payment Method: <strong>{{ sale.payment_method }}</strong>
+        </div>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th align="left">Item</th>
+            <th align="left">Variant</th>
+            <th align="right">Qty</th>
+            <th align="right">Price</th>
+            <th class="amount">Subtotal</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for i in items %}
+        <tr>
+            <td>{{ i.product_name }}</td>
+            <td>{{ i.variant }}</td>
+            <td align="right">{{ i.quantity }}</td>
+            <td align="right">UGX {{ "{:,}".format(i.price) }}</td>
+            <td class="amount">UGX {{ "{:,}".format(i.subtotal) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="total-box">
+    <div class="total-row">
+        <div class="total-label">Total Items</div>
+        <div class="total-value">{{ items|length }}</div>
+    </div>
+
+    <div class="total-row grand">
+        <div class="total-label">TOTAL</div>
+        <div class="total-value">UGX {{ "{:,}".format(sale.total) }}</div>
+    </div>
+</div>
+
+<div class="footer">
+    Thank you for supporting Miracle Basketball Academy 🏀
+</div>
+```
+
+</div>
+
+</body>
+</html>
