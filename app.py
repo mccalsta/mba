@@ -134,6 +134,28 @@ CREATE TABLE IF NOT EXISTS order_items (
 )
 """)
 
+# SALES TABLE
+conn.execute("""
+CREATE TABLE IF NOT EXISTS sales (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    total INTEGER,
+    payment_method TEXT,
+    created_at TEXT
+)
+""")
+
+# SALE ITEMS
+conn.execute("""
+CREATE TABLE IF NOT EXISTS sale_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sale_id INTEGER,
+    product_name TEXT,
+    variant TEXT,
+    quantity INTEGER,
+    price INTEGER,
+    subtotal INTEGER
+)
+""")
 
 
     conn.commit()
@@ -535,5 +557,61 @@ def add_product():
         return redirect("/admin/products/add")
 
     return render_template("add_product.html")
+
+# ---------------- SHOP POS ----------------
+@app.route("/shop", methods=["GET", "POST"])
+def shop():
+
+    if "admin" not in session:
+        return redirect("/admin")
+
+    conn = get_db()
+
+    if request.method == "POST":
+
+        variants = request.form.getlist("variant")
+        qtys = request.form.getlist("qty")
+        prices = request.form.getlist("price")
+        names = request.form.getlist("name")
+
+        total = 0
+        items = []
+
+        for n, v, q, p in zip(names, variants, qtys, prices):
+            q = int(q or 0)
+            p = int(p or 0)
+            if q > 0:
+                subtotal = q * p
+                total += subtotal
+                items.append((n, v, q, p, subtotal))
+
+        cursor = conn.execute(
+            "INSERT INTO sales (total,payment_method,created_at) VALUES (?,?,datetime('now'))",
+            (total, request.form.get("payment_method"))
+        )
+
+        sale_id = cursor.lastrowid
+
+        for i in items:
+            conn.execute("""
+                INSERT INTO sale_items (sale_id,product_name,variant,quantity,price,subtotal)
+                VALUES (?,?,?,?,?,?)
+            """, (sale_id, *i))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(f"/shop/receipt/{sale_id}")
+
+    # load products
+    products = conn.execute("""
+        SELECT p.id, p.name, v.variant, v.price, v.stock
+        FROM products p
+        JOIN product_variants v ON v.product_id=p.id
+        ORDER BY p.name
+    """).fetchall()
+
+    conn.close()
+    return render_template("shop_pos.html", products=products)
 
 
