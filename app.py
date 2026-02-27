@@ -614,4 +614,26 @@ def shop():
     conn.close()
     return render_template("shop_pos.html", products=products)
 
+@app.route("/shop/receipt/<int:sale_id>")
+def shop_receipt(sale_id):
+
+    conn = get_db()
+
+    sale = conn.execute("SELECT * FROM sales WHERE id=?", (sale_id,)).fetchone()
+    items = conn.execute("SELECT * FROM sale_items WHERE sale_id=?", (sale_id,)).fetchall()
+
+    conn.close()
+
+    html = render_template(
+        "shop_receipt.html",
+        sale=sale,
+        items=items
+    )
+
+    pdf = HTML(string=html, base_url=request.base_url).write_pdf()
+
+    return send_file(io.BytesIO(pdf),
+                     download_name=f"shop_receipt_{sale_id}.pdf",
+                     mimetype="application/pdf")
+
 
