@@ -30,16 +30,10 @@ DB = "database.db"
 
 
 # ---------------- DB ----------------
-def get_db():
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
 def init_db():
     conn = get_db()
 
-    # PLAYERS TABLE
+    # ---------------- PLAYERS ----------------
     conn.execute("""
     CREATE TABLE IF NOT EXISTS players (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,7 +66,7 @@ def init_db():
     )
     """)
 
-    # ADMINS TABLE  ← ADD HERE (NOT AFTER CLOSE)
+    # ---------------- ADMINS ----------------
     conn.execute("""
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,81 +76,22 @@ def init_db():
     )
     """)
 
+    # ---------------- PRODUCTS ----------------
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        category TEXT,
+        size TEXT,
+        price INTEGER
+    )
+    """)
 
-# PRODUCTS (what item is sold)
-conn.execute("""
-CREATE TABLE IF NOT EXISTS products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    category TEXT,
-    base_price INTEGER NOT NULL,
-    image TEXT,
-    created_at TEXT
-)
-""")
-
-# PRODUCT VARIANTS (sizes / types / versions)
-conn.execute("""
-CREATE TABLE IF NOT EXISTS product_variants (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER,
-    variant TEXT,             -- S, M, L, XL, Size 5 Ball, etc
-    price INTEGER,            -- can override price per size
-    stock INTEGER DEFAULT 0,
-    FOREIGN KEY(product_id) REFERENCES products(id)
-)
-""")
-
-# ORDERS (one receipt)
-conn.execute("""
-CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_name TEXT,
-    phone TEXT,
-    total INTEGER,
-    payment_method TEXT,
-    created_at TEXT
-)
-""")
-
-# ORDER ITEMS (each line in receipt)
-conn.execute("""
-CREATE TABLE IF NOT EXISTS order_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_id INTEGER,
-    product_id INTEGER,
-    variant_id INTEGER,
-    quantity INTEGER,
-    price INTEGER,
-    FOREIGN KEY(order_id) REFERENCES orders(id),
-    FOREIGN KEY(product_id) REFERENCES products(id),
-    FOREIGN KEY(variant_id) REFERENCES product_variants(id)
-)
-""")
-
-# SALES TABLE
-conn.execute("""
-CREATE TABLE IF NOT EXISTS sales (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    total INTEGER,
-    payment_method TEXT,
-    created_at TEXT
-)
-""")
-
-# SALE ITEMS
-conn.execute("""
-CREATE TABLE IF NOT EXISTS sale_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sale_id INTEGER,
-    product_name TEXT,
-    variant TEXT,
-    quantity INTEGER,
-    price INTEGER,
-    subtotal INTEGER
-)
-""")
-
+    # add stock column safely (runs once only)
+    try:
+        conn.execute("ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0")
+    except:
+        pass
 
     conn.commit()
     conn.close()
