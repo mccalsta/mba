@@ -82,6 +82,48 @@ def init_db():
     )
     """)
 
+
+    # PRODUCTS (shop items)
+conn.execute("""
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    category TEXT,
+    price INTEGER NOT NULL,
+    stock INTEGER DEFAULT 0,
+    image TEXT,
+    created_at TEXT
+)
+""")
+
+# ORDERS (one receipt)
+conn.execute("""
+CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_name TEXT,
+    phone TEXT,
+    total INTEGER,
+    payment_method TEXT,
+    status TEXT DEFAULT 'Paid',
+    created_at TEXT
+)
+""")
+
+# ORDER ITEMS (items inside receipt)
+conn.execute("""
+CREATE TABLE IF NOT EXISTS order_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER,
+    product_id INTEGER,
+    quantity INTEGER,
+    price INTEGER,
+    FOREIGN KEY(order_id) REFERENCES orders(id),
+    FOREIGN KEY(product_id) REFERENCES products(id)
+)
+""")
+
+
+
     conn.commit()
     conn.close()
 init_db()
