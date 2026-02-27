@@ -493,3 +493,47 @@ def generate_receipt(player_id):
         download_name=f"receipt_{player_id}.pdf",
         mimetype="application/pdf"
     )
+# ---------------- SHOP: ADD PRODUCT ----------------
+@app.route("/admin/products/add", methods=["GET", "POST"])
+def add_product():
+
+    if "admin" not in session:
+        return redirect("/admin")
+
+    if request.method == "POST":
+
+        name = request.form.get("name")
+        category = request.form.get("category")
+        base_price = request.form.get("base_price")
+
+        conn = get_db()
+
+        # create product
+        cursor = conn.execute("""
+            INSERT INTO products (name, category, base_price, created_at)
+            VALUES (?,?,?,datetime('now'))
+        """, (name, category, base_price))
+
+        product_id = cursor.lastrowid
+
+        # variants (sizes)
+        variants = request.form.getlist("variant[]")
+        stocks = request.form.getlist("stock[]")
+        prices = request.form.getlist("price[]")
+
+        for v, s, p in zip(variants, stocks, prices):
+            if v.strip() != "":
+                conn.execute("""
+                    INSERT INTO product_variants (product_id, variant, stock, price)
+                    VALUES (?,?,?,?)
+                """, (product_id, v, s or 0, p or base_price))
+
+        conn.commit()
+        conn.close()
+
+        flash("Product added successfully!")
+        return redirect("/admin/products/add")
+
+    return render_template("add_product.html")
+
+
