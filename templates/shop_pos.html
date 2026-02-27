@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Academy Shop</h1>
+
+<form method="POST">
+
+<table class="shop-table">
+<tr>
+<th>Item</th>
+<th>Variant</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+</tr>
+
+{% for p in products %}
+
+<tr>
+<td>{{ p.name }}<input type="hidden" name="name" value="{{ p.name }}"></td>
+<td>{{ p.variant }}<input type="hidden" name="variant" value="{{ p.variant }}"></td>
+<td>
+UGX {{ p.price }}
+<input type="hidden" name="price" value="{{ p.price }}">
+</td>
+<td>
+<input type="number" name="qty" value="0" min="0" onchange="calc(this)">
+</td>
+<td class="rowTotal">0</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<h2>Total: UGX <span id="grand">0</span></h2>
+
+<label>Payment Method</label> <select name="payment_method">
+
+<option>Cash</option>
+<option>Mobile Money</option>
+</select>
+
+<br><br> <button type="submit">Complete Sale</button>
+
+</form>
+
+<script>
+function calc(el){
+    let row=el.parentElement.parentElement;
+    let price=parseInt(row.children[2].innerText.replace(/\D/g,''))||0;
+    let qty=parseInt(el.value)||0;
+    let total=price*qty;
+    row.children[4].innerText=total;
+
+    let grand=0;
+    document.querySelectorAll(".rowTotal").forEach(r=>grand+=parseInt(r.innerText)||0);
+    document.getElementById("grand").innerText=grand;
+}
+</script>
+
+{% endblock %}
