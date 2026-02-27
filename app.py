@@ -624,13 +624,16 @@ def shop_receipt(sale_id):
 
     conn.close()
 
+    logo_path = os.path.abspath("static/logo.png")
+
     html = render_template(
         "shop_receipt.html",
         sale=sale,
-        items=items
+        items=items,
+        logo_path=logo_path
     )
 
-    pdf = HTML(string=html, base_url=request.base_url).write_pdf()
+    pdf = HTML(string=html, base_url="/").write_pdf()
 
     return send_file(io.BytesIO(pdf),
                      download_name=f"shop_receipt_{sale_id}.pdf",
