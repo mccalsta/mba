@@ -30,10 +30,19 @@
 
         <!-- Menu Links -->
         <ul class="nav-links" id="nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/register">Register Player</a></li>
-            <li><a href="/admin">Admin</a></li>
-        </ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/register">Register Player</a></li>
+    <li><a href="/shop">Shop</a></li>
+
+    {% if session.get("admin") %}
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/admin/products/add">Add Product</a></li>
+        <li><a href="/admin/stock">Stock</a></li>
+        <li><a href="/logout">Logout</a></li>
+    {% else %}
+        <li><a href="/admin">Admin Login</a></li>
+    {% endif %}
+</ul>
 
     </div>
 </header>
