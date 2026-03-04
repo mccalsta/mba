@@ -667,6 +667,50 @@ margin-left:20px;
 }
 
 /* =========================================
+   TEAMS PAGE
+========================================= */
+
+.team-container{
+display:flex;
+align-items:center;
+gap:40px;
+}
+
+.team-image{
+flex:1;
+}
+
+.team-text{
+flex:1.2;
+}
+
+.team-image img{
+width:100%;
+height:320px;
+object-fit:cover;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.team-block{
+margin-bottom:40px;
+}
+
+/* mobile layout */
+
+@media(max-width:768px){
+
+.team-container{
+flex-direction:column;
+}
+
+.team-image img{
+height:240px;
+}
+
+}
+
+/* =========================================
    FOOTER
 ========================================= */
 
