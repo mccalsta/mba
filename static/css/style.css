@@ -25,13 +25,36 @@ radial-gradient(circle at 20% 20%, #fff3d6 0%, #fdfaf4 40%, #f8fafc 100%);
 .container{
 width:90%;
 max-width:1100px;
-margin:auto;
+margin:30px auto;
 }
 
 h2{
 color:#0f172a;
 border-bottom:3px solid #f97316;
 padding-bottom:5px;
+}
+
+
+/* =========================================
+   PANEL SECTIONS (RESTORED)
+========================================= */
+
+.section{
+
+background:white;
+
+margin:40px auto;
+
+border-radius:18px;
+
+max-width:1100px;
+
+padding:50px 40px;
+
+box-shadow:
+0 12px 30px rgba(0,0,0,0.08),
+0 0 0 3px rgba(245,158,11,0.08);
+
 }
 
 
@@ -91,7 +114,9 @@ color:white;
 }
 
 
-/* MOBILE NAV */
+/* =========================================
+   MOBILE NAV
+========================================= */
 
 @media(max-width:768px){
 
@@ -123,7 +148,9 @@ padding:18px 0;
 }
 
 
-/* NAV OVERLAY */
+/* =========================================
+   NAV OVERLAY
+========================================= */
 
 .nav-overlay{
 position:fixed;
@@ -163,7 +190,14 @@ justify-content:center;
 
 text-align:center;
 color:white;
+
 padding:40px;
+
+/* make hero full width */
+
+margin:0;
+border-radius:0;
+max-width:none;
 
 }
 
@@ -264,7 +298,6 @@ color:white;
 
 .about-section{
 padding:80px 20px;
-background:#f1f5f9;
 }
 
 .about-container{
