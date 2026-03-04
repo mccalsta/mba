@@ -51,6 +51,16 @@
 function filterGallery(category){
 
 let items = document.querySelectorAll(".gallery-item")
+let buttons = document.querySelectorAll(".gallery-filters button")
+
+/* remove active state */
+
+buttons.forEach(btn => btn.classList.remove("active"))
+
+/* set active button */
+
+event.target.classList.add("active")
+
 
 items.forEach(item => {
 
