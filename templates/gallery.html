@@ -6,65 +6,35 @@
     <p>Moments of growth, discipline, competition, and community.</p>
 </section>
 
-<!-- TRAINING -->
-
 <div class="section">
 
-<h2>Training Sessions</h2>
+<!-- FILTER BUTTONS -->
+
+<div class="gallery-filters">
+
+<button onclick="filterGallery('all')" class="active">All</button> <button onclick="filterGallery('training')">Training</button> <button onclick="filterGallery('games')">Games</button> <button onclick="filterGallery('camps')">Camps</button> <button onclick="filterGallery('outreach')">Outreach</button>
+
+</div>
+
+<!-- GALLERY GRID -->
 
 <div class="gallery-grid">
 
-<img src="/static/gallery/training1.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/training2.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/training3.jpg" onclick="openImage(this.src)">
+<img class="gallery-item training" src="/static/gallery/training1.jpg" onclick="openImage(this.src)">
+<img class="gallery-item training" src="/static/gallery/training2.jpg" onclick="openImage(this.src)">
+<img class="gallery-item training" src="/static/gallery/training3.jpg" onclick="openImage(this.src)">
 
-</div>
+<img class="gallery-item games" src="/static/gallery/game1.jpg" onclick="openImage(this.src)">
+<img class="gallery-item games" src="/static/gallery/game2.jpg" onclick="openImage(this.src)">
+<img class="gallery-item games" src="/static/gallery/game3.jpg" onclick="openImage(this.src)">
 
-</div>
+<img class="gallery-item camps" src="/static/gallery/camp1.jpg" onclick="openImage(this.src)">
+<img class="gallery-item camps" src="/static/gallery/camp2.jpg" onclick="openImage(this.src)">
+<img class="gallery-item camps" src="/static/gallery/camp3.jpg" onclick="openImage(this.src)">
 
-<!-- GAMES -->
-
-<div class="section">
-
-<h2>Game Action</h2>
-
-<div class="gallery-grid">
-
-<img src="/static/gallery/game1.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/game2.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/game3.jpg" onclick="openImage(this.src)">
-
-</div>
-
-</div>
-
-<!-- CAMPS -->
-
-<div class="section">
-
-<h2>Holiday Development Camps</h2>
-
-<div class="gallery-grid">
-
-<img src="/static/gallery/camp1.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/camp2.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/camp3.jpg" onclick="openImage(this.src)">
-
-</div>
-
-</div>
-
-<!-- COMMUNITY -->
-
-<div class="section">
-
-<h2>Community Outreach</h2>
-
-<div class="gallery-grid">
-
-<img src="/static/gallery/outreach1.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/outreach2.jpg" onclick="openImage(this.src)">
-<img src="/static/gallery/outreach3.jpg" onclick="openImage(this.src)">
+<img class="gallery-item outreach" src="/static/gallery/outreach1.jpg" onclick="openImage(this.src)">
+<img class="gallery-item outreach" src="/static/gallery/outreach2.jpg" onclick="openImage(this.src)">
+<img class="gallery-item outreach" src="/static/gallery/outreach3.jpg" onclick="openImage(this.src)">
 
 </div>
 
@@ -78,13 +48,35 @@
 
 <script>
 
+function filterGallery(category){
+
+let items = document.querySelectorAll(".gallery-item")
+
+items.forEach(item => {
+
+if(category === "all" || item.classList.contains(category)){
+item.style.display = "block"
+}
+else{
+item.style.display = "none"
+}
+
+})
+
+}
+
+
 function openImage(src){
+
 document.getElementById("lightbox").style.display="flex"
 document.getElementById("lightbox-img").src=src
+
 }
 
 function closeImage(){
+
 document.getElementById("lightbox").style.display="none"
+
 }
 
 </script>
