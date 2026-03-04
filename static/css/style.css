@@ -1017,7 +1017,172 @@ hr{
     transform:translateY(-50%);
 }
 
+/* HERO */
 
+.hero{
+
+height:90vh;
+
+background:
+linear-gradient(rgba(15,23,42,0.75),rgba(15,23,42,0.75)),
+url("/static/images/hero.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+padding:40px;
+
+}
+
+.hero h1{
+
+font-size:48px;
+margin-bottom:20px;
+
+}
+
+.hero p{
+
+max-width:700px;
+margin:auto;
+margin-bottom:30px;
+
+}
+
+
+/* BUTTONS */
+
+.btn-primary{
+
+background:#f97316;
+color:white;
+
+padding:12px 25px;
+border-radius:6px;
+text-decoration:none;
+margin-right:10px;
+
+}
+
+.btn-secondary{
+
+background:#1e293b;
+color:white;
+
+padding:12px 25px;
+border-radius:6px;
+text-decoration:none;
+
+}
+
+.btn-outline{
+
+border:2px solid #f97316;
+padding:10px 22px;
+border-radius:6px;
+text-decoration:none;
+color:#f97316;
+
+}
+
+
+/* ABOUT */
+
+.about-section{
+
+padding:80px 20px;
+background:#f1f5f9;
+
+}
+
+.about-container{
+
+display:flex;
+gap:40px;
+max-width:1100px;
+margin:auto;
+align-items:center;
+
+}
+
+.about-image img{
+
+width:100%;
+border-radius:10px;
+
+}
+
+
+/* PROGRAMS */
+
+.programs{
+
+padding:80px 20px;
+text-align:center;
+
+}
+
+.program-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+max-width:1100px;
+margin:auto;
+
+}
+
+.program-card{
+
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+
+}
+
+
+/* SHOP */
+
+.shop-preview{
+
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+text-align:center;
+padding:80px 20px;
+
+}
+
+
+/* CTA */
+
+.cta{
+
+padding:80px 20px;
+text-align:center;
+
+background:#f97316;
+color:white;
+
+}
+
+.cta a{
+
+background:white;
+color:#f97316;
+
+padding:12px 25px;
+border-radius:6px;
+text-decoration:none;
+
+}
 
 
 
