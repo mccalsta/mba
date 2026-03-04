@@ -10,6 +10,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
 </head>
 
 <body>
@@ -82,6 +83,15 @@ links.forEach(link => {
         nav.classList.remove("active");
         overlay.classList.remove("active");
     };
+});
+</script>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+AOS.init({
+duration: 900,
+once: true
 });
 </script>
 
