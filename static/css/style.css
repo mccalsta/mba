@@ -1252,7 +1252,83 @@ transition:0.3s;
 
 }
 
+/* =========================================
+   UNIFIED BUTTON SYSTEM
+   (Overrides previous button styles)
+========================================= */
 
+.btn-primary,
+.btn-secondary,
+.btn-outline{
+
+display:inline-block;
+padding:12px 22px;
+
+font-size:15px;
+font-weight:600;
+
+border-radius:8px;
+text-decoration:none;
+
+min-width:180px;
+text-align:center;
+
+transition:0.25s;
+
+}
+
+/* PRIMARY BUTTON */
+
+.btn-primary{
+
+background:linear-gradient(135deg,#ff8c00,#ff5e00);
+color:white;
+border:none;
+
+box-shadow:0 8px 18px rgba(255,120,0,0.35);
+
+}
+
+.btn-primary:hover{
+
+transform:translateY(-2px);
+box-shadow:0 14px 30px rgba(255,120,0,0.55);
+
+}
+
+
+/* SECONDARY BUTTON */
+
+.btn-secondary{
+
+background:#1e293b;
+color:white;
+
+}
+
+.btn-secondary:hover{
+
+background:#0f172a;
+
+}
+
+
+/* OUTLINE BUTTON */
+
+.btn-outline{
+
+border:2px solid #f97316;
+color:#f97316;
+background:transparent;
+
+}
+
+.btn-outline:hover{
+
+background:#f97316;
+color:white;
+
+}
 
 
 
