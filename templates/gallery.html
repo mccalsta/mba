@@ -6,44 +6,87 @@
     <p>Moments of growth, discipline, competition, and community.</p>
 </section>
 
+<!-- TRAINING -->
 
-<section class="gallery-page">
+<div class="section">
 
-    <div class="gallery-grid">
+<h2>Training Sessions</h2>
 
-        <img src="/static/gallery/training1.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/training2.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/training3.jpg" onclick="openImage(this.src)">
-        
-        <img src="/static/gallery/game1.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/game2.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/game3.jpg" onclick="openImage(this.src)">
+<div class="gallery-grid">
 
-        <img src="/static/gallery/camp1" onclick="openImage(this.src)">
-        <img src="/static/gallery/camp2.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/camp3.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/training1.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/training2.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/training3.jpg" onclick="openImage(this.src)">
 
-        <img src="/static/gallery/outreach1.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/outreach2.jpg" onclick="openImage(this.src)">
-        <img src="/static/gallery/outreach3.jpg" onclick="openImage(this.src)">
+</div>
 
-    </div>
+</div>
 
-</section>
+<!-- GAMES -->
+
+<div class="section">
+
+<h2>Game Action</h2>
+
+<div class="gallery-grid">
+
+<img src="/static/gallery/game1.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/game2.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/game3.jpg" onclick="openImage(this.src)">
+
+</div>
+
+</div>
+
+<!-- CAMPS -->
+
+<div class="section">
+
+<h2>Holiday Development Camps</h2>
+
+<div class="gallery-grid">
+
+<img src="/static/gallery/camp1.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/camp2.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/camp3.jpg" onclick="openImage(this.src)">
+
+</div>
+
+</div>
+
+<!-- COMMUNITY -->
+
+<div class="section">
+
+<h2>Community Outreach</h2>
+
+<div class="gallery-grid">
+
+<img src="/static/gallery/outreach1.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/outreach2.jpg" onclick="openImage(this.src)">
+<img src="/static/gallery/outreach3.jpg" onclick="openImage(this.src)">
+
+</div>
+
+</div>
+
+<!-- LIGHTBOX -->
+
 <div id="lightbox" onclick="closeImage()">
-    <img id="lightbox-img">
+<img id="lightbox-img">
 </div>
 
 <script>
 
 function openImage(src){
-    document.getElementById("lightbox").style.display="flex"
-    document.getElementById("lightbox-img").src=src
+document.getElementById("lightbox").style.display="flex"
+document.getElementById("lightbox-img").src=src
 }
 
 function closeImage(){
-    document.getElementById("lightbox").style.display="none"
+document.getElementById("lightbox").style.display="none"
 }
 
 </script>
+
 {% endblock %}
