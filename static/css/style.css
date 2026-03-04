@@ -970,6 +970,74 @@ border-radius:10px;
 }
 
 /* =========================================
+   JOIN PAGE
+========================================= */
+
+.join-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+
+gap:25px;
+
+margin-top:30px;
+
+}
+
+.join-card{
+
+background:#f1f5f9;
+
+padding:30px;
+
+border-radius:12px;
+
+text-align:center;
+
+box-shadow:0 5px 18px rgba(0,0,0,0.08);
+
+transition:0.3s;
+
+}
+
+.join-card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 12px 30px rgba(0,0,0,0.15);
+
+}
+
+.join-icon{
+
+font-size:36px;
+
+margin-bottom:10px;
+
+}
+
+.join-card.highlight{
+
+border-top:5px solid #f97316;
+
+background:white;
+
+}
+
+.join-card h3{
+
+margin-bottom:10px;
+
+}
+
+.join-card p{
+
+margin-bottom:15px;
+
+}
+
+/* =========================================
    FOOTER
 ========================================= */
 
