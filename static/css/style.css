@@ -1244,7 +1244,13 @@ margin-top:30px;
 
 }
 
+.program-card:hover,
+.merch-card:hover{
 
+transform:translateY(-6px);
+transition:0.3s;
+
+}
 
 
 
