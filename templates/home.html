@@ -5,23 +5,53 @@
 <!-- HERO -->
 <section class="hero">
 
+<div class="hero-slide active"></div>
+<div class="hero-slide"></div>
+<div class="hero-slide"></div>
+
 <div class="hero-content">
 
-<h1>Raising Athletes. Shaping Character. Inspiring Purpose.</h1>
+<h1>Miracle Basketball Academy</h1>
 
 <p>
-Miracle Basketball Academy is a Christ-centred youth development program
-training young athletes through discipline, teamwork and mentorship.
+Developing athletes, building character, and inspiring purpose through basketball.
 </p>
 
 <div class="hero-buttons">
-<a href="/register" class="btn-primary">Join The Academy</a>
-<a href="/shop" class="btn-secondary">Shop Merchandise</a>
+
+<a href="/register" class="btn-primary">Register Player</a>
+
+<a href="/programs" class="btn-outline">View Programs</a>
+
 </div>
 
 </div>
 
 </section>
+
+<script>
+
+let slides = document.querySelectorAll(".hero-slide")
+let index = 0
+
+function showSlide(){
+
+slides.forEach(slide => slide.classList.remove("active"))
+
+index++
+
+if(index >= slides.length){
+index = 0
+}
+
+slides[index].classList.add("active")
+
+}
+
+setInterval(showSlide, 5000)
+
+</script>
+
 
 
 <!-- ABOUT -->
