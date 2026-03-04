@@ -610,3 +610,27 @@ def shop_receipt(sale_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/programs")
+def programs():
+    return render_template("programs.html")
+
+@app.route("/teams")
+def teams():
+    return render_template("teams.html")
+
+@app.route("/impact")
+def impact():
+    return render_template("impact.html")
+
+@app.route("/gallery")
+def gallery():
+    return render_template("gallery.html")
+
+@app.route("/join")
+def join():
+    return render_template("join.html")
