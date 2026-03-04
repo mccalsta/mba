@@ -791,7 +791,32 @@ hr{
     border-radius:10px;
 }
 
+/* ================= PROGRAMS PAGE ================= */
 
+.programs-page{
+    max-width:900px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.program-block{
+    margin-bottom:40px;
+    padding:25px;
+    background:#f1f5f9;
+    border-radius:10px;
+}
+
+.program-block h2{
+    margin-bottom:10px;
+}
+
+.program-block p{
+    margin-bottom:12px;
+}
+
+.program-block ul{
+    margin-left:20px;
+}
 
 
 
