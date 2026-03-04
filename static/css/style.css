@@ -711,6 +711,71 @@ height:240px;
 }
 
 /* =========================================
+   IMPACT PAGE
+========================================= */
+
+.impact-container{
+display:flex;
+align-items:center;
+gap:40px;
+}
+
+.impact-container.reverse{
+flex-direction:row-reverse;
+}
+
+.impact-image{
+flex:1;
+}
+
+.impact-text{
+flex:1.2;
+}
+
+.impact-image img{
+width:100%;
+height:320px;
+object-fit:cover;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.impact-stats{
+text-align:center;
+}
+
+.leaders-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:30px;
+}
+
+.leader-card{
+background:#f1f5f9;
+padding:25px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* mobile */
+
+@media(max-width:768px){
+
+.impact-container{
+flex-direction:column;
+}
+
+.impact-container.reverse{
+flex-direction:column;
+}
+
+}
+
+
+
+/* =========================================
    FOOTER
 ========================================= */
 
