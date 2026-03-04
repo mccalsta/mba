@@ -850,27 +850,26 @@ box-shadow:0 20px 60px rgba(0,0,0,0.5);
 }
 
 /* =========================================
-   GALLERY FILTERS
+   GALLERY FILTER BUTTONS
 ========================================= */
 
 .gallery-filters{
-
 text-align:center;
-margin-bottom:25px;
-
+margin-bottom:30px;
 }
 
 .gallery-filters button{
 
-background:#f1f5f9;
+background:#e2e8f0;
+color:#0f172a;
 
 border:none;
 
-padding:10px 18px;
+padding:10px 20px;
 
 margin:5px;
 
-border-radius:6px;
+border-radius:8px;
 
 font-weight:600;
 
@@ -880,6 +879,8 @@ transition:0.25s;
 
 }
 
+/* hover */
+
 .gallery-filters button:hover{
 
 background:#f97316;
@@ -887,10 +888,14 @@ color:white;
 
 }
 
+/* active */
+
 .gallery-filters button.active{
 
 background:#f97316;
 color:white;
+
+box-shadow:0 6px 14px rgba(249,115,22,0.4);
 
 }
 
