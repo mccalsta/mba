@@ -315,7 +315,39 @@ height:350px;
 object-fit:cover;
 border-radius:10px;
 }
+.about-container{
+display:flex;
+align-items:center;
+gap:40px;
+}
 
+.about-image{
+flex:1;
+}
+
+.about-text{
+flex:1.2;
+}
+
+.about-image img{
+width:100%;
+height:320px;
+object-fit:cover;
+border-radius:10px;
+}
+
+/* mobile layout */
+@media(max-width:768px){
+
+.about-container{
+flex-direction:column;
+}
+
+.about-image img{
+height:250px;
+}
+
+}
 
 /* =========================================
    PROGRAMS
