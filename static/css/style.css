@@ -818,5 +818,41 @@ hr{
     margin-left:20px;
 }
 
+/* ================= TEAMS PAGE ================= */
+
+.teams-page{
+    max-width:900px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.team-block{
+    background:#f1f5f9;
+    padding:30px;
+    border-radius:10px;
+    margin-bottom:40px;
+}
+
+.team-block h2{
+    margin-bottom:12px;
+}
+
+.team-block p{
+    margin-bottom:14px;
+}
+
+.pathway{
+    background:#0f172a;
+    color:white;
+    padding:12px;
+    border-radius:6px;
+    text-align:center;
+    font-weight:600;
+    margin-top:15px;
+}
+
+
+
+
 
 
