@@ -170,79 +170,14 @@ pointer-events:auto;
 
 
 /* =========================================
-   HERO SECTION
-========================================= */
-
-.hero{
-
-height:65vh;
-
-background:
-linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
-url("/static/images/hero.jpg");
-
-background-size:cover;
-background-position:center;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-text-align:center;
-color:white;
-
-padding:40px;
-
-/* make hero full width */
-
-margin:0;
-border-radius:0;
-max-width:none;
-
-}
-
-.hero h1{
-font-size:48px;
-margin-bottom:20px;
-}
-
-.hero p{
-max-width:700px;
-margin:auto;
-margin-bottom:30px;
-}
-
-.hero-buttons{
-display:flex;
-justify-content:center;
-gap:15px;
-flex-wrap:wrap;
-}
-
-@media(max-width:768px){
-
-.hero{
-height:55vh;
-}
-
-.hero h1{
-font-size:30px;
-}
-
-.hero p{
-font-size:16px;
-}
-
-}
-
-/* =========================================
-   HERO SLIDER
+   HERO SLIDER SECTION
 ========================================= */
 
 .hero{
 
 position:relative;
 
+width:100%;
 height:65vh;
 
 overflow:hidden;
@@ -254,13 +189,19 @@ justify-content:center;
 text-align:center;
 color:white;
 
+margin:0;
+padding:40px;
+
 }
 
-/* hero slides */
+/* SLIDES */
 
 .hero-slide{
 
 position:absolute;
+
+top:0;
+left:0;
 
 width:100%;
 height:100%;
@@ -270,11 +211,11 @@ background-position:center;
 
 opacity:0;
 
-transition:1s;
+transition:opacity 1s ease;
 
 }
 
-/* slide images */
+/* SLIDE IMAGES */
 
 .hero-slide:nth-child(1){
 
@@ -300,13 +241,13 @@ url("/static/images/hero3.jpg");
 
 }
 
+/* ACTIVE SLIDE */
+
 .hero-slide.active{
-
 opacity:1;
-
 }
 
-/* hero content */
+/* HERO TEXT CONTENT */
 
 .hero-content{
 
@@ -317,26 +258,41 @@ max-width:800px;
 
 }
 
+/* HERO TEXT */
+
 .hero h1{
 
-font-size:42px;
-margin-bottom:15px;
+font-size:48px;
+margin-bottom:20px;
 
 }
 
 .hero p{
 
-font-size:18px;
-margin-bottom:25px;
+max-width:700px;
+margin:auto;
+margin-bottom:30px;
 
 }
 
-/* mobile */
+/* HERO BUTTONS */
+
+.hero-buttons{
+
+display:flex;
+justify-content:center;
+gap:15px;
+flex-wrap:wrap;
+
+}
+
+/* MOBILE */
 
 @media(max-width:768px){
 
 .hero{
 height:55vh;
+padding:20px;
 }
 
 .hero h1{
