@@ -851,7 +851,32 @@ hr{
     margin-top:15px;
 }
 
+/* ================= IMPACT PAGE ================= */
 
+.impact-page{
+    max-width:900px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.impact-block{
+    background:#f1f5f9;
+    padding:30px;
+    border-radius:10px;
+    margin-bottom:35px;
+}
+
+.impact-block h2{
+    margin-bottom:12px;
+}
+
+.impact-block p{
+    margin-bottom:14px;
+}
+
+.impact-block ul{
+    margin-left:20px;
+}
 
 
 
