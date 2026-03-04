@@ -219,6 +219,21 @@ gap:15px;
 flex-wrap:wrap;
 }
 
+@media(max-width:768px){
+
+.hero{
+height:55vh;
+}
+
+.hero h1{
+font-size:30px;
+}
+
+.hero p{
+font-size:16px;
+}
+
+}
 
 /* =========================================
    BUTTON SYSTEM
