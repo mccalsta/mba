@@ -557,3 +557,22 @@ background:#0f172a;
 color:white;
 margin-top:40px;
 }
+.page-section{
+
+background:white;
+
+margin:40px auto;
+
+border-radius:18px;
+
+max-width:1100px;
+
+padding:40px 35px;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,0.08),
+0 0 0 3px rgba(245,158,11,0.08);
+
+}
+
+
