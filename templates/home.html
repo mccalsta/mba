@@ -1,27 +1,22 @@
-
-
-<!-- HERO -->
 {% extends "base.html" %}
+
 {% block content %}
 
+<!-- HERO -->
 <section class="hero">
-
-<div class="hero-slide active"></div>
-<div class="hero-slide"></div>
-<div class="hero-slide"></div>
 
 <div class="hero-content">
 
 <h1>Raising Athletes. Shaping Character. Inspiring Purpose.</h1>
 
 <p>
-A 25-year faith-driven youth development ministry developing
-disciplined athletes and principled young leaders.
+Miracle Basketball Academy is a Christ-centred youth development program
+training young athletes through discipline, teamwork and mentorship.
 </p>
 
 <div class="hero-buttons">
-<a href="/join" class="btn-primary">Join the Academy</a>
-<a href="/teams" class="btn-secondary">Explore Our Teams</a>
+<a href="/register" class="btn-primary">Join The Academy</a>
+<a href="/shop" class="btn-secondary">Shop Merchandise</a>
 </div>
 
 </div>
@@ -29,148 +24,92 @@ disciplined athletes and principled young leaders.
 </section>
 
 
-<section class="about-preview">
-    <h2>More Than Basketball</h2>
+<!-- ABOUT -->
+<section class="about-section">
 
-    <p>
-        Miracle Basketball is a Christ-centred youth development platform
-        combining professional training, mentorship, and community outreach.
-        For over two decades, we have nurtured talent that now shines across
-        Uganda’s national basketball scene.
-    </p>
+<div class="about-container">
 
-    <a href="/about" class="btn-outline">Learn About Our Foundation</a>
+<div class="about-text">
+
+<h2>About Miracle Basketball Academy</h2>
+
+<p>
+For over 25 years, Miracle Basketball Academy has developed young athletes
+through professional training, mentorship and character development.
+</p>
+
+<p>
+Our mission is to raise disciplined athletes and responsible young leaders
+through the power of basketball and faith.
+</p>
+
+<a href="/register" class="btn-outline">Register a Player</a>
+
+</div>
+
+<div class="about-image">
+
+<img src="/static/images/team.jpg">
+
+</div>
+
+</div>
+
 </section>
 
 
+<!-- PROGRAMS -->
 <section class="programs">
-    <h2>What We Offer</h2>
 
-    <div class="program-grid">
+<h2>Our Programs</h2>
 
-        <div class="program-card">
-            <h3>Youth Basketball Academy</h3>
-            <p>Structured weekly training building strong fundamentals and discipline.</p>
-        </div>
+<div class="program-grid">
 
-        <div class="program-card">
-            <h3>Elite Competitive Teams</h3>
-            <p>National league competition pathways for advanced athletes.</p>
-        </div>
+<div class="program-card">
+<h3>Youth Training</h3>
+<p>Weekly basketball training sessions focused on fundamentals and discipline.</p>
+</div>
 
-        <div class="program-card">
-            <h3>Holiday Development Camps</h3>
-            <p>Intensive skill development camps held during school holidays.</p>
-        </div>
+<div class="program-card">
+<h3>Competitive Teams</h3>
+<p>Advanced players compete in local and national tournaments.</p>
+</div>
 
-        <div class="program-card">
-            <h3>Back-to-School Tournament</h3>
-            <p>Community tournaments that support both sports and education.</p>
-        </div>
+<div class="program-card">
+<h3>Holiday Camps</h3>
+<p>Intensive basketball development camps during school holidays.</p>
+</div>
 
-        <div class="program-card">
-            <h3>School Outreach Program</h3>
-            <p>School visits, mentorship talks, and basketball clinics.</p>
-        </div>
+</div>
 
-        <div class="program-card">
-            <h3>One-on-One Development</h3>
-            <p>Personalized athlete training sessions for focused growth.</p>
-        </div>
-
-    </div>
-
-    <a href="/programs" class="btn-primary">View All Programs</a>
 </section>
 
 
-<section class="impact">
-    <h2>A 25-Year Legacy of Transformation</h2>
+<!-- SHOP PREVIEW -->
+<section class="shop-preview">
 
-    <p>
-        For over two decades Miracle Basketball has served as a ministry
-        platform under Robert Kayanja Ministries, shaping disciplined athletes
-        and principled young leaders across Uganda.
-    </p>
+<h2>Academy Merchandise</h2>
 
-    <p>
-        Many athletes who began their journey within Miracle now compete
-        nationally, coach across leagues, and continue to influence the game
-        with integrity and leadership.
-    </p>
+<p>Support the academy by purchasing official merchandise.</p>
 
-    <a href="/impact" class="btn-outline">Discover Our Impact</a>
+<div class="shop-buttons">
+<a href="/shop" class="btn-primary">Visit Shop</a>
+</div>
+
 </section>
 
 
-<section class="teams">
-    <h2>Our Teams</h2>
-
-    <div class="team-grid">
-
-        <div class="team-card">
-            <h3>Miracle Eagles</h3>
-            <p>
-                Competing in Uganda's Division One League and building toward
-                promotion to the National Basketball League.
-            </p>
-            <a href="/teams" class="btn-outline">Learn More</a>
-        </div>
-
-        <div class="team-card">
-            <h3>Miracle Eaglets</h3>
-            <p>
-                Competing in the National Basketball League and representing
-                elite women's basketball in Uganda.
-            </p>
-            <a href="/teams" class="btn-outline">Learn More</a>
-        </div>
-
-    </div>
-</section>
-
-
-<section class="community">
-    <h2>Community & Outreach</h2>
-
-    <p>
-        Through school visits, mentorship programs, tournaments,
-        and outreach events, Miracle Basketball extends its impact
-        beyond the court to build stronger communities.
-    </p>
-</section>
-
-
+<!-- CTA -->
 <section class="cta">
-    <h2>Become Part of the Miracle Basketball Community</h2>
 
-    <p>
-        Whether you are a parent seeking structured development for your child
-        or a young athlete aspiring toward competitive excellence,
-        Miracle Basketball welcomes you.
-    </p>
+<h2>Join the Miracle Basketball Family</h2>
 
-    <div class="hero-buttons">
-        <a href="/register" class="btn-primary">Register Player</a>
-        <a href="/join" class="btn-secondary">Contact Us</a>
-    </div>
+<p>
+Register today and become part of a growing community of young athletes.
+</p>
+
+<a href="/register" class="btn-primary">Register Player</a>
+
 </section>
-<script>
-
-let slides = document.querySelectorAll(".hero-slide")
-let index = 0
-
-setInterval(() => {
-
-slides[index].classList.remove("active")
-
-index = (index + 1) % slides.length
-
-slides[index].classList.add("active")
-
-}, 5000)
-
-</script>
-
 
 {% endblock %}
