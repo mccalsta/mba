@@ -639,6 +639,32 @@ button:hover{
 background:#ea580c;
 }
 
+.program-icon{
+
+font-size:38px;
+margin-bottom:10px;
+
+}
+
+.program-card h2{
+
+margin-bottom:10px;
+color:#0f172a;
+
+}
+
+.program-card p{
+
+margin-bottom:10px;
+
+}
+
+.program-card ul{
+
+text-align:left;
+margin-left:20px;
+
+}
 
 /* =========================================
    FOOTER
