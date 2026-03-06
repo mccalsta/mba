@@ -1,8 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Player Registration Form</h1>
+{% extends "base.html" %}
+{% block content %}
 
+<section class="hero register-hero">
+
+<div class="hero-content">
+
+<h1>Player Registration</h1>
+
+<p>
+Register your athlete to join Miracle Basketball Academy training and development programs.
+</p>
+
+</div>
+
+</section>
+
+<section class="section">
+<div class="container register-container">
 <form method="POST">
 
 <!-- SECTION A -->
@@ -177,7 +194,9 @@
 <button type="submit">Submit Registration</button>
 
 </form>
+</div>
 
+</section>
 <script>
 document.querySelector("input[name='dob']").addEventListener("change", function() {
     const dob = new Date(this.value);
@@ -221,3 +240,5 @@ function calculateAge() {
 </script>
 
 {% endblock %}
+
+
