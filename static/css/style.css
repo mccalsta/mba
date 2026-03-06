@@ -1639,6 +1639,99 @@ color:white;
 }
 
 /* =========================================
+   REGISTER HERO
+========================================= */
+
+.register-hero{
+
+height:45vh;
+
+background:
+linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
+url("/static/images/register.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+}
+
+
+/* REGISTER PAGE */
+
+.register-container{
+
+max-width:900px;
+
+}
+
+
+/* FORM SECTIONS */
+
+.form-section{
+
+background:white;
+
+padding:30px;
+
+margin-bottom:30px;
+
+border-radius:12px;
+
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+
+}
+
+
+/* SECTION HEADINGS */
+
+.form-section h2{
+
+margin-bottom:20px;
+
+border-bottom:2px solid #f97316;
+
+padding-bottom:6px;
+
+}
+
+
+/* FORM GRID */
+
+.form-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+}
+
+
+/* FORM INPUTS */
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+width:100%;
+
+padding:12px;
+
+border-radius:8px;
+
+border:1px solid #d1d5db;
+
+}
+
+/* =========================================
    FOOTER
 ========================================= */
 
