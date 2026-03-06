@@ -1187,6 +1187,34 @@ grid-template-columns:1fr;
 
 }
 
+.section{
+padding:80px 20px;
+}
+
+.section.light{
+background:#f1f5f9;
+}
+
+.about-container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+align-items:center;
+}
+
+.about-image img{
+width:100%;
+border-radius:10px;
+}
+
+@media(max-width:768px){
+
+.about-container{
+grid-template-columns:1fr;
+}
+
+}
+
 /* =========================================
    FOOTER
 ========================================= */
