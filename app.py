@@ -696,8 +696,8 @@ def admin_orders():
     conn = get_db()
 
     orders = conn.execute("""
-    SELECT * FROM shop_orders
-    ORDER BY created_at DESC
+        SELECT * FROM sales
+        ORDER BY created_at DESC
     """).fetchall()
 
     conn.close()
@@ -710,8 +710,8 @@ def admin_receipts():
     conn = get_db()
 
     receipts = conn.execute("""
-    SELECT * FROM receipts
-    ORDER BY created_at DESC
+        SELECT * FROM receipts
+        ORDER BY created_at DESC
     """).fetchall()
 
     conn.close()
