@@ -1769,6 +1769,72 @@ display:block;
 }
 
 /* =========================================
+   ADMIN LOGIN
+========================================= */
+
+.admin-login-container{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+min-height:60vh;
+
+}
+
+.admin-login-card{
+
+background:white;
+
+padding:40px;
+
+width:100%;
+
+max-width:420px;
+
+border-radius:12px;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.12);
+
+}
+
+.admin-login-card h2{
+
+text-align:center;
+
+margin-bottom:25px;
+
+}
+
+.admin-login-card .form-group{
+
+margin-bottom:18px;
+
+}
+
+.admin-login-card input{
+
+width:100%;
+
+padding:12px;
+
+border-radius:8px;
+
+border:1px solid #d1d5db;
+
+}
+
+.admin-login-card button{
+
+width:100%;
+
+margin-top:10px;
+
+}
+
+/* =========================================
    FOOTER
 ========================================= */
 
