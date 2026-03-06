@@ -272,4 +272,49 @@ ageField.value = age >= 0 ? age : "";
 
 </script>
 
+<script>
+
+let currentStep = 0;
+
+const steps = document.querySelectorAll(".form-step");
+
+function showStep(){
+
+steps.forEach((step,i)=>{
+
+step.style.display = i === currentStep ? "block" : "none";
+
+});
+
+}
+
+function nextStep(){
+
+if(currentStep < steps.length-1){
+
+currentStep++;
+
+showStep();
+
+}
+
+}
+
+function prevStep(){
+
+if(currentStep > 0){
+
+currentStep--;
+
+showStep();
+
+}
+
+}
+
+showStep();
+
+</script>
+
+
 {% endblock %}
