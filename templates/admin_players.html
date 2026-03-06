@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-content">
+
+<h1>Players</h1>
+
+<div class="table-card">
+
+<table class="admin-table">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Age</th>
+<th>Gender</th>
+<th>School</th>
+<th>Parent</th>
+<th>Phone</th>
+<th>Position</th>
+<th>Skill</th>
+<th>Plan</th>
+<th>Status</th>
+</tr>
+
+{% for p in players %}
+
+<tr>
+
+<td>{{ p.id }}</td>
+<td>{{ p.full_name }}</td>
+<td>{{ p.age }}</td>
+<td>{{ p.gender }}</td>
+<td>{{ p.school }}</td>
+<td>{{ p.parent_name }}</td>
+<td>{{ p.phone1 }}</td>
+<td>{{ p.position }}</td>
+<td>{{ p.skill }}</td>
+<td>{{ p.payment_plan }}</td>
+
+<td>
+
+{% if p.payment_status != 'Paid' %} <span class="badge unpaid">Unpaid</span>
+{% else %} <span class="badge paid">Paid</span>
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}
