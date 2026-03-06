@@ -1743,6 +1743,31 @@ border-radius:12px;
 box-shadow:0 6px 18px rgba(0,0,0,0.08);
 
 }
+
+/* MULTI STEP FORM */
+
+.form-step{
+
+display:none;
+
+background:white;
+
+padding:30px;
+
+border-radius:12px;
+
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+
+margin-bottom:30px;
+
+}
+
+.form-step.active{
+
+display:block;
+
+}
+
 /* =========================================
    FOOTER
 ========================================= */
