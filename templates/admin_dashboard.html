@@ -1,85 +1,140 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="admin-dashboard">
+
+<!-- SIDEBAR -->
+
+<div class="admin-sidebar">
+
+<h2>Admin Panel</h2>
+
+<ul>
+
+<li><a href="/admin">Dashboard</a></li>
+
+<li><a href="/admin/players">Players</a></li>
+
+<li><a href="/admin/add-product">Add Merchandise</a></li>
+
+<li><a href="/admin/orders">Shop Orders</a></li>
+
+<li><a href="/admin/receipts">Receipts</a></li>
+
+<li><a href="/logout">Logout</a></li>
+
+</ul>
+
+</div>
+
+<!-- MAIN CONTENT -->
+
+<div class="admin-content">
 
 <h1>Registered Players</h1>
 
 <div class="stats-grid">
-    <div class="card stat">
-        <h3>Total Players</h3>
-        <p>{{ total_players }}</p>
-    </div>
 
-    <div class="card stat green">
-        <h3>Paid Players</h3>
-        <p>{{ paid_players }}</p>
-    </div>
-
-    <div class="card stat red">
-        <h3>Unpaid</h3>
-        <p>{{ unpaid_players }}</p>
-    </div>
-
-    <div class="card stat blue">
-        <h3>Weekly Income</h3>
-        <p>UGX {{ weekly_income }}</p>
-    </div>
-
-    <div class="card stat purple">
-        <h3>Monthly Income</h3>
-        <p>UGX {{ monthly_income }}</p>
-    </div>
+<div class="card stat">
+<h3>Total Players</h3>
+<p>{{ total_players }}</p>
 </div>
 
-<table border="1" cellpadding="8" style="width:100%; font-size:14px;">
-<tr style="background:#0f172a;color:white;">
-    <th>ID</th>
-    <th>Name</th>
-    <th>Age</th>
-    <th>Gender</th>
-    <th>School</th>
-    <th>Parent</th>
-    <th>Phone</th>
-    <th>Position</th>
-    <th>Skill</th>
-    <th>Amount</th>
-    <th>Date</th>
-    <th>Plan</th>
-    <th>Status</th>
+<div class="card stat green">
+<h3>Paid Players</h3>
+<p>{{ paid_players }}</p>
+</div>
+
+<div class="card stat red">
+<h3>Unpaid</h3>
+<p>{{ unpaid_players }}</p>
+</div>
+
+<div class="card stat blue">
+<h3>Weekly Income</h3>
+<p>UGX {{ weekly_income }}</p>
+</div>
+
+<div class="card stat purple">
+<h3>Monthly Income</h3>
+<p>UGX {{ monthly_income }}</p>
+</div>
+
+</div>
+
+<div class="table-card">
+
+<table class="admin-table">
+
+<tr>
+
+<th>ID</th>
+<th>Name</th>
+<th>Age</th>
+<th>Gender</th>
+<th>School</th>
+<th>Parent</th>
+<th>Phone</th>
+<th>Position</th>
+<th>Skill</th>
+<th>Amount</th>
+<th>Date</th>
+<th>Plan</th>
+<th>Status</th>
+
 </tr>
 
 {% for p in players %}
+
 <tr>
-    <td>{{ p.id }}</td>
-    <td>{{ p.full_name }}</td>
-    <td>{{ p.age }}</td>
-    <td>{{ p.gender }}</td>
-    <td>{{ p.school }}</td>
-    <td>{{ p.parent_name }}</td>
-    <td>{{ p.phone1 }}</td>
-    <td>{{ p.position }}</td>
-    <td>{{ p.skill }}</td>
-    <td>{{ p.amount }}</td>
-    <td>{{ p.created_at }}</td>
-    <td>{{ p.payment_plan }}</td>
-    <td class="status-cell">
 
-    {% if p.payment_status != 'Paid' %}
-        <a href="/mark_paid/{{ p.id }}" class="pay-btn">Mark Paid</a>
+<td>{{ p.id }}</td>
+<td>{{ p.full_name }}</td>
+<td>{{ p.age }}</td>
+<td>{{ p.gender }}</td>
+<td>{{ p.school }}</td>
+<td>{{ p.parent_name }}</td>
+<td>{{ p.phone1 }}</td>
+<td>{{ p.position }}</td>
+<td>{{ p.skill }}</td>
+<td>{{ p.amount }}</td>
+<td>{{ p.created_at }}</td>
+<td>{{ p.payment_plan }}</td>
 
-    {% else %}
-        <div class="paid-area">
-            <span class="paid-badge">Paid</span>
-            <a href="{{ url_for('generate_receipt', player_id=p.id) }}" class="btn btn-sm btn-primary">Receipt</a>
-        </div>
-    {% endif %}
+<td class="status-cell">
+
+{% if p.payment_status != 'Paid' %}
+
+<a href="/mark_paid/{{ p.id }}" class="pay-btn">
+Mark Paid
+</a>
+
+{% else %}
+
+<div class="paid-area">
+
+<span class="paid-badge">Paid</span>
+
+<a href="{{ url_for('generate_receipt', player_id=p.id) }}" class="receipt-btn">
+Receipt
+</a>
+
+</div>
+
+{% endif %}
 
 </td>
-   
+
 </tr>
+
 {% endfor %}
 
 </table>
 
+</div>
+
+</div>
+
+</div>
 
 {% endblock %}
