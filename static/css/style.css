@@ -1150,6 +1150,30 @@ transform:scale(1);
 }
 
 /* =========================================
+   GALLERY HERO
+========================================= */
+
+.gallery-hero{
+
+height:45vh;
+
+background:
+linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
+url("/static/images/gallery-hero.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+}
+
+/* =========================================
    JOIN PAGE
 ========================================= */
 
