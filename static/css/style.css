@@ -702,6 +702,108 @@ margin-right:10px;
 }
 
 /* =========================================
+   SHOP HERO
+========================================= */
+
+.shop-hero{
+
+height:45vh;
+
+background:
+linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
+url("/static/images/shop-hero.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+}
+
+
+/* =========================================
+   SHOP TABLE
+========================================= */
+
+.shop-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+margin-top:30px;
+
+background:white;
+
+border-radius:10px;
+
+overflow:hidden;
+
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+
+}
+
+.shop-table th{
+
+background:#0f172a;
+
+color:white;
+
+padding:14px;
+
+text-align:left;
+
+}
+
+.shop-table td{
+
+padding:12px;
+
+border-bottom:1px solid #e2e8f0;
+
+}
+
+.shop-table input{
+
+width:70px;
+
+padding:6px;
+
+text-align:center;
+
+border-radius:6px;
+
+border:1px solid #cbd5e1;
+
+}
+
+
+/* SHOP SUMMARY */
+
+.shop-summary{
+
+margin-top:30px;
+
+text-align:center;
+
+}
+
+.shop-summary select{
+
+padding:10px;
+
+border-radius:8px;
+
+margin-top:10px;
+
+}
+
+/* =========================================
    CTA SECTION
 ========================================= */
 
