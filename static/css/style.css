@@ -1216,6 +1216,41 @@ grid-template-columns:1fr;
 }
 
 /* =========================================
+   ABOUT PAGE HERO
+========================================= */
+
+.about-hero{
+
+height:45vh;
+
+background:
+linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
+url("/static/images/about-hero.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+}
+
+.about-hero h1{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.about-hero p{
+max-width:600px;
+margin:auto;
+opacity:.9;
+}
+
+/* =========================================
    FOOTER
 ========================================= */
 
