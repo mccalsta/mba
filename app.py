@@ -634,3 +634,72 @@ def gallery():
 @app.route("/join")
 def join():
     return render_template("join.html")
+
+@app.route("/admin/players")
+def admin_players():
+
+    conn = get_db()
+
+    players = conn.execute(
+        "SELECT * FROM players ORDER BY created_at DESC"
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("admin_players.html", players=players)
+
+@app.route("/admin/add-product", methods=["GET","POST"])
+def add_product():
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+        variant = request.form["variant"]
+        price = request.form["price"]
+        stock = request.form["stock"]
+
+        conn = get_db()
+
+        conn.execute("""
+        INSERT INTO shop_products (name,variant,price,stock)
+        VALUES (?,?,?,?)
+        """,(name,variant,price,stock))
+
+        conn.commit()
+
+        conn.close()
+
+        flash("Product added")
+
+    return render_template("admin_add_product.html")
+
+@app.route("/admin/orders")
+def admin_orders():
+
+    conn = get_db()
+
+    orders = conn.execute("""
+    SELECT * FROM shop_orders
+    ORDER BY created_at DESC
+    """).fetchall()
+
+    conn.close()
+
+    return render_template("admin_orders.html", orders=orders)
+
+@app.route("/admin/receipts")
+def admin_receipts():
+
+    conn = get_db()
+
+    receipts = conn.execute("""
+    SELECT * FROM receipts
+    ORDER BY created_at DESC
+    """).fetchall()
+
+    conn.close()
+
+    return render_template("admin_receipts.html", receipts=receipts)
+
+
+
