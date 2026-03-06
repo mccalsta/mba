@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-content">
+
+<h1>Shop Orders</h1>
+
+<div class="table-card">
+
+<table class="admin-table">
+
+<tr>
+<th>ID</th>
+<th>Product</th>
+<th>Variant</th>
+<th>Quantity</th>
+<th>Amount</th>
+<th>Payment Method</th>
+<th>Date</th>
+</tr>
+
+{% for o in orders %}
+
+<tr>
+
+<td>{{ o.id }}</td>
+<td>{{ o.product }}</td>
+<td>{{ o.variant }}</td>
+<td>{{ o.quantity }}</td>
+<td>UGX {{ o.amount }}</td>
+<td>{{ o.payment_method }}</td>
+<td>{{ o.created_at }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}
