@@ -580,6 +580,126 @@ color:#0f172a;
 transform:translateY(-6px);
 }
 
+/* =========================================
+   SHOP HERO
+========================================= */
+
+.shop-hero{
+
+height:45vh;
+
+background:
+linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
+url("/static/images/hero.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+}
+
+
+/* =========================================
+   SHOP GRID
+========================================= */
+
+.shop-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:25px;
+
+margin-top:30px;
+
+}
+
+
+/* PRODUCT CARD */
+
+.shop-card{
+
+background:white;
+
+padding:25px;
+
+border-radius:12px;
+
+box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+text-align:center;
+
+transition:.25s;
+
+}
+
+.shop-card:hover{
+
+transform:translateY(-6px);
+
+}
+
+.shop-card h3{
+
+margin-bottom:5px;
+
+}
+
+.variant{
+
+color:#64748b;
+
+font-size:14px;
+
+}
+
+.price{
+
+font-weight:700;
+
+margin:10px 0;
+
+color:#f97316;
+
+}
+
+.shop-card input{
+
+width:80px;
+
+text-align:center;
+
+margin-top:10px;
+
+}
+
+
+/* CHECKOUT */
+
+.checkout{
+
+margin-top:40px;
+
+text-align:center;
+
+}
+
+.checkout select{
+
+padding:10px;
+
+border-radius:8px;
+
+margin-right:10px;
+
+}
 
 /* =========================================
    CTA SECTION
