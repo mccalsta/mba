@@ -1730,7 +1730,19 @@ border-radius:8px;
 border:1px solid #d1d5db;
 
 }
+.form-section{
 
+background:white;
+
+padding:30px;
+
+margin-bottom:30px;
+
+border-radius:12px;
+
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+
+}
 /* =========================================
    FOOTER
 ========================================= */
