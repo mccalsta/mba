@@ -1274,6 +1274,29 @@ color:white;
 
 }
 
+/* =========================================
+   TEAMS HERO
+========================================= */
+
+.teams-hero{
+
+height:45vh;
+
+background:
+linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.75)),
+url("/static/images/hero3.jpg");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+color:white;
+
+}
 
 /* =========================================
    FOOTER
