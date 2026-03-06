@@ -1769,50 +1769,115 @@ display:block;
 }
 
 /* =========================================
-   ADMIN LOGIN
+   ADMIN LOGIN HERO
 ========================================= */
 
-.admin-login-container{
+.admin-hero{
+
+min-height:80vh;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:
+linear-gradient(rgba(15,23,42,.85),rgba(15,23,42,.85)),
+url("/static/images/hero.jpg");
+
+background-size:cover;
+
+background-position:center;
+
+}
+
+
+/* LOGIN WRAPPER */
+
+.admin-login-wrapper{
+
+width:100%;
 
 display:flex;
 
 justify-content:center;
 
-align-items:center;
-
-min-height:60vh;
+padding:40px 20px;
 
 }
 
+
+/* LOGIN CARD */
+
 .admin-login-card{
-
-background:white;
-
-padding:40px;
 
 width:100%;
 
 max-width:420px;
 
-border-radius:12px;
+padding:40px;
 
-box-shadow:0 10px 30px rgba(0,0,0,0.12);
+border-radius:14px;
 
-}
+background:rgba(255,255,255,0.08);
 
-.admin-login-card h2{
+backdrop-filter:blur(10px);
+
+border:1px solid rgba(255,255,255,0.15);
+
+box-shadow:0 10px 35px rgba(0,0,0,0.4);
+
+color:white;
 
 text-align:center;
 
-margin-bottom:25px;
+}
+
+
+/* TITLE */
+
+.admin-login-card h2{
+
+margin-bottom:5px;
+
+font-size:28px;
 
 }
 
+.admin-subtitle{
+
+font-size:14px;
+
+margin-bottom:25px;
+
+opacity:0.85;
+
+}
+
+
+/* INPUT GROUP */
+
 .admin-login-card .form-group{
+
+text-align:left;
 
 margin-bottom:18px;
 
 }
+
+.admin-login-card label{
+
+font-size:14px;
+
+margin-bottom:5px;
+
+display:block;
+
+}
+
+
+/* INPUT */
 
 .admin-login-card input{
 
@@ -1822,15 +1887,36 @@ padding:12px;
 
 border-radius:8px;
 
-border:1px solid #d1d5db;
+border:none;
+
+background:rgba(255,255,255,0.9);
+
+font-size:15px;
+
+transition:.2s;
 
 }
 
-.admin-login-card button{
+.admin-login-card input:focus{
+
+outline:none;
+
+box-shadow:0 0 0 2px #f97316;
+
+}
+
+
+/* BUTTON */
+
+.admin-login-btn{
 
 width:100%;
 
 margin-top:10px;
+
+padding:12px;
+
+font-weight:600;
 
 }
 
