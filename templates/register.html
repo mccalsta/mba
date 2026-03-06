@@ -24,8 +24,11 @@ Register your athlete to join Miracle Basketball Academy training and developmen
 <form method="POST">
 
 <!-- PLAYER INFORMATION -->
+<form method="POST" id="regForm">
 
-<div class="form-section">
+<!-- STEP 1 -->
+
+<div class="form-step active">
 
 <h2>Player Information</h2>
 
@@ -93,13 +96,15 @@ Register your athlete to join Miracle Basketball Academy training and developmen
 
 </div>
 
+<button type="button" onclick="nextStep()">Next</button>
+
 </div>
 
-<!-- PARENT / GUARDIAN -->
+<!-- STEP 2 -->
 
-<div class="form-section">
+<div class="form-step">
 
-<h2>Parent / Guardian Information</h2>
+<h2>Parent / Guardian</h2>
 
 <div class="form-grid">
 
@@ -130,11 +135,13 @@ Register your athlete to join Miracle Basketball Academy training and developmen
 
 </div>
 
+<button type="button" onclick="prevStep()">Back</button> <button type="button" onclick="nextStep()">Next</button>
+
 </div>
 
-<!-- MEDICAL -->
+<!-- STEP 3 -->
 
-<div class="form-section">
+<div class="form-step">
 
 <h2>Medical Information</h2>
 
@@ -153,15 +160,15 @@ Register your athlete to join Miracle Basketball Academy training and developmen
 <textarea name="allergies"></textarea>
 </div>
 
+<button type="button" onclick="prevStep()">Back</button> <button type="button" onclick="nextStep()">Next</button>
+
 </div>
 
-<!-- TRAINING -->
+<!-- STEP 4 -->
 
-<div class="form-section">
+<div class="form-step">
 
 <h2>Training Details</h2>
-
-<div class="form-grid">
 
 <div class="form-group">
 <label>Skill Level</label>
@@ -177,13 +184,13 @@ Register your athlete to join Miracle Basketball Academy training and developmen
 <textarea name="goals"></textarea>
 </div>
 
-</div>
+<button type="button" onclick="prevStep()">Back</button> <button type="button" onclick="nextStep()">Next</button>
 
 </div>
 
-<!-- PAYMENT -->
+<!-- STEP 5 -->
 
-<div class="form-section">
+<div class="form-step">
 
 <h2>Payment Details</h2>
 
@@ -219,9 +226,7 @@ Register your athlete to join Miracle Basketball Academy training and developmen
 
 </div>
 
-</div>
-
-<div style="text-align:center; margin-top:30px;">
+<button type="button" onclick="prevStep()">Back</button>
 
 <button type="submit" class="btn-primary">
 Submit Registration
@@ -230,6 +235,7 @@ Submit Registration
 </div>
 
 </form>
+
 
 </div>
 
