@@ -35,6 +35,7 @@ def get_db():
 
 # ---------------- DB ----------------
 def init_db():
+
     conn = get_db()
 
     # PLAYERS
@@ -87,11 +88,12 @@ def init_db():
         name TEXT,
         category TEXT,
         base_price INTEGER,
+        image TEXT,
         created_at TEXT
     )
     """)
 
-    # PRODUCT VARIANTS (sizes)
+    # PRODUCT VARIANTS (sizes / stock)
     conn.execute("""
     CREATE TABLE IF NOT EXISTS product_variants (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -103,13 +105,13 @@ def init_db():
     )
     """)
 
-    # SALES
+    # SALES (SHOP ORDERS)
     conn.execute("""
     CREATE TABLE IF NOT EXISTS sales (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         total INTEGER,
         payment_method TEXT,
-        created_at TEXT
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
@@ -127,8 +129,23 @@ def init_db():
     )
     """)
 
+    # RECEIPTS (PLAYER PAYMENTS)
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS receipts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        player_id INTEGER,
+        player_name TEXT,
+        amount INTEGER,
+        payment_method TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
     conn.commit()
     conn.close()
+
+
+# Run DB initialization
 init_db()
 # ------------------------------------
 
