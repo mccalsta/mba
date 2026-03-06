@@ -649,7 +649,7 @@ def admin_players():
     return render_template("admin_players.html", players=players)
 
 @app.route("/admin/add-product", methods=["GET","POST"])
-def add_product():
+def admin_add_product():
 
     if request.method == "POST":
 
