@@ -138,7 +138,7 @@ transition:max-height .35s ease;
 }
 
 .nav-links.active{
-max-height:260px;
+max-height:500px;
 }
 
 .nav-links li{
