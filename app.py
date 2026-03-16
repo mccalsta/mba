@@ -1,39 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 import sqlite3
 import os
 from datetime import datetime
 from weasyprint import HTML
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import send_file
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A5, landscape
 import io
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import mm
-from datetime import datetime
-from reportlab.lib.enums import TA_RIGHT, TA_LEFT
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.colors import HexColor, white, black
-PRIMARY = HexColor("#0f172a")
-ACCENT = HexColor("#f97316")
-LIGHT = HexColor("#f1f5f9")
-
-
-
 
 app = Flask(__name__)
 app.secret_key = "miracle_secret_key"
 
 DB = "database.db"
-# ---------- DATABASE CONNECTION ----------
+
+
+# ---------------- DATABASE ----------------
+
 def get_db():
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     return conn
 
-# ---------------- DB ----------------
+
 def init_db():
 
     conn = get_db()
@@ -75,8 +61,8 @@ def init_db():
     conn.execute("""
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
+        username TEXT UNIQUE,
+        password TEXT,
         created_at TEXT
     )
     """)
@@ -93,25 +79,24 @@ def init_db():
     )
     """)
 
-    # PRODUCT VARIANTS (sizes / stock)
+    # PRODUCT VARIANTS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS product_variants (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_id INTEGER,
         variant TEXT,
-        stock INTEGER DEFAULT 0,
-        price INTEGER,
-        FOREIGN KEY(product_id) REFERENCES products(id)
+        stock INTEGER,
+        price INTEGER
     )
     """)
 
-    # SALES (SHOP ORDERS)
+    # SALES
     conn.execute("""
     CREATE TABLE IF NOT EXISTS sales (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         total INTEGER,
         payment_method TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT
     )
     """)
 
@@ -124,12 +109,11 @@ def init_db():
         variant TEXT,
         quantity INTEGER,
         price INTEGER,
-        subtotal INTEGER,
-        FOREIGN KEY(sale_id) REFERENCES sales(id)
+        subtotal INTEGER
     )
     """)
 
-    # RECEIPTS (PLAYER PAYMENTS)
+    # RECEIPTS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS receipts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -137,7 +121,7 @@ def init_db():
         player_name TEXT,
         amount INTEGER,
         payment_method TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT
     )
     """)
 
@@ -145,17 +129,21 @@ def init_db():
     conn.close()
 
 
-# Run DB initialization
-init_db()
-# ------------------------------------
+with app.app_context():
+    init_db()
 
+
+# ---------------- HOME ----------------
 
 @app.route("/")
 def home():
     return render_template("home.html")
 
-# -------- AGE CALCULATOR (TRUTH SOURCE) --------
+
+# ---------------- AGE CALCULATOR ----------------
+
 def calculate_age(dob_string):
+
     if not dob_string:
         return None
 
@@ -168,59 +156,26 @@ def calculate_age(dob_string):
         )
 
         return age
+
     except:
         return None
 
-# ---------------- REGISTER ----------------
-# ---------------- REGISTER ----------------
+
+# ---------------- PLAYER REGISTRATION ----------------
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
     if request.method == "POST":
 
         dob = request.form.get("dob")
-        age = calculate_age(dob)   # ← REAL AGE FROM DOB
+        age = calculate_age(dob)
 
         amount = request.form.get("amount")
-        if not amount or amount.strip() == "":
-            amount = 0
-        else:
-            amount = int(amount)
-
-        data = (
-            request.form.get("full_name"),
-            dob,
-            age,  # ← STORED AGE (NOT USER INPUT)
-            request.form.get("gender"),
-            request.form.get("school"),
-            request.form.get("grade"),
-            request.form.get("address"),
-            request.form.get("village"),
-            request.form.get("position"),
-            request.form.get("shirt_size"),
-
-            request.form.get("parent_name"),
-            request.form.get("relationship"),
-            request.form.get("phone1"),
-            request.form.get("phone2"),
-            request.form.get("email"),
-
-            request.form.get("medical"),
-            request.form.get("injuries"),
-            request.form.get("allergies"),
-
-            request.form.get("skill"),
-            request.form.get("goals"),
-
-            amount,
-            request.form.get("payment_method"),
-            request.form.get("reference"),
-            request.form.get("payment_plan"),
-
-            "Pending",
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        )
+        amount = int(amount) if amount else 0
 
         conn = get_db()
+
         conn.execute("""
         INSERT INTO players (
             full_name,dob,age,gender,school,grade,address,village,position,shirt_size,
@@ -228,39 +183,112 @@ def register():
             medical,injuries,allergies,
             skill,goals,
             amount,payment_method,reference,payment_plan,payment_status,created_at
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        """, data)
+        )
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+
+            request.form.get("full_name"),
+            dob,
+            age,
+            request.form.get("gender"),
+            request.form.get("school"),
+            request.form.get("grade"),
+            request.form.get("address"),
+            request.form.get("village"),
+            request.form.get("position"),
+            request.form.get("shirt_size"),
+            request.form.get("parent_name"),
+            request.form.get("relationship"),
+            request.form.get("phone1"),
+            request.form.get("phone2"),
+            request.form.get("email"),
+            request.form.get("medical"),
+            request.form.get("injuries"),
+            request.form.get("allergies"),
+            request.form.get("skill"),
+            request.form.get("goals"),
+            amount,
+            request.form.get("payment_method"),
+            request.form.get("reference"),
+            request.form.get("payment_plan"),
+            "Pending",
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        ))
 
         conn.commit()
         conn.close()
 
         flash("Registration saved successfully!")
+
         return redirect("/register")
 
     return render_template("register.html")
+
+
 # ---------------- ADMIN LOGIN ----------------
 
+@app.route("/admin", methods=["GET", "POST"])
+def admin_login():
+
+    if request.method == "POST":
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        conn = get_db()
+
+        admin = conn.execute(
+            "SELECT * FROM admins WHERE username=?",
+            (username,)
+        ).fetchone()
+
+        conn.close()
+
+        if admin and check_password_hash(admin["password"], password):
+
+            session["admin"] = username
+            return redirect("/dashboard")
+
+        else:
+
+            flash("Invalid credentials")
+
+    return render_template("admin_login.html")
+
+
+# ---------------- ADMIN LOGOUT ----------------
+
+@app.route("/logout")
+def logout():
+    session.pop("admin", None)
+    return redirect("/admin")
 
 
 # ---------------- DASHBOARD ----------------
+
 @app.route("/dashboard")
 def dashboard():
+
     if "admin" not in session:
         return redirect("/admin")
+
     conn = get_db()
-    players = conn.execute("SELECT * FROM players ORDER BY created_at DESC").fetchall()
 
-    # stats
-    total_players = conn.execute("SELECT COUNT(*) FROM players").fetchone()[0]
-    paid_players = conn.execute("SELECT COUNT(*) FROM players WHERE payment_status='Paid'").fetchone()[0]
-    unpaid_players = conn.execute("SELECT COUNT(*) FROM players WHERE payment_status='Pending'").fetchone()[0]
+    players = conn.execute(
+        "SELECT * FROM players ORDER BY created_at DESC"
+    ).fetchall()
 
-    weekly_income = conn.execute(
-        "SELECT COALESCE(SUM(amount),0) FROM players WHERE payment_plan='Weekly' AND payment_status='Paid'"
+    total_players = conn.execute(
+        "SELECT COUNT(*) FROM players"
     ).fetchone()[0]
 
-    monthly_income = conn.execute(
-        "SELECT COALESCE(SUM(amount),0) FROM players WHERE payment_plan='Monthly' AND payment_status='Paid'"
+    paid_players = conn.execute(
+        "SELECT COUNT(*) FROM players WHERE payment_status='Paid'"
+    ).fetchone()[0]
+
+    unpaid_players = conn.execute(
+        "SELECT COUNT(*) FROM players WHERE payment_status='Pending'"
     ).fetchone()[0]
 
     conn.close()
@@ -270,286 +298,35 @@ def dashboard():
         players=players,
         total_players=total_players,
         paid_players=paid_players,
-        unpaid_players=unpaid_players,
-        weekly_income=weekly_income,
-        monthly_income=monthly_income
+        unpaid_players=unpaid_players
     )
 
-if __name__ == "__main__":
-    app.run(debug=True)
-#mark-paid
+
+# ---------------- MARK PAYMENT ----------------
+
 @app.route("/mark_paid/<int:player_id>")
 def mark_paid(player_id):
+
+    if "admin" not in session:
+        return redirect("/admin")
+
     conn = get_db()
+
     conn.execute(
         "UPDATE players SET payment_status='Paid' WHERE id=?",
         (player_id,)
     )
+
     conn.commit()
     conn.close()
 
     return redirect("/dashboard")
 
-#add-admin
-@app.route("/create_admin")
-def create_admin():
 
-    conn = get_db()
+# ---------------- SHOP (PUBLIC) ----------------
 
-    admins = [
-        ("henry", generate_password_hash("1234")),
-        ("coach_mike", generate_password_hash("basketball")),
-        ("manager_sarah", generate_password_hash("academy2026")),
-        ("finance_john", generate_password_hash("payments"))
-    ]
-
-    for a in admins:
-        try:
-            conn.execute(
-                "INSERT INTO admins (username,password,created_at) VALUES (?,?,datetime('now'))", a
-            )
-        except:
-            pass
-
-    conn.commit()
-    conn.close()
-
-    return "Admins created"
-
-#--------admin login---------
-@app.route("/admin", methods=["GET", "POST"])
-def admin_login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        conn = get_db()
-        admin = conn.execute(
-            "SELECT * FROM admins WHERE username = ?",
-            (username,)
-        ).fetchone()
-        conn.close()
-
-        if admin and check_password_hash(admin["password"], password):
-            session["admin"] = username
-            return redirect("/dashboard")
-        else:
-            flash("Invalid credentials")
-
-    return render_template("admin_login.html")
-
-#------Admin log out-------
-@app.route("/logout")
-def logout():
-    session.pop("admin", None)
-    return redirect("/admin")
-
-# ================= RECEIPT (FINAL STABLE UI VERSION) =================
-def build_receipt_pdf(buffer, player):
-
-    amount = int(player["amount"] or 0)
-    parent = player["parent_name"] or "N/A"
-    phone = player["phone1"] or "N/A"
-    receipt_no = f"MBA-{int(player['id']):05d}"
-
-    width, height = landscape(A5)
-    c = canvas.Canvas(buffer, pagesize=(width, height))
-
-    # UI COLORS
-    primary = HexColor("#2F69BF")
-    accent = HexColor("#22C55E")
-    light = HexColor("#F3F4F6")
-    border = HexColor("#E5E7EB")
-    text = HexColor("#111827")
-    subtext = HexColor("#6B7280")
-
-    # ================= HEADER =================
-    c.setFillColor(primary)
-    c.rect(0, height-60, width, 60, fill=1, stroke=0)
-
-    c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(30, height-32, "MIRACLE BASKETBALL ACADEMY")
-
-    c.setFont("Helvetica", 10)
-    c.drawString(30, height-48, "Official Payment Receipt")
-
-    # receipt badge
-    c.setFillColor(white)
-    c.roundRect(width-210, height-45, 160, 26, 8, fill=1, stroke=0)
-
-    c.setFillColor(primary)
-    c.setFont("Helvetica-Bold", 10)
-    c.drawCentredString(width-130, height-30, f"Receipt #{receipt_no}")
-
-    # logo
-    logo_path = os.path.join("static", "logo.png")
-    if os.path.exists(logo_path):
-        c.drawImage(logo_path, width-60, height-58, 40, 40, mask='auto')
-
-    # ================= CARDS =================
-    card_y = height - 145
-    card_h = 78
-    card_w = width/2 - 50
-
-    # left card
-    c.setFillColor(light)
-    c.roundRect(30, card_y, card_w, card_h, 10, fill=1, stroke=0)
-
-    c.setFillColor(subtext)
-    c.setFont("Helvetica-Bold", 10)
-    c.drawString(45, card_y+58, "PLAYER DETAILS")
-
-    c.setFillColor(text)
-    c.setFont("Helvetica", 11)
-    c.drawString(45, card_y+38, f"Name: {player['full_name']}")
-    c.drawString(45, card_y+23, f"Parent: {parent}")
-    c.drawString(45, card_y+8, f"Phone: {phone}")
-
-    # right card
-    right_x = width/2 + 10
-    c.setFillColor(light)
-    c.roundRect(right_x, card_y, card_w, card_h, 10, fill=1, stroke=0)
-
-    c.setFillColor(subtext)
-    c.setFont("Helvetica-Bold", 10)
-    c.drawString(right_x+15, card_y+58, "PAYMENT INFO")
-
-    c.setFillColor(text)
-    c.setFont("Helvetica", 11)
-    c.drawString(right_x+15, card_y+38, "Description: Training Fees")
-    c.drawString(right_x+15, card_y+23, f"Date: {datetime.now().strftime('%d %b %Y')}")
-
-    c.setFillColor(accent)
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(right_x+15, card_y+6, f"UGX {amount:,}")
-
-    # ================= PAYMENT SUMMARY =================
-    table_y = card_y - 40
-
-    c.setFillColor(text)
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(30, table_y+25, "Training Payment Summary")
-
-    # header line
-    c.setStrokeColor(border)
-    c.line(30, table_y+20, width-30, table_y+20)
-
-    # row
-    c.setFont("Helvetica", 11)
-    c.setFillColor(text)
-    c.drawString(35, table_y-5, f"{player['payment_plan']} Training Fee")
-    c.drawRightString(width-40, table_y-5, f"UGX {amount:,}")
-
-    # divider
-    c.setStrokeColor(border)
-    c.line(30, table_y-15, width-30, table_y-15)
-
-    # total
-    c.setFont("Helvetica-Bold", 13)
-    c.drawString(width-220, table_y-35, "Total Amount")
-    c.drawRightString(width-40, table_y-35, f"UGX {amount:,}")
-
-    # ================= FOOTER =================
-    c.setStrokeColor(border)
-    c.line(40, 60, 220, 60)
-
-    c.setFont("Helvetica", 9)
-    c.setFillColor(subtext)
-    c.drawString(40, 45, "Authorized Signature")
-    c.drawRightString(width-40, 45, "Thank you for supporting youth development!")
-
-    c.save()
-
-
-# ================= ROUTE =================
-@app.route("/receipt/<int:player_id>")
-def generate_receipt(player_id):
-
-    conn = get_db()
-
-    player = conn.execute("""
-        SELECT
-            id,
-            full_name,
-            parent_name,
-            phone1,
-            amount
-        FROM players
-        WHERE id = ?
-    """, (player_id,)).fetchone()
-
-    conn.close()
-
-    if not player:
-        return "Player not found", 404
-
-    formatted_amount = f"{int(player['amount']):,}"
-
-    html = render_template(
-        "receipt_ui.html",
-        player=player,
-        receipt_no=f"MBA-{player['id']:05d}",
-        amount=formatted_amount,
-        date=datetime.now().strftime("%d %b %Y")
-    )
-
-    pdf = HTML(string=html, base_url=request.base_url).write_pdf()
-
-    return send_file(
-        io.BytesIO(pdf),
-        download_name=f"receipt_{player_id}.pdf",
-        mimetype="application/pdf"
-    )
-# ---------------- SHOP: ADD PRODUCT ----------------
-@app.route("/admin/products/add", methods=["GET", "POST"])
-def add_product():
-
-    if "admin" not in session:
-        return redirect("/admin")
-
-    if request.method == "POST":
-
-        name = request.form.get("name")
-        category = request.form.get("category")
-        base_price = request.form.get("base_price")
-
-        conn = get_db()
-
-        # create product
-        cursor = conn.execute("""
-            INSERT INTO products (name, category, base_price, created_at)
-            VALUES (?,?,?,datetime('now'))
-        """, (name, category, base_price))
-
-        product_id = cursor.lastrowid
-
-        # variants (sizes)
-        variants = request.form.getlist("variant[]")
-        stocks = request.form.getlist("stock[]")
-        prices = request.form.getlist("price[]")
-
-        for v, s, p in zip(variants, stocks, prices):
-            if v.strip() != "":
-                conn.execute("""
-                    INSERT INTO product_variants (product_id, variant, stock, price)
-                    VALUES (?,?,?,?)
-                """, (product_id, v, s or 0, p or base_price))
-
-        conn.commit()
-        conn.close()
-
-        flash("Product added successfully!")
-        return redirect("/admin/products/add")
-
-    return render_template("add_product.html")
-
-# ---------------- SHOP POS ----------------
 @app.route("/shop", methods=["GET", "POST"])
 def shop():
-
-    if "admin" not in session:
-        return redirect("/admin")
 
     conn = get_db()
 
@@ -564,11 +341,15 @@ def shop():
         items = []
 
         for n, v, q, p in zip(names, variants, qtys, prices):
+
             q = int(q or 0)
             p = int(p or 0)
+
             if q > 0:
+
                 subtotal = q * p
                 total += subtotal
+
                 items.append((n, v, q, p, subtotal))
 
         cursor = conn.execute(
@@ -579,144 +360,96 @@ def shop():
         sale_id = cursor.lastrowid
 
         for i in items:
+
             conn.execute("""
-                INSERT INTO sale_items (sale_id,product_name,variant,quantity,price,subtotal)
-                VALUES (?,?,?,?,?,?)
+            INSERT INTO sale_items
+            (sale_id,product_name,variant,quantity,price,subtotal)
+            VALUES (?,?,?,?,?,?)
             """, (sale_id, *i))
 
         conn.commit()
-        conn.close()
 
         return redirect(f"/shop/receipt/{sale_id}")
 
-    # load products
     products = conn.execute("""
-        SELECT p.id, p.name, v.variant, v.price, v.stock
-        FROM products p
-        JOIN product_variants v ON v.product_id=p.id
-        ORDER BY p.name
+    SELECT p.name, v.variant, v.price, v.stock
+    FROM products p
+    JOIN product_variants v
+    ON v.product_id=p.id
     """).fetchall()
 
     conn.close()
+
     return render_template("shop_pos.html", products=products)
+
+
+# ---------------- SHOP RECEIPT ----------------
 
 @app.route("/shop/receipt/<int:sale_id>")
 def shop_receipt(sale_id):
 
     conn = get_db()
 
-    sale = conn.execute("SELECT * FROM sales WHERE id=?", (sale_id,)).fetchone()
-    items = conn.execute("SELECT * FROM sale_items WHERE sale_id=?", (sale_id,)).fetchall()
+    sale = conn.execute(
+        "SELECT * FROM sales WHERE id=?",
+        (sale_id,)
+    ).fetchone()
+
+    items = conn.execute(
+        "SELECT * FROM sale_items WHERE sale_id=?",
+        (sale_id,)
+    ).fetchall()
 
     conn.close()
-
-    logo_path = os.path.abspath("static/logo.png")
 
     html = render_template(
         "shop_receipt.html",
         sale=sale,
-        items=items,
-        logo_path=logo_path
+        items=items
     )
 
-    pdf = HTML(string=html, base_url="/").write_pdf()
+    pdf = HTML(string=html).write_pdf()
 
-    return send_file(io.BytesIO(pdf),
-                     download_name=f"shop_receipt_{sale_id}.pdf",
-                     mimetype="application/pdf")
+    return send_file(
+        io.BytesIO(pdf),
+        download_name=f"shop_receipt_{sale_id}.pdf",
+        mimetype="application/pdf"
+    )
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
+# ---------------- STATIC PAGES ----------------
 
 @app.route("/about")
 def about():
     return render_template("about.html")
 
+
 @app.route("/programs")
 def programs():
     return render_template("programs.html")
+
 
 @app.route("/teams")
 def teams():
     return render_template("teams.html")
 
+
 @app.route("/impact")
 def impact():
     return render_template("impact.html")
+
 
 @app.route("/gallery")
 def gallery():
     return render_template("gallery.html")
 
+
 @app.route("/join")
 def join():
     return render_template("join.html")
 
-@app.route("/admin/players")
-def admin_players():
 
-    conn = get_db()
+# ---------------- RUN APP ----------------
 
-    players = conn.execute(
-        "SELECT * FROM players ORDER BY created_at DESC"
-    ).fetchall()
-
-    conn.close()
-
-    return render_template("admin_players.html", players=players)
-
-@app.route("/admin/add-product", methods=["GET","POST"])
-def admin_add_product():
-
-    if request.method == "POST":
-
-        name = request.form["name"]
-        variant = request.form["variant"]
-        price = request.form["price"]
-        stock = request.form["stock"]
-
-        conn = get_db()
-
-        conn.execute("""
-        INSERT INTO shop_products (name,variant,price,stock)
-        VALUES (?,?,?,?)
-        """,(name,variant,price,stock))
-
-        conn.commit()
-
-        conn.close()
-
-        flash("Product added")
-
-    return render_template("admin_add_product.html")
-
-@app.route("/admin/orders")
-def admin_orders():
-
-    conn = get_db()
-
-    orders = conn.execute("""
-        SELECT * FROM sales
-        ORDER BY created_at DESC
-    """).fetchall()
-
-    conn.close()
-
-    return render_template("admin_orders.html", orders=orders)
-
-@app.route("/admin/receipts")
-def admin_receipts():
-
-    conn = get_db()
-
-    receipts = conn.execute("""
-        SELECT * FROM receipts
-        ORDER BY created_at DESC
-    """).fetchall()
-
-    conn.close()
-
-    return render_template("admin_receipts.html", receipts=receipts)
-
-
-
+if __name__ == "__main__":
+    app.run(debug=True)
