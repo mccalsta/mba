@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-header">
+    <h1>Checkout</h1>
+    <p>Confirm your order and choose payment method.</p>
+</section>
+
+<section class="section">
+    <div class="container" style="max-width:800px;">
+        <div class="program-card">
+            <h2>Order Summary</h2>
+
+            {% for item in cart %}
+            <p>
+                {{ item.name }} - {{ item.variant }} x {{ item.quantity }}
+                <span style="float:right;">UGX {{ "{:,}".format(item.subtotal) }}</span>
+            </p>
+            {% endfor %}
+
+            <hr>
+
+            <h3>Total: UGX {{ "{:,}".format(total) }}</h3>
+
+            <form method="POST" style="margin-top:20px;">
+                <label>Payment Method</label>
+                <select name="payment_method" required>
+                    <option value="">Select payment method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Mobile Money">Mobile Money</option>
+                    <option value="Bank">Bank</option>
+                </select>
+
+                <button type="submit" class="btn-primary" style="margin-top:20px;">
+                    Complete Order
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
