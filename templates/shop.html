@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-header">
+    <h1>Academy Shop</h1>
+    <p>Official Miracle Basketball merchandise.</p>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="merch-grid">
+            {% for product in products %}
+            <div class="merch-card">
+                <img src="{{ product.image or '/static/images/default-product.jpg' }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p><strong>Variant:</strong> {{ product.variant }}</p>
+                <p><strong>Price:</strong> UGX {{ "{:,}".format(product.price) }}</p>
+                <p><strong>Stock:</strong> {{ product.stock }}</p>
+
+                <form action="/cart/add" method="POST">
+                    <input type="hidden" name="variant_id" value="{{ product.variant_id }}">
+                    <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1">
+                    <button type="submit" class="btn-primary">Add to Cart</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
