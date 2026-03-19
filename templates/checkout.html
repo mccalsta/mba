@@ -1,39 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
 
-<section class="page-header">
-    <h1>Checkout</h1>
-    <p>Confirm your order and choose payment method.</p>
+<section class="inner-hero checkout-hero" data-aos="fade-up">
+    <div class="inner-hero-overlay"></div>
+    <div class="inner-hero-content">
+        <span class="hero-kicker">Final Step</span>
+        <h1>Checkout</h1>
+        <p>Confirm your order details and complete your purchase.</p>
+        <div class="hero-buttons">
+            <a href="/cart" class="btn-outline light-outline">Back to Cart</a>
+        </div>
+    </div>
 </section>
 
-<section class="section">
-    <div class="container" style="max-width:800px;">
-        <div class="program-card">
-            <h2>Order Summary</h2>
+<section class="section-shell checkout-shell" data-aos="fade-up">
+    <div class="checkout-grid">
+        <div class="section-card">
+            <h2 class="section-title">Order Summary</h2>
+            <p class="section-subtitle">Please review the items in your order.</p>
 
-            {% for item in cart %}
-            <p>
-                {{ item.name }} - {{ item.variant }} x {{ item.quantity }}
-                <span style="float:right;">UGX {{ "{:,}".format(item.subtotal) }}</span>
-            </p>
-            {% endfor %}
+            <div class="checkout-summary-list">
+                {% for item in cart %}
+                <div class="checkout-summary-item">
+                    <div>
+                        <h4>{{ item.name }}</h4>
+                        <p>{{ item.variant }} × {{ item.quantity }}</p>
+                    </div>
+                    <strong>UGX {{ "{:,}".format(item.subtotal) }}</strong>
+                </div>
+                {% endfor %}
+            </div>
 
-            <hr>
+            <div class="checkout-total-box">
+                <span>Total Amount</span>
+                <strong>UGX {{ "{:,}".format(total) }}</strong>
+            </div>
+        </div>
 
-            <h3>Total: UGX {{ "{:,}".format(total) }}</h3>
+        <div class="section-card">
+            <h2 class="section-title">Payment Details</h2>
+            <p class="section-subtitle">Choose your preferred payment method to complete the order.</p>
 
-            <form method="POST" style="margin-top:20px;">
-                <label>Payment Method</label>
-                <select name="payment_method" required>
-                    <option value="">Select payment method</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Mobile Money">Mobile Money</option>
-                    <option value="Bank">Bank</option>
-                </select>
+            <form method="POST" class="checkout-form">
+                <div class="shop-form-row">
+                    <label for="payment_method">Payment Method</label>
+                    <select name="payment_method" id="payment_method" required>
+                        <option value="">Select payment method</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Mobile Money">Mobile Money</option>
+                        <option value="Bank">Bank</option>
+                    </select>
+                </div>
 
-                <button type="submit" class="btn-primary" style="margin-top:20px;">
-                    Complete Order
-                </button>
+                <button type="submit" class="btn-primary shop-btn-full">Complete Order</button>
             </form>
         </div>
     </div>
