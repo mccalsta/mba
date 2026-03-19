@@ -561,6 +561,7 @@ def view_cart():
 @app.route("/cart/update", methods=["POST"])
 def update_cart():
     cart = get_cart()
+    conn = get_db()
 
     for item in cart:
         qty_key = f"qty_{item['variant_id']}"
@@ -572,13 +573,22 @@ def update_cart():
             except:
                 new_qty = item["quantity"]
 
-            if new_qty <= 0:
-                item["quantity"] = 1
-            else:
-                item["quantity"] = new_qty
+            if new_qty < 1:
+                new_qty = 1
 
+            db_item = conn.execute(
+                "SELECT stock FROM product_variants WHERE id = ?",
+                (item["variant_id"],)
+            ).fetchone()
+
+            if db_item and new_qty > db_item["stock"]:
+                new_qty = db_item["stock"]
+                flash(f"Quantity for {item['name']} was adjusted to available stock.")
+
+            item["quantity"] = new_qty
             item["subtotal"] = item["quantity"] * item["price"]
 
+    conn.close()
     save_cart(cart)
     flash("Cart updated.")
     return redirect("/cart")
