@@ -2038,6 +2038,32 @@ padding:10px;
 border-bottom:1px solid #e2e8f0;
 
 }
+
+.admin-table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 4px 20px rgba(0,0,0,0.06);
+}
+
+.admin-table th,
+.admin-table td{
+padding:14px;
+border-bottom:1px solid #e5e7eb;
+text-align:left;
+}
+
+.admin-table th{
+background:#0f172a;
+color:white;
+}
+
+.admin-table input[type="number"]{
+max-width:80px;
+}
+
 /* =========================================
    FOOTER
 ========================================= */
