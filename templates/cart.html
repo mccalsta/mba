@@ -1,42 +1,82 @@
 {% extends "base.html" %}
 {% block content %}
 
-<section class="page-header">
-    <h1>Checkout</h1>
-    <p>Confirm your order and choose payment method.</p>
-</section>
-
-<section class="section">
-    <div class="container" style="max-width:800px;">
-        <div class="program-card">
-            <h2>Order Summary</h2>
-
-            {% for item in cart %}
-            <p>
-                {{ item.name }} - {{ item.variant }} x {{ item.quantity }}
-                <span style="float:right;">UGX {{ "{:,}".format(item.subtotal) }}</span>
-            </p>
-            {% endfor %}
-
-            <hr>
-
-            <h3>Total: UGX {{ "{:,}".format(total) }}</h3>
-
-            <form method="POST" style="margin-top:20px;">
-                <label>Payment Method</label>
-                <select name="payment_method" required>
-                    <option value="">Select payment method</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Mobile Money">Mobile Money</option>
-                    <option value="Bank">Bank</option>
-                </select>
-
-                <button type="submit" class="btn-primary" style="margin-top:20px;">
-                    Complete Order
-                </button>
-            </form>
+<section class="inner-hero cart-hero" data-aos="fade-up">
+    <div class="inner-hero-overlay"></div>
+    <div class="inner-hero-content">
+        <span class="hero-kicker">Your Basket</span>
+        <h1>Shopping Cart</h1>
+        <p>Review your items, adjust quantities, and continue to secure checkout.</p>
+        <div class="hero-buttons">
+            <a href="/shop" class="btn-outline light-outline">Continue Shopping</a>
+            <a href="/checkout" class="btn-primary">Proceed to Checkout</a>
         </div>
     </div>
+</section>
+
+<section class="section-shell" data-aos="fade-up">
+    {% if cart %}
+    <div class="section-card">
+        <div class="cart-header-row">
+            <div>
+                <h2 class="section-title">Cart Items</h2>
+                <p class="section-subtitle">Update quantities or remove products before checkout.</p>
+            </div>
+            <div class="cart-total-pill">
+                Total: UGX {{ "{:,}".format(total) }}
+            </div>
+        </div>
+
+        <form action="/cart/update" method="POST">
+            <div class="cart-list-premium">
+                {% for item in cart %}
+                <div class="cart-item-premium">
+                    <div class="cart-item-image">
+                        <img src="{{ item.image or '/static/images/default-product.jpg' }}" alt="{{ item.name }}">
+                    </div>
+
+                    <div class="cart-item-details">
+                        <h3>{{ item.name }}</h3>
+                        <p><strong>Variant:</strong> {{ item.variant }}</p>
+                        <p><strong>Unit Price:</strong> UGX {{ "{:,}".format(item.price) }}</p>
+                    </div>
+
+                    <div class="cart-item-actions">
+                        <label for="qty_{{ item.variant_id }}">Quantity</label>
+                        <input
+                            id="qty_{{ item.variant_id }}"
+                            type="number"
+                            name="qty_{{ item.variant_id }}"
+                            value="{{ item.quantity }}"
+                            min="1"
+                        >
+                    </div>
+
+                    <div class="cart-item-subtotal">
+                        <span>Subtotal</span>
+                        <strong>UGX {{ "{:,}".format(item.subtotal) }}</strong>
+                    </div>
+
+                    <div class="cart-item-remove">
+                        <a href="/cart/remove/{{ item.variant_id }}" class="btn-outline danger-outline">Remove</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-footer-actions">
+                <button type="submit" class="btn-secondary">Update Cart</button>
+                <a href="/checkout" class="btn-primary">Proceed to Checkout</a>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <div class="section-card empty-shop-state">
+        <h3>Your cart is empty</h3>
+        <p>Add some official Miracle Basketball merchandise to get started.</p>
+        <a href="/shop" class="btn-primary">Visit Shop</a>
+    </div>
+    {% endif %}
 </section>
 
 {% endblock %}
