@@ -3,13 +3,17 @@
 
 <section class="inner-hero cart-hero" data-aos="fade-up">
     <div class="inner-hero-overlay"></div>
-    <div class="inner-hero-content">
+
+    <div class="inner-hero-content container-narrow">
         <span class="hero-kicker">Your Basket</span>
         <h1>Shopping Cart</h1>
         <p>Review your items, adjust quantities, and continue to secure checkout.</p>
-        <div class="hero-buttons">
+
+        <div class="hero-buttons hero-buttons-center">
             <a href="/shop" class="btn-outline light-outline">Continue Shopping</a>
+            {% if cart %}
             <a href="/checkout" class="btn-primary">Proceed to Checkout</a>
+            {% endif %}
         </div>
     </div>
 </section>
