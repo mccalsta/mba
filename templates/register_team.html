@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO -->
+<section class="page-hero small-page-hero">
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+        <span class="hero-kicker">School Teams</span>
+        <h1>Team Registration</h1>
+        <p>
+            Register your school team to participate in Miracle Basketball
+            tournaments, camps, and development programs.
+        </p>
+    </div>
+</section>
+
+<!-- FORM -->
+<section class="form-page-section">
+    <div class="form-shell">
+
+        <div class="section-intro">
+            <span class="section-kicker">Registration Form</span>
+            <h2>Team Information</h2>
+            <p>Please provide the official team and coach details below.</p>
+        </div>
+
+        <form method="POST" class="modern-form">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Team Name</label>
+                    <input type="text" name="team_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Coach Name</label>
+                    <input type="text" name="coach_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Boys">Boys</option>
+                        <option value="Girls">Girls</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Age Group</label>
+                    <input type="text" name="age_group" placeholder="e.g. U12, U14, U16" required>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-primary form-submit-btn">
+                Submit Team Registration
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}
