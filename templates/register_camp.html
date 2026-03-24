@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-hero small-page-hero">
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+        <span class="hero-kicker">Holiday Program</span>
+        <h1>Holiday Camp Registration</h1>
+        <p>
+            Register for the Miracle Basketball Holiday Development Camp.
+            The camp includes training, games, mentorship, and character development.
+        </p>
+    </div>
+</section>
+
+<section class="form-page-section">
+    <div class="form-shell">
+
+        <div class="section-intro">
+            <span class="section-kicker">Camp Registration</span>
+            <h2>Player Information</h2>
+            <p>Please fill in the player and parent details below.</p>
+        </div>
+
+        <form method="POST" class="modern-form">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Player Full Name</label>
+                    <input type="text" name="full_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" name="dob">
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender">
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>School</label>
+                    <input type="text" name="school">
+                </div>
+
+                <div class="form-group">
+                    <label>Parent / Guardian Name</label>
+                    <input type="text" name="parent_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Shirt Size</label>
+                    <select name="shirt_size">
+                        <option value="">Select Size</option>
+                        <option>XS</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Medical Information / Allergies / Injuries</label>
+                <textarea name="medical" rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary form-submit-btn">
+                Submit Camp Registration
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}
