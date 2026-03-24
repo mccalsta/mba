@@ -753,7 +753,13 @@ def register_team():
         flash("Team registration submitted successfully!")
         return redirect("/register-team")
 
-    return render_template("register_team.html")
+    return render_template(
+    "register_team.html",
+    hero_title="Team Registration",
+    hero_text="Register your team for the Miracle Basketball Tournament.",
+    hero_kicker="Tournament Registration",
+    hero_image="/static/images/hero.jpg"
+)
 
 # ---------------- HOLIDAY CAMP REGISTRATION ----------------
 
@@ -782,7 +788,13 @@ def register_camp():
         flash("Holiday camp registration submitted successfully!")
         return redirect("/register-camp")
 
-    return render_template("register_camp.html")
+    return render_template(
+    "register_camp.html",
+    hero_title="Holiday Camp Registration",
+    hero_text="Register for the Miracle Basketball Holiday Development Camp.",
+    hero_kicker="Holiday Program",
+    hero_image="/static/images/hero.jpg"
+)
 
 @app.route("/admin/teams")
 def admin_teams():
