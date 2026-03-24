@@ -2773,6 +2773,62 @@ font-size:24px;
 }
 }
 
+/* FORM PAGE LAYOUT */
+
+.form-page-section{
+padding:60px 20px;
+}
+
+.form-shell{
+max-width:1000px;
+margin:auto;
+background:white;
+padding:40px;
+border-radius:14px;
+box-shadow:0 8px 30px rgba(0,0,0,0.08);
+}
+
+.section-intro{
+text-align:center;
+margin-bottom:30px;
+}
+
+.section-kicker{
+background:#fff7ed;
+color:#f97316;
+padding:6px 14px;
+border-radius:20px;
+font-weight:600;
+font-size:13px;
+}
+
+.modern-form .form-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:20px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+}
+
+.form-group label{
+font-weight:600;
+margin-bottom:6px;
+}
+
+.form-submit-btn{
+margin-top:20px;
+width:100%;
+}
+
+@media(max-width:768px){
+.modern-form .form-grid{
+grid-template-columns:1fr;
+}
+}
+
 /* =========================================
    FOOTER
 ========================================= */
