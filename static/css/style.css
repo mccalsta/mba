@@ -2829,6 +2829,42 @@ grid-template-columns:1fr;
 }
 }
 
+/* HERO FOR INNER PAGES */
+
+.page-hero{
+height:40vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+}
+
+.page-hero-content{
+max-width:800px;
+padding:20px;
+}
+
+.hero-kicker{
+background:#f97316;
+color:white;
+padding:6px 14px;
+border-radius:20px;
+font-size:13px;
+font-weight:600;
+display:inline-block;
+margin-bottom:10px;
+}
+
+.page-hero h1{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.page-hero p{
+color:#e2e8f0;
+}
+
 /* =========================================
    FOOTER
 ========================================= */
