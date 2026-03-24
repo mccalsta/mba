@@ -23,6 +23,7 @@ def get_db():
 def init_db():
     conn = get_db()
 
+    # PLAYERS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS players (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,6 +56,7 @@ def init_db():
     )
     """)
 
+    # ADMINS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,6 +66,7 @@ def init_db():
     )
     """)
 
+    # PRODUCTS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,6 +78,7 @@ def init_db():
     )
     """)
 
+    # PRODUCT VARIANTS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS product_variants (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,6 +90,7 @@ def init_db():
     )
     """)
 
+    # SALES
     conn.execute("""
     CREATE TABLE IF NOT EXISTS sales (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,6 +100,7 @@ def init_db():
     )
     """)
 
+    # SALE ITEMS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS sale_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -108,6 +114,7 @@ def init_db():
     )
     """)
 
+    # RECEIPTS
     conn.execute("""
     CREATE TABLE IF NOT EXISTS receipts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -118,36 +125,37 @@ def init_db():
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
     """)
-    # TEAM REGISTRATIONS
-conn.execute("""
-CREATE TABLE IF NOT EXISTS team_registrations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    team_name TEXT,
-    coach_name TEXT,
-    phone TEXT,
-    email TEXT,
-    category TEXT,
-    age_group TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-)
-""")
 
-# HOLIDAY CAMP REGISTRATIONS
-conn.execute("""
-CREATE TABLE IF NOT EXISTS camp_registrations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    full_name TEXT,
-    dob TEXT,
-    gender TEXT,
-    school TEXT,
-    parent_name TEXT,
-    phone TEXT,
-    email TEXT,
-    shirt_size TEXT,
-    medical TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-)
-""")
+    # TEAM REGISTRATIONS
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS team_registrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        team_name TEXT,
+        coach_name TEXT,
+        phone TEXT,
+        email TEXT,
+        category TEXT,
+        age_group TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
+    # HOLIDAY CAMP REGISTRATIONS
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS camp_registrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        full_name TEXT,
+        dob TEXT,
+        gender TEXT,
+        school TEXT,
+        parent_name TEXT,
+        phone TEXT,
+        email TEXT,
+        shirt_size TEXT,
+        medical TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
 
     conn.commit()
     conn.close()
@@ -790,17 +798,4 @@ def admin_teams():
 
     return render_template("admin_teams.html", teams=teams)
 
-@app.route("/admin/teams")
-def admin_teams():
-    if "admin" not in session:
-        return redirect("/admin")
-
-    conn = get_db()
-    teams = conn.execute("""
-        SELECT * FROM team_registrations
-        ORDER BY created_at DESC
-    """).fetchall()
-    conn.close()
-
-    return render_template("admin_teams.html", teams=teams)
 
