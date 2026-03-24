@@ -118,6 +118,36 @@ def init_db():
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
     """)
+    # TEAM REGISTRATIONS
+conn.execute("""
+CREATE TABLE IF NOT EXISTS team_registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_name TEXT,
+    coach_name TEXT,
+    phone TEXT,
+    email TEXT,
+    category TEXT,
+    age_group TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+)
+""")
+
+# HOLIDAY CAMP REGISTRATIONS
+conn.execute("""
+CREATE TABLE IF NOT EXISTS camp_registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT,
+    dob TEXT,
+    gender TEXT,
+    school TEXT,
+    parent_name TEXT,
+    phone TEXT,
+    email TEXT,
+    shirt_size TEXT,
+    medical TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+)
+""")
 
     conn.commit()
     conn.close()
@@ -690,3 +720,87 @@ def shop_receipt(sale_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# ---------------- TEAM REGISTRATION ----------------
+
+@app.route("/register-team", methods=["GET", "POST"])
+def register_team():
+    if request.method == "POST":
+        conn = get_db()
+        conn.execute("""
+            INSERT INTO team_registrations
+            (team_name, coach_name, phone, email, category, age_group)
+            VALUES (?,?,?,?,?,?)
+        """, (
+            request.form.get("team_name"),
+            request.form.get("coach_name"),
+            request.form.get("phone"),
+            request.form.get("email"),
+            request.form.get("category"),
+            request.form.get("age_group")
+        ))
+        conn.commit()
+        conn.close()
+
+        flash("Team registration submitted successfully!")
+        return redirect("/register-team")
+
+    return render_template("register_team.html")
+
+# ---------------- HOLIDAY CAMP REGISTRATION ----------------
+
+@app.route("/register-camp", methods=["GET", "POST"])
+def register_camp():
+    if request.method == "POST":
+        conn = get_db()
+        conn.execute("""
+            INSERT INTO camp_registrations
+            (full_name, dob, gender, school, parent_name, phone, email, shirt_size, medical)
+            VALUES (?,?,?,?,?,?,?,?,?)
+        """, (
+            request.form.get("full_name"),
+            request.form.get("dob"),
+            request.form.get("gender"),
+            request.form.get("school"),
+            request.form.get("parent_name"),
+            request.form.get("phone"),
+            request.form.get("email"),
+            request.form.get("shirt_size"),
+            request.form.get("medical")
+        ))
+        conn.commit()
+        conn.close()
+
+        flash("Holiday camp registration submitted successfully!")
+        return redirect("/register-camp")
+
+    return render_template("register_camp.html")
+
+@app.route("/admin/teams")
+def admin_teams():
+    if "admin" not in session:
+        return redirect("/admin")
+
+    conn = get_db()
+    teams = conn.execute("""
+        SELECT * FROM team_registrations
+        ORDER BY created_at DESC
+    """).fetchall()
+    conn.close()
+
+    return render_template("admin_teams.html", teams=teams)
+
+@app.route("/admin/teams")
+def admin_teams():
+    if "admin" not in session:
+        return redirect("/admin")
+
+    conn = get_db()
+    teams = conn.execute("""
+        SELECT * FROM team_registrations
+        ORDER BY created_at DESC
+    """).fetchall()
+    conn.close()
+
+    return render_template("admin_teams.html", teams=teams)
+
