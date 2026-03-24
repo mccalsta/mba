@@ -139,6 +139,14 @@ def init_db():
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
     """)
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS team_players (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        team_id INTEGER,
+        player_name TEXT,
+        FOREIGN KEY(team_id) REFERENCES team_registrations(id)
+    )
+    """)
 
     # HOLIDAY CAMP REGISTRATIONS
     conn.execute("""
@@ -735,7 +743,9 @@ if __name__ == "__main__":
 def register_team():
     if request.method == "POST":
         conn = get_db()
-        conn.execute("""
+
+        # Insert team
+        cursor = conn.execute("""
             INSERT INTO team_registrations
             (team_name, coach_name, phone, email, category, age_group)
             VALUES (?,?,?,?,?,?)
@@ -747,6 +757,19 @@ def register_team():
             request.form.get("category"),
             request.form.get("age_group")
         ))
+
+        team_id = cursor.lastrowid
+
+        # Insert players
+        players = request.form.getlist("player_name[]")
+
+        for p in players:
+            if p.strip() != "":
+                conn.execute("""
+                    INSERT INTO team_players (team_id, player_name)
+                    VALUES (?,?)
+                """, (team_id, p))
+
         conn.commit()
         conn.close()
 
@@ -754,12 +777,12 @@ def register_team():
         return redirect("/register-team")
 
     return render_template(
-    "register_team.html",
-    hero_title="Team Registration",
-    hero_text="Register your team for the Miracle Basketball Tournament.",
-    hero_kicker="Tournament Registration",
-    hero_image="/static/images/hero.jpg"
-)
+        "register_team.html",
+        hero_title="Team Registration",
+        hero_text="Register your team for the Miracle Basketball Tournament.",
+        hero_kicker="Tournament Registration",
+        hero_image="/static/images/hero.jpg"
+    )
 
 # ---------------- HOLIDAY CAMP REGISTRATION ----------------
 
@@ -802,24 +825,20 @@ def admin_teams():
         return redirect("/admin")
 
     conn = get_db()
+
     teams = conn.execute("""
         SELECT * FROM team_registrations
         ORDER BY created_at DESC
     """).fetchall()
-    conn.close()
 
-    return render_template("admin_teams.html", teams=teams)
-
-@app.route("/admin/camps")
-def admin_camps():
-    if "admin" not in session:
-        return redirect("/admin")
-
-    conn = get_db()
-    camps = conn.execute("""
-        SELECT * FROM camp_registrations
-        ORDER BY created_at DESC
+    team_players = conn.execute("""
+        SELECT team_id, GROUP_CONCAT(player_name, ', ') as players
+        FROM team_players
+        GROUP BY team_id
     """).fetchall()
+
     conn.close()
 
-    return render_template("admin_camps.html", camps=camps)
+    players_dict = {tp["team_id"]: tp["players"] for tp in team_players}
+
+    return render_template("admin_teams.html", teams=teams, players_dict=players_dict)
