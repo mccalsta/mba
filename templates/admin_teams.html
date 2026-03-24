@@ -32,6 +32,7 @@
 <th>Category</th>
 <th>Age Group</th>
 <th>Date</th>
+<th>Players</th>
 </tr>
 
 {% for t in teams %}
@@ -43,6 +44,7 @@
 <td>{{ t.category }}</td>
 <td>{{ t.age_group }}</td>
 <td>{{ t.created_at }}</td>
+<td>{{ players_dict.get(t.id, '') }}</td>
 </tr>
 {% endfor %}
 
