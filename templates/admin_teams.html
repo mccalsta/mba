@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="admin-dashboard">
+
+<div class="admin-sidebar">
+<h2>Admin Panel</h2>
+<ul>
+<li><a href="/admin">Dashboard</a></li>
+<li><a href="/admin/players">Players</a></li>
+<li><a href="/admin/teams">Team Registrations</a></li>
+<li><a href="/admin/camps">Holiday Camp</a></li>
+<li><a href="/admin/add-product">Add Merchandise</a></li>
+<li><a href="/admin/orders">Shop Orders</a></li>
+<li><a href="/admin/receipts">Receipts</a></li>
+<li><a href="/logout">Logout</a></li>
+</ul>
+</div>
+
+<div class="admin-content">
+
+<h1>Team Registrations</h1>
+
+<div class="table-card">
+<table class="admin-table">
+
+<tr>
+<th>Team Name</th>
+<th>Coach</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Category</th>
+<th>Age Group</th>
+<th>Date</th>
+</tr>
+
+{% for t in teams %}
+<tr>
+<td>{{ t.team_name }}</td>
+<td>{{ t.coach_name }}</td>
+<td>{{ t.phone }}</td>
+<td>{{ t.email }}</td>
+<td>{{ t.category }}</td>
+<td>{{ t.age_group }}</td>
+<td>{{ t.created_at }}</td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+</div>
+</div>
+
+{% endblock %}
