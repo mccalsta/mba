@@ -810,4 +810,16 @@ def admin_teams():
 
     return render_template("admin_teams.html", teams=teams)
 
+@app.route("/admin/camps")
+def admin_camps():
+    if "admin" not in session:
+        return redirect("/admin")
 
+    conn = get_db()
+    camps = conn.execute("""
+        SELECT * FROM camp_registrations
+        ORDER BY created_at DESC
+    """).fetchall()
+    conn.close()
+
+    return render_template("admin_camps.html", camps=camps)
