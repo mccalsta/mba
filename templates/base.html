@@ -59,9 +59,25 @@
 
 <main>
 
+{% if hero_title %}
+<section class="page-hero"
+style="background:
+linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.75)),
+url('{{ hero_image }}');
+background-size:cover;
+background-position:center;">
+
+    <div class="page-hero-content">
+        <span class="hero-kicker">{{ hero_kicker }}</span>
+        <h1>{{ hero_title }}</h1>
+        <p>{{ hero_text }}</p>
+    </div>
+
+</section>
+{% endif %}
+
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-
 <div class="container">
 <div class="flash">
 {% for msg in messages %}
