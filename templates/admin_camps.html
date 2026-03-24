@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="admin-dashboard">
+
+<div class="admin-sidebar">
+<h2>Admin Panel</h2>
+<ul>
+<li><a href="/admin">Dashboard</a></li>
+<li><a href="/admin/players">Players</a></li>
+<li><a href="/admin/teams">Team Registrations</a></li>
+<li><a href="/admin/camps">Holiday Camp</a></li>
+<li><a href="/admin/add-product">Add Merchandise</a></li>
+<li><a href="/admin/orders">Shop Orders</a></li>
+<li><a href="/admin/receipts">Receipts</a></li>
+<li><a href="/logout">Logout</a></li>
+</ul>
+</div>
+
+<div class="admin-content">
+
+<h1>Holiday Camp Registrations</h1>
+
+<div class="table-card">
+<table class="admin-table">
+
+<tr>
+<th>Name</th>
+<th>DOB</th>
+<th>Gender</th>
+<th>School</th>
+<th>Parent</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Shirt Size</th>
+<th>Date</th>
+</tr>
+
+{% for c in camps %}
+<tr>
+<td>{{ c.full_name }}</td>
+<td>{{ c.dob }}</td>
+<td>{{ c.gender }}</td>
+<td>{{ c.school }}</td>
+<td>{{ c.parent_name }}</td>
+<td>{{ c.phone }}</td>
+<td>{{ c.email }}</td>
+<td>{{ c.shirt_size }}</td>
+<td>{{ c.created_at }}</td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+</div>
+</div>
+
+{% endblock %}
