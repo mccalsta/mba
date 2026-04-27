@@ -2894,4 +2894,11 @@ box-shadow:
 
 }
 
+.programs-page-section{
+padding:70px 20px 90px;
+background:linear-gradient(180deg, #f8fafc 0%, #fff7ed 100%);
+}
 
+.programs-page-section .program-grid{
+max-width:1200px;
+}
