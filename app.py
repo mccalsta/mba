@@ -377,7 +377,7 @@ def create_admin():
 
     admins = [
         ("henry", generate_password_hash("1234")),
-        ("coach_mike", generate_password_hash("basketball")),
+        ("admin", generate_password_hash("mba54321")),
         ("manager_sarah", generate_password_hash("academy2026")),
         ("finance_john", generate_password_hash("payments"))
     ]
