@@ -741,32 +741,42 @@ if __name__ == "__main__":
 
 @app.route("/register-team", methods=["GET", "POST"])
 def register_team():
+
     if request.method == "POST":
+
         conn = get_db()
 
-        # Insert team
+        # INSERT TEAM
         cursor = conn.execute("""
             INSERT INTO team_registrations
-            (team_name, coach_name, phone, email, category, age_group)
-            VALUES (?,?,?,?,?,?)
+            (team_name, phone, category, age_group)
+            VALUES (?,?,?,?)
         """, (
             request.form.get("team_name"),
-            request.form.get("coach_name"),
             request.form.get("phone"),
-            request.form.get("email"),
             request.form.get("category"),
             request.form.get("age_group")
         ))
 
         team_id = cursor.lastrowid
 
-        # Insert players
-        players = request.form.getlist("player_name[]")
+        # CAPTURE PLAYERS
+        players = [
+            request.form.get("player1"),
+            request.form.get("player2"),
+            request.form.get("player3"),
+            request.form.get("player4"),
+            request.form.get("player5"),
+            request.form.get("player6"),
+            request.form.get("player7")
+        ]
 
+        # SAVE PLAYERS
         for p in players:
-            if p.strip() != "":
+            if p and p.strip() != "":
                 conn.execute("""
-                    INSERT INTO team_players (team_id, player_name)
+                    INSERT INTO team_players
+                    (team_id, player_name)
                     VALUES (?,?)
                 """, (team_id, p))
 
@@ -774,6 +784,7 @@ def register_team():
         conn.close()
 
         flash("Team registration submitted successfully!")
+
         return redirect("/register-team")
 
     return render_template(
