@@ -6,9 +6,12 @@
     <div class="form-shell">
 
         <div class="section-intro">
-            <span class="section-kicker">Registration Form</span>
-            <h2>Team Information</h2>
-            <p>Please provide the official team and coach details below.</p>
+            <span class="section-kicker">Tournament Registration</span>
+            <h2>Back-to-School Tournament</h2>
+            <p>
+                Register your team for the upcoming tournament.
+                Maximum allowed players per team: 7.
+            </p>
         </div>
 
         <form method="POST" class="modern-form">
@@ -22,18 +25,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Coach Name</label>
-                    <input type="text" name="coach_name" required>
-                </div>
-
-                <div class="form-group">
                     <label>Phone Number</label>
                     <input type="text" name="phone" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email">
                 </div>
 
                 <div class="form-group">
@@ -47,84 +40,65 @@
 
                 <div class="form-group">
                     <label>Age Group</label>
-                    <input type="text" name="age_group" placeholder="e.g. U12, U14, U16" required>
+                    <input type="text"
+                           name="age_group"
+                           placeholder="e.g. U12, U14, U16"
+                           required>
                 </div>
 
             </div>
 
-            <!-- TEAM PLAYERS -->
-            <div class="section-intro" style="margin-top:40px;">
-                <span class="section-kicker">Team Players</span>
-                <h2>Player Names</h2>
-                <p>Enter the names of players in the team.</p>
-            </div>
+            <!-- PLAYERS -->
+            <div class="players-section">
 
-            <div class="form-grid">
+                <h3 class="players-title">Team Players</h3>
+                <p class="players-note">
+                    Enter up to 7 players only.
+                </p>
 
-                <div class="form-group">
-                    <label>Player 1</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                <div class="players-grid">
 
-                <div class="form-group">
-                    <label>Player 2</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 1</label>
+                        <input type="text" name="player1" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 3</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 2</label>
+                        <input type="text" name="player2" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 4</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 3</label>
+                        <input type="text" name="player3">
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 5</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 4</label>
+                        <input type="text" name="player4">
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 6</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 5</label>
+                        <input type="text" name="player5">
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 7</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 6</label>
+                        <input type="text" name="player6">
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 8</label>
-                    <input type="text" name="player_name[]">
-                </div>
+                    <div class="form-group">
+                        <label>Player 7</label>
+                        <input type="text" name="player7">
+                    </div>
 
-                <div class="form-group">
-                    <label>Player 9</label>
-                    <input type="text" name="player_name[]">
-                </div>
-
-                <div class="form-group">
-                    <label>Player 10</label>
-                    <input type="text" name="player_name[]">
-                </div>
-
-                <div class="form-group">
-                    <label>Player 11</label>
-                    <input type="text" name="player_name[]">
-                </div>
-
-                <div class="form-group">
-                    <label>Player 12</label>
-                    <input type="text" name="player_name[]">
                 </div>
 
             </div>
 
             <button type="submit" class="btn-primary form-submit-btn">
-                Submit Team Registration
+                Submit Tournament Registration
             </button>
 
         </form>
