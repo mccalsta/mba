@@ -880,4 +880,10 @@ def download_db():
 
 @app.route("/connect")
 def connect():
-    return render_template("connect.html")
+    return render_template(
+        "connect.html",
+        hero_title="Stay Connected",
+        hero_text="Follow Miracle Basketball across our official social media platforms.",
+        hero_kicker="Social Media",
+        hero_image="/static/images/hero.jpg"
+    )
