@@ -874,3 +874,6 @@ def download_db():
         download_name="miracle_database_backup.db"
     )
 
+@app.route("/connect")
+def connect():
+    return render_template("connect.html")
