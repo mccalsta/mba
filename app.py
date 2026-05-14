@@ -9,7 +9,11 @@ import io
 app = Flask(__name__)
 app.secret_key = "miracle_secret_key"
 
-DB = "database.db"
+DB = os.environ.get("DB_PATH", "/data/database.db")
+
+DB_DIR = os.path.dirname(DB)
+if DB_DIR:
+    os.makedirs(DB_DIR, exist_ok=True)
 
 
 # ---------------- DATABASE ----------------
