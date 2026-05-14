@@ -397,6 +397,8 @@ def create_admin():
     return "Admins created"
 
 
+
+
 # ---------------- PLAYER RECEIPT ----------------
 
 @app.route("/receipt/<int:player_id>")
@@ -853,3 +855,22 @@ def admin_teams():
     players_dict = {tp["team_id"]: tp["players"] for tp in team_players}
 
     return render_template("admin_teams.html", teams=teams, players_dict=players_dict)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+# ---------------- DOWNLOAD DATABASE BACKUP ----------------
+
+@app.route("/admin/download-db")
+def download_db():
+    if "admin" not in session:
+        return redirect("/admin")
+
+    if not os.path.exists(DB):
+        return "Database file not found", 404
+
+    return send_file(
+        DB,
+        as_attachment=True,
+        download_name="miracle_database_backup.db"
+    )
+
